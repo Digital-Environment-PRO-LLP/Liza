@@ -1,0 +1,19 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - camel_case_types
+    - avoid_print
+    - constant_identifier_names
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - sort_pub_dependencies
+    - require_trailing_commas
+    - omit_local_variable_types
+
+analyzer:
+  errors:
+    todo: ignore
+    use_build_context_synchronously: ignore
+  exclude:
+    - lib/l10n/*.dart

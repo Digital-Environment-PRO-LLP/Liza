@@ -1,0 +1,5085 @@
+{
+  "@@locale": "ru",
+  "@@last_modified": "2021-08-14 12:41:09.903021",
+  "about": "О приложении",
+  "@about": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "accept": "Принять",
+  "@accept": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "acceptedTheInvitation": "{username} принял приглашение",
+  "@acceptedTheInvitation": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "account": "Аккаунт",
+  "@account": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "activatedEndToEndEncryption": "🔐 {username} включил сквозное шифрование",
+  "@activatedEndToEndEncryption": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "addEmail": "Добавить email",
+  "@addEmail": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "admin": "Администратор",
+  "@admin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "alias": "псевдоним",
+  "@alias": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "all": "Все",
+  "@all": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "allChats": "Все чаты",
+  "@allChats": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "answeredTheCall": "{senderName} ответил на звонок",
+  "@answeredTheCall": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "anyoneCanJoin": "Каждый может присоединиться",
+  "@anyoneCanJoin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "appLock": "Блокировка приложения",
+  "@appLock": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "archive": "Архив",
+  "@archive": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "areGuestsAllowedToJoin": "Разрешено ли гостям присоединяться",
+  "@areGuestsAllowedToJoin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "areYouSure": "Вы уверены?",
+  "@areYouSure": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "areYouSureYouWantToLogout": "Вы действительно хотите выйти?",
+  "@areYouSureYouWantToLogout": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "askSSSSSign": "Для подписи ключа другого пользователя, пожалуйста, введите вашу парольную фразу или ключ восстановления.",
+  "@askSSSSSign": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "askVerificationRequest": "Принять этот запрос подтверждения от {username}?",
+  "@askVerificationRequest": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "autoplayImages": "Автоматически воспроизводить анимированные стикеры и эмодзи",
+  "@autoplayImages": {
+    "type": "String",
+    "placeholder": {}
+  },
+  "badServerLoginTypesException": "Домашний сервер поддерживает следующие типы входа в систему:\n{serverVersions}\nНо это приложение поддерживает только:\n{supportedVersions}",
+  "@badServerLoginTypesException": {
+    "type": "String",
+    "placeholders": {
+      "serverVersions": {
+        "type": "String"
+      },
+      "supportedVersions": {
+        "type": "String"
+      }
+    }
+  },
+  "badServerVersionsException": "Домашний сервер поддерживает следующие версии спецификации:\n{serverVersions}\nНо это приложение поддерживает только {supportedVersions}",
+  "@badServerVersionsException": {
+    "type": "String",
+    "placeholders": {
+      "serverVersions": {
+        "type": "String"
+      },
+      "supportedVersions": {
+        "type": "String"
+      }
+    }
+  },
+  "banFromChat": "Заблокировать в чате",
+  "@banFromChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "banFromCompany": "Заблокировать в компании",
+  "@banFromCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "banFromSpace": "Заблокировать в пространстве",
+  "@banFromSpace": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "banned": "Заблокированные",
+  "@banned": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "bannedUser": "{username} заблокировал {targetName}",
+  "@bannedUser": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "blockDevice": "Заблокировать сеанс",
+  "@blockDevice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "blocked": "Заблокировано",
+  "@blocked": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "botMessages": "Сообщения ботов",
+  "@botMessages": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "cancel": "Отмена",
+  "@cancel": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "cantOpenUri": "Не удается открыть URI {uri}",
+  "@cantOpenUri": {
+    "type": "String",
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  },
+  "changeDeviceName": "Изменить имя сеанса",
+  "@changeDeviceName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "changedTheChatAvatar": "{username} изменил аватар чата",
+  "@changedTheChatAvatar": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheChatDescriptionTo": "{username} изменил описание чата на «{description}»",
+  "@changedTheChatDescriptionTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheChatNameTo": "{username} изменил имя чата на «{chatname}»",
+  "@changedTheChatNameTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "chatname": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheChatPermissions": "{username} изменил права доступа к чату",
+  "@changedTheChatPermissions": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheDisplaynameTo": "{username} изменил отображаемое имя на «{displayname}»",
+  "@changedTheDisplaynameTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "displayname": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheGuestAccessRules": "{username} изменил правила гостевого доступа",
+  "@changedTheGuestAccessRules": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheGuestAccessRulesTo": "{username} изменил правила гостевого доступа на {rules}",
+  "@changedTheGuestAccessRulesTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "rules": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheHistoryVisibility": "{username} изменил видимость истории",
+  "@changedTheHistoryVisibility": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheHistoryVisibilityTo": "{username} изменил видимость истории на {rules}",
+  "@changedTheHistoryVisibilityTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "rules": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheJoinRules": "{username} изменил правила присоединения",
+  "@changedTheJoinRules": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheJoinRulesTo": "{username} изменил правила присоединения на {joinRules}",
+  "@changedTheJoinRulesTo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "joinRules": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheProfileAvatar": "{username} изменил аватар",
+  "@changedTheProfileAvatar": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheRoomAliases": "{username} изменил псевдонимы чата",
+  "@changedTheRoomAliases": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changedTheRoomInvitationLink": "{username} изменил ссылку для приглашения",
+  "@changedTheRoomInvitationLink": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "changePassword": "Изменить пароль",
+  "@changePassword": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "changeTheHomeserver": "Изменить домашний сервер",
+  "@changeTheHomeserver": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "changeTheme": "Персонализация",
+  "@changeTheme": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "changeTheNameOfTheGroup": "Изменить название группы",
+  "@changeTheNameOfTheGroup": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "changeYourAvatar": "Изменить свой аватар",
+  "@changeYourAvatar": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "channelCorruptedDecryptError": "Шифрование было повреждено",
+  "@channelCorruptedDecryptError": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chat": "Чат",
+  "@chat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chatBackup": "Резервная копия чата",
+  "@chatBackup": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chatBackupDescription": "Ваши сообщения защищены ключом восстановления. Пожалуйста, не потеряйте его.",
+  "@chatBackupDescription": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "details": "Детали",
+  "@details": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chatDetails": "Детали чата",
+  "@chatDetails": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chats": "Чаты",
+  "@chats": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chooseAStrongPassword": "Выберите надёжный пароль",
+  "@chooseAStrongPassword": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "clearArchive": "Очистить архив",
+  "@clearArchive": {},
+  "close": "Закрыть",
+  "@close": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "commandHint_ban": "Заблокировать пользователя в этом чате",
+  "@commandHint_ban": {
+    "type": "String",
+    "description": "Usage hint for the command /ban"
+  },
+  "commandHint_html": "Отправить текст формата HTML",
+  "@commandHint_html": {
+    "type": "String",
+    "description": "Usage hint for the command /html"
+  },
+  "commandHint_invite": "Пригласить пользователя в этот чат",
+  "@commandHint_invite": {
+    "type": "String",
+    "description": "Usage hint for the command /invite"
+  },
+  "commandHint_join": "Присоединиться к этому чату",
+  "@commandHint_join": {
+    "type": "String",
+    "description": "Usage hint for the command /join"
+  },
+  "commandHint_kick": "Исключить пользователя из этого чата",
+  "@commandHint_kick": {
+    "type": "String",
+    "description": "Usage hint for the command /kick"
+  },
+  "commandHint_leave": "Покинуть этот чат",
+  "@commandHint_leave": {
+    "type": "String",
+    "description": "Usage hint for the command /leave"
+  },
+  "commandHint_me": "Описать себя",
+  "@commandHint_me": {
+    "type": "String",
+    "description": "Usage hint for the command /me"
+  },
+  "commandHint_myroomavatar": "Установить свою фотографию для этого чата (автор: mxc-uri)",
+  "@commandHint_myroomavatar": {
+    "type": "String",
+    "description": "Usage hint for the command /myroomavatar"
+  },
+  "commandHint_myroomnick": "Задать отображаемое имя для этого чата",
+  "@commandHint_myroomnick": {
+    "type": "String",
+    "description": "Usage hint for the command /myroomnick"
+  },
+  "commandHint_op": "Установить уровень прав этого пользователя (по умолчанию: 50)",
+  "@commandHint_op": {
+    "type": "String",
+    "description": "Usage hint for the command /op"
+  },
+  "commandHint_plain": "Отправить неотформатированный текст",
+  "@commandHint_plain": {
+    "type": "String",
+    "description": "Usage hint for the command /plain"
+  },
+  "commandHint_react": "Отправить ответ как реакцию",
+  "@commandHint_react": {
+    "type": "String",
+    "description": "Usage hint for the command /react"
+  },
+  "commandHint_send": "Отправить текст",
+  "@commandHint_send": {
+    "type": "String",
+    "description": "Usage hint for the command /send"
+  },
+  "commandHint_unban": "Разблокировать пользователя в этом чате",
+  "@commandHint_unban": {
+    "type": "String",
+    "description": "Usage hint for the command /unban"
+  },
+  "commandInvalid": "Недопустимая команда",
+  "@commandInvalid": {
+    "type": "String"
+  },
+  "commandMissing": "{command} не является командой.",
+  "@commandMissing": {
+    "type": "String",
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    },
+    "description": "State that {command} is not a valid /command."
+  },
+  "compareEmojiMatch": "Сравните эмодзи",
+  "@compareEmojiMatch": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "compareNumbersMatch": "Сравните числа",
+  "@compareNumbersMatch": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "configureChat": "Настроить чат",
+  "@configureChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "confirm": "Подтвердить",
+  "@confirm": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "connect": "Подключиться",
+  "@connect": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "contactHasBeenInvitedToTheGroup": "Контакт был приглашен в группу",
+  "@contactHasBeenInvitedToTheGroup": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Содержит отображаемое имя",
+  "@containsDisplayName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "containsUserName": "Содержит имя пользователя",
+  "@containsUserName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "contentHasBeenReported": "О контенте было сообщено администраторам сервера",
+  "@contentHasBeenReported": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copiedToClipboard": "Скопировано в буфер обмена",
+  "@copiedToClipboard": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copyLink": "Копировать ссылку",
+  "linkCopied": "Ссылка скопирована",
+  "@copyLink": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "@linkCopied": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copy": "Копировать",
+  "@copy": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copyMessageLink": "Скопировать ссылку на сообщение",
+  "@copyMessageLink": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "messageLinkCopied": "Ссылка на сообщение скопирована",
+  "@messageLinkCopied": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copySelection": "Скопировать выделенное",
+  "@copySelection": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copyToClipboard": "Скопировать текст",
+  "@copyToClipboard": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "copyImage": "Скопировать изображение",
+  "@copyImage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "imageCopiedToClipboard": "Изображение скопировано в буфер обмена",
+  "@imageCopiedToClipboard": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "couldNotDecryptMessage": "Не удалось расшифровать сообщение: {error}",
+  "@couldNotDecryptMessage": {
+    "type": "String",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "countParticipants": "{count} участника(ов)",
+  "@countParticipants": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "loadCountMoreParticipants": "{count, plural, one{Загрузить ещё {count} участника} few{Загрузить ещё {count} участника} many{Загрузить ещё {count} участников} other{Загрузить ещё {count} участников}}",
+  "@loadCountMoreParticipants": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "create": "Создать",
+  "@create": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "createdTheChat": "{username} создал чат",
+  "@createdTheChat": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "createNewSpace": "Новое пространство",
+  "@createNewSpace": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "createCompany": "Создать компанию",
+  "@createCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "createCompanyViaSupport": "Создать компанию",
+  "@createCompanyViaSupport": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "createCompanyRailHint": "Узнать подробности и оставить заявку",
+  "@createCompanyRailHint": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "createCompanyListHint": "Узнать подробности и оставить заявку",
+  "@createCompanyListHint": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "companyName": "Название компании",
+  "@companyName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "companies": "Компании",
+  "@companies": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "channels": "Каналы",
+  "@channels": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "publicCompany": "Публичная компания",
+  "@publicCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "companyPublicHint": "Компанию можно будет найти в поиске, каждый сможет подписаться и видеть публичные чаты.",
+  "@companyPublicHint": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "companyPrivateHint": "Компанию нельзя будет найти в поиске. Подписаться можно только по приглашению.",
+  "@companyPrivateHint": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "subscribeToCompany": "Подписаться",
+  "@subscribeToCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "company": "Компания",
+  "@company": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chatBelongsToCompanySubscribe": "Этот чат в компании {name}. Подписаться",
+  "@chatBelongsToCompanySubscribe": {
+    "type": "String",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unsubscribeFromCompany": "Отписаться",
+  "@unsubscribeFromCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "deleteCompanyViaSupport": "Удалить компанию через поддержку",
+  "@deleteCompanyViaSupport": {},
+  "deleteCompanyViaSupportDescription": "Компанию «{name}» удаляет поддержка: вместе с ней безвозвратно удаляются все её чаты и участники. Мы переведём вас в чат поддержки — в поле ввода будет готовый текст заявки, проверьте его и отправьте.",
+  "@deleteCompanyViaSupportDescription": {
+    "type": "text",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "deleteCompanyViaSupportConfirm": "Перейти в поддержку",
+  "@deleteCompanyViaSupportConfirm": {},
+  "deleteCompanyRequestDraft": "Прошу удалить компанию «{name}» ({roomId})",
+  "@deleteCompanyRequestDraft": {
+    "type": "text",
+    "placeholders": {
+      "name": {},
+      "roomId": {}
+    }
+  },
+  "currentlyActive": "Сейчас активен",
+  "@currentlyActive": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "darkTheme": "Тёмная",
+  "@darkTheme": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "dateAndTimeOfDay": "{timeOfDay}, {date}",
+  "@dateAndTimeOfDay": {
+    "type": "String",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "timeOfDay": {
+        "type": "String"
+      }
+    }
+  },
+  "dateWithoutYear": "{day}-{month}",
+  "@dateWithoutYear": {
+    "type": "String",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "dateWithYear": "{day}-{month}-{year}",
+  "@dateWithYear": {
+    "type": "String",
+    "placeholders": {
+      "year": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "deactivateAccountWarning": "Это деактивирует вашу учётную запись пользователя. Данное действие не может быть отменено! Вы уверены?",
+  "@deactivateAccountWarning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Уровень разрешений по умолчанию для новых пользователей",
+  "@defaultPermissionLevel": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "delete": "Удалить",
+  "@delete": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "deleteAccount": "Удалить аккаунт",
+  "@deleteAccount": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "deleteAccountConfirmTitle": "Удалить этот аккаунт?",
+  "@deleteAccountConfirmTitle": {},
+  "deleteAccountConsequences": "Вы выйдете из аккаунта на всех устройствах, уведомления перестанут приходить, и вы покинете все свои чаты. Вас не будет в поиске людей, и войти под этим аккаунтом снова не получится. Отправленные вами сообщения останутся видны собеседникам.",
+  "@deleteAccountConsequences": {},
+  "deleteAccountConfirmAction": "Удалить аккаунт",
+  "@deleteAccountConfirmAction": {},
+  "deleteMessage": "Удалить сообщение",
+  "@deleteMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "device": "Сеанс",
+  "@device": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "deviceId": "ID сеанса",
+  "@deviceId": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "devices": "Сеансы",
+  "@devices": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "directChats": "Личные чаты",
+  "@directChats": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "displaynameHasBeenChanged": "Отображаемое имя было изменено",
+  "@displaynameHasBeenChanged": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "couldNotLoadMedia": "Не удалось загрузить медиа. Попробуйте позже.",
+  "@couldNotLoadMedia": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "couldNotReadFileTooLargeForBrowser": "Не удалось прочитать файл — возможно, он слишком велик для браузера. Откройте приложение на компьютере или телефоне.",
+  "@couldNotReadFileTooLargeForBrowser": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "downloadFile": "Скачать файл",
+  "@downloadFile": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "edit": "Редактировать",
+  "@edit": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "editBlockedServers": "Редактировать заблокированные серверы",
+  "@editBlockedServers": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "editDisplayname": "Отображаемое имя",
+  "@editDisplayname": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "editRoomAliases": "Псевдонимы чата",
+  "@editRoomAliases": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Изменить аватар чата",
+  "@editRoomAvatar": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emoteExists": "Эмодзи уже существует!",
+  "@emoteExists": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emoteInvalid": "Недопустимый код эмодзи!",
+  "@emoteInvalid": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emotePacks": "Наборы эмодзи чата",
+  "@emotePacks": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emoteSettings": "Настройки эмодзи",
+  "@emoteSettings": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emoteShortcode": "Код эмодзи",
+  "@emoteShortcode": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emoteWarnNeedToPick": "Вам нужно задать код эмодзи и изображение!",
+  "@emoteWarnNeedToPick": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "emptyChat": "Пустой чат",
+  "@emptyChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "enableEmotesGlobally": "Включить набор эмодзи глобально",
+  "@enableEmotesGlobally": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "enableEncryption": "Включить шифрование",
+  "@enableEncryption": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "enableEncryptionWarning": "Вы больше не сможете отключить шифрование. Вы уверены?",
+  "@enableEncryptionWarning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "encrypted": "Зашифровано",
+  "@encrypted": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "encryption": "Шифрование",
+  "@encryption": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "encryptionNotEnabled": "Шифрование не включено",
+  "@encryptionNotEnabled": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "endedTheCall": "{senderName} завершил звонок",
+  "@endedTheCall": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "enterAnEmailAddress": "Введите адрес электронной почты",
+  "@enterAnEmailAddress": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "enterYourHomeserver": "Введите адрес вашего домашнего сервера",
+  "@enterYourHomeserver": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "errorObtainingLocation": "Ошибка получения местоположения: {error}",
+  "@errorObtainingLocation": {
+    "type": "String",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "everythingReady": "Всё готово!",
+  "@everythingReady": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "extremeOffensive": "Крайне оскорбительный",
+  "@extremeOffensive": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "fileName": "Имя файла",
+  "@fileName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "liza": "Liza",
+  "@liza": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "fontSize": "Размер шрифта",
+  "@fontSize": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "forwarded": "Переслано",
+  "@forwarded": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "forwardedFrom": "Переслано от {name}",
+  "@forwardedFrom": {
+    "type": "String",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "forward": "Переслать",
+  "@forward": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "fromJoining": "С момента присоединения",
+  "@fromJoining": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "fromTheInvitation": "С момента приглашения",
+  "@fromTheInvitation": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "goToTheNewRoom": "В новую комнату",
+  "@goToTheNewRoom": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "group": "Группа",
+  "@group": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "groupIsPublic": "Публичная группа",
+  "@groupIsPublic": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "groups": "Группы",
+  "@groups": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "groupWith": "Группа с {displayname}",
+  "@groupWith": {
+    "type": "String",
+    "placeholders": {
+      "displayname": {
+        "type": "String"
+      }
+    }
+  },
+  "guestsAreForbidden": "Гости не могут присоединиться",
+  "@guestsAreForbidden": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "guestsCanJoin": "Гости могут присоединиться",
+  "@guestsCanJoin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "hasWithdrawnTheInvitationFor": "{username} отозвал приглашение для {targetName}",
+  "@hasWithdrawnTheInvitationFor": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "help": "Помощь",
+  "@help": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "hideRedactedEvents": "Скрыть отредактированные события",
+  "@hideRedactedEvents": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "hideUnknownEvents": "Скрыть неизвестные события",
+  "@hideUnknownEvents": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "howOffensiveIsThisContent": "Насколько оскорбительным является этот контент?",
+  "@howOffensiveIsThisContent": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "id": "ID",
+  "@id": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "identity": "Идентификация",
+  "@identity": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "ignore": "Игнорировать",
+  "@ignore": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "ignoredUsers": "Игнорируемые пользователи",
+  "@ignoredUsers": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Я перешёл по ссылке",
+  "@iHaveClickedOnLink": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "incorrectPassphraseOrKey": "Неверный пароль или ключ восстановления",
+  "@incorrectPassphraseOrKey": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "inoffensive": "Безобидный",
+  "@inoffensive": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "inviteContact": "Пригласить контакт",
+  "@inviteContact": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "inviteContactToGroup": "Пригласить контакт в {groupName}",
+  "@inviteContactToGroup": {
+    "type": "String",
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  },
+  "invited": "Приглашён",
+  "@invited": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "invitedUser": "{username} пригласил {targetName}",
+  "@invitedUser": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "invitedUsersOnly": "Только приглашённым пользователям",
+  "@invitedUsersOnly": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "inviteForMe": "Приглашение для меня",
+  "@inviteForMe": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "inviteText": "{username} приглашает вас в Liza. \n1. Посетите https://web.liza.ru и установите приложение \n2. Зарегистрируйтесь или войдите \n3. Откройте ссылку приглашения: \n {link}",
+  "@inviteText": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "isTyping": "печатает…",
+  "@isTyping": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "joinedTheChat": "{username} присоединился к чату",
+  "@joinedTheChat": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "joinRoom": "Войти в чат",
+  "@joinRoom": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "kicked": "{username} исключил {targetName}",
+  "@kicked": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "kickedAndBanned": "{username} исключил и заблокировал {targetName}",
+  "@kickedAndBanned": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "kickFromChat": "Исключить из чата",
+  "@kickFromChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "kickFromCompany": "Исключить из компании",
+  "@kickFromCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "kickFromSpace": "Исключить из пространства",
+  "@kickFromSpace": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "lastActiveAgo": "Посещение: {localizedTimeShort}",
+  "@lastActiveAgo": {
+    "type": "String",
+    "placeholders": {
+      "localizedTimeShort": {
+        "type": "String"
+      }
+    }
+  },
+  "leave": "Покинуть",
+  "deleteChat": "Удалить чат",
+  "@deleteChat": {},
+  "forgetArchivedChatDescription": "Чат исчезнет из архива, история станет вам недоступна. У собеседника чат сохранится.",
+  "@forgetArchivedChatDescription": {},
+  "@leave": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "leftTheChat": "Покинуть чат",
+  "@leftTheChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "license": "Лицензия",
+  "@license": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "lightTheme": "Светлая",
+  "@lightTheme": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "loadingPleaseWait": "Загрузка... Пожалуйста, подождите.",
+  "@loadingPleaseWait": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "loadMore": "Загрузить больше…",
+  "@loadMore": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "locationDisabledNotice": "Службы определения местоположения отключены. Включите их, чтобы иметь возможность обмениваться информацией о своем местоположении.",
+  "@locationDisabledNotice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "locationPermissionDeniedNotice": "Разрешение на определение местоположения отклонено. Пожалуйста, предоставьте это разрешение, чтобы иметь возможность делиться своим местоположением.",
+  "@locationPermissionDeniedNotice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "login": "Войти",
+  "@login": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "logInTo": "Войти в {homeserver}",
+  "@logInTo": {
+    "type": "String",
+    "placeholders": {
+      "homeserver": {
+        "type": "String"
+      }
+    }
+  },
+  "logout": "Выйти",
+  "@logout": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "memberChanges": "Изменения участников",
+  "@memberChanges": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "mention": "Упомянуть",
+  "@mention": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "messages": "Личные",
+  "@messages": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "moderator": "Модератор",
+  "@moderator": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "muteChat": "Отключить уведомления",
+  "@muteChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "needPantalaimonWarning": "Помните, что вам нужен Pantalaimon для использования сквозного шифрования.",
+  "@needPantalaimonWarning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "newChat": "Новый чат",
+  "@newChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "newMessageInLiza": "💬 Новое сообщение в Liza",
+  "@newMessageInLiza": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "newVerificationRequest": "Новый запрос на подтверждение!",
+  "@newVerificationRequest": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "next": "Далее",
+  "@next": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "no": "Нет",
+  "@no": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "discardRecordingTitle": "Лиза",
+  "@discardRecordingTitle": {},
+  "discardRecordingQuestion": "Вы точно хотите прекратить запись и сбросить записанное сообщение?",
+  "@discardRecordingQuestion": {},
+  "discardRecordingConfirm": "Сброс",
+  "@discardRecordingConfirm": {},
+  "notEnoughStorageSpace": "Недостаточно места в хранилище устройства",
+  "@notEnoughStorageSpace": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noConnectionToTheServer": "Нет соединения с сервером",
+  "@noConnectionToTheServer": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "connectionFailedToHost": "Не удалось подключиться к {host}: {details}",
+  "@connectionFailedToHost": {
+    "type": "String",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "tlsConnectionFailed": "Ошибка защищённого соединения (сертификат). Попробуйте обновить устройство.",
+  "@tlsConnectionFailed": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "connectionTimedOut": "Время подключения истекло. Проверьте интернет и попробуйте снова.",
+  "@connectionTimedOut": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "dnsResolutionFailed": "Ошибка DNS — попробуйте другую сеть.",
+  "@dnsResolutionFailed": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "connectivityCheckFailed": "Не удаётся достучаться до {host}. {reason}",
+  "@connectivityCheckFailed": {
+    "type": "String",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "noEmotesFound": "Эмодзи не найдены 😕",
+  "@noEmotesFound": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noEncryptionForPublicRooms": "Вы можете активировать шифрование только тогда, когда чат перестаёт быть общедоступным.",
+  "@noEncryptionForPublicRooms": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noGoogleServicesWarning": "Похоже, у вас нет служб Google на вашем телефоне. Это хорошее решение для вашей конфиденциальности! Для получения push-уведомлений в Liza мы рекомендуем использовать ntfy. С ntfy или другим провайдером единых уведомлений вы можете получать push-уведомления безопасным способом передачи данных. Скачать ntfy можно из F-Droid или из Play Маркета.",
+  "@noGoogleServicesWarning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noMatrixServer": "{server1} не является matrix-сервером, использовать {server2} вместо него?",
+  "@noMatrixServer": {
+    "type": "String",
+    "placeholders": {
+      "server1": {
+        "type": "String"
+      },
+      "server2": {
+        "type": "String"
+      }
+    }
+  },
+  "none": "Ничего",
+  "@none": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Вы ещё не добавили способ восстановления пароля.",
+  "@noPasswordRecoveryDescription": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noPermission": "Нет прав доступа",
+  "@noPermission": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "noRoomsFound": "Чаты не найдены…",
+  "@noRoomsFound": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "notifications": "Уведомления",
+  "pushRulesNotDefaultTitle": "Уведомления настроены не по умолчанию",
+  "pushRulesNotDefaultBody": "Обычные сообщения в некоторых чатах могут не приходить, а правки сообщений — приходить повторным уведомлением.",
+  "pushRulesResetToDefault": "Сбросить к стандартным",
+  "@notifications": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Уведомления включены для этой учётной записи",
+  "@notificationsEnabledForThisAccount": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "numUsersTyping": "{count, plural, one{{count} пользователь печатает…} few{{count} пользователя печатают…} many{{count} пользователей печатают…} other{{count} пользователя печатают…}}",
+  "@numUsersTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "obtainingLocation": "Получение местоположения…",
+  "@obtainingLocation": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "offensive": "Оскорбительный",
+  "@offensive": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "offline": "Не в сети",
+  "@offline": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "ok": "Ок",
+  "@ok": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "online": "В сети",
+  "@online": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "onlineKeyBackupEnabled": "Резервное копирование ключей на сервере включено",
+  "@onlineKeyBackupEnabled": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "oopsPushError": "Ой! К сожалению, при настройке push-уведомлений произошла ошибка.",
+  "@oopsPushError": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "oopsSomethingWentWrong": "Ой, что-то пошло не так…",
+  "@oopsSomethingWentWrong": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "authServerError": "На сервере произошла внутренняя ошибка. Попробуйте позже или обратитесь в поддержку.",
+  "@authServerError": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "openAppToReadMessages": "Откройте приложение для чтения сообщений",
+  "@openAppToReadMessages": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "openCamera": "Открыть камеру",
+  "@openCamera": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "openInMaps": "Открыть на картах",
+  "@openInMaps": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "or": "Или",
+  "@or": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "participant": "Участник",
+  "@participant": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "passphraseOrKey": "пароль или ключ восстановления",
+  "@passphraseOrKey": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "password": "Пароль",
+  "@password": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Забыли пароль",
+  "@passwordForgotten": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "passwordHasBeenChanged": "Пароль был изменён",
+  "@passwordHasBeenChanged": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Восстановление пароля",
+  "@passwordRecovery": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "people": "Люди",
+  "@people": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pickImage": "Выбрать изображение",
+  "@pickImage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pin": "Закрепить",
+  "@pin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "play": "Проиграть {fileName}",
+  "@play": {
+    "type": "String",
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseChoose": "Пожалуйста, выберите",
+  "@pleaseChoose": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseEnterAName": "Введите название",
+  "@pleaseEnterAName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Пожалуйста, выберите код доступа",
+  "@pleaseChooseAPasscode": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Пожалуйста, нажмите на ссылку в электронной почте, для того чтобы продолжить.",
+  "@pleaseClickOnLink": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Введите 4 цифры или оставьте поле пустым, чтобы отключить блокировку приложения.",
+  "@pleaseEnter4Digits": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseEnterYourPassword": "Пожалуйста, введите ваш пароль",
+  "@pleaseEnterYourPassword": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseEnterYourPin": "Пожалуйста, введите свой пин-код",
+  "@pleaseEnterYourPin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseEnterYourUsername": "Пожалуйста, введите имя пользователя",
+  "@pleaseEnterYourUsername": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pleaseFollowInstructionsOnWeb": "Следуйте инструкциям на веб-сайте и нажмите «Далее».",
+  "@pleaseFollowInstructionsOnWeb": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "privacy": "Приватность",
+  "@privacy": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "privacyPolicy": "Политика конфиденциальности",
+  "@privacyPolicy": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "privacyAndSecurity": "Приватность и безопасность",
+  "@privacyAndSecurity": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "publicRooms": "Публичные чаты",
+  "@publicRooms": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "publicChannels": "Публичные каналы",
+  "@publicChannels": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pushRules": "Правила push",
+  "@pushRules": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "reason": "Причина",
+  "@reason": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "recording": "Запись",
+  "@recording": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "redactedAnEvent": "{username} удалил событие",
+  "@redactedAnEvent": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "redactMessage": "Удалить сообщение",
+  "@redactMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "redactContent": "Удалить контент",
+  "@redactContent": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "redactContentDescription": "Контент будет удалён для всех участников. Это необратимо.",
+  "@redactContentDescription": {},
+  "register": "Зарегистрироваться",
+  "signInExistingAccount": "Войти в существующий аккаунт",
+  "requestAccess": "Оставить заявку",
+  "noAccessTitle": "Упс, у вас нет доступа! Попросите ссылку на чат или канал в Liza у существующего пользователя.",
+  "noAccessSellerQuestion": "Хотите создавать сообщества, предлагать товары и услуги?",
+  "noAccessSellerHint": "Оставьте заявку на создание аккаунта продавца!",
+  "inviteLinkInvalid": "Эта ссылка-приглашение больше не действует. Попросите новую у того, кто её прислал.",
+  "@register": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "reject": "Отказать",
+  "@reject": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "rejectedTheInvitation": "{username} отклонил приглашение",
+  "@rejectedTheInvitation": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "rejoin": "Зайти повторно",
+  "@rejoin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "remove": "Удалить",
+  "@remove": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "removeAllOtherDevices": "Завершить все другие сеансы",
+  "@removeAllOtherDevices": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "removedBy": "Удалено пользователем {username}",
+  "@removedBy": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "removeDevice": "Завершить сеанс",
+  "@removeDevice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unbanFromChat": "Разблокировать в чате",
+  "@unbanFromChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unbanFromCompany": "Разблокировать в компании",
+  "@unbanFromCompany": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unbanFromSpace": "Разблокировать в пространстве",
+  "@unbanFromSpace": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "removeYourAvatar": "Удалить свой аватар",
+  "@removeYourAvatar": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Заменить комнату более новой версией",
+  "@replaceRoomWithNewerVersion": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "reply": "Ответить",
+  "@reply": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "reportMessage": "Сообщить о сообщении",
+  "@reportMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "requestPermission": "Запросить разрешение",
+  "@requestPermission": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "roomHasBeenUpgraded": "Комната обновлена",
+  "@roomHasBeenUpgraded": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "roomVersion": "Версия комнаты",
+  "@roomVersion": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "saveFile": "Сохранить файл",
+  "@saveFile": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "search": "Поиск",
+  "@search": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "security": "Безопасность",
+  "@security": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "readBy": "Прочитано",
+  "@readBy": {},
+  "seenByUser": "Просмотрено пользователем {username}",
+  "@seenByUser": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "send": "Прислать",
+  "@send": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendAMessage": "Отправить сообщение",
+  "@sendAMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendAsText": "Отправить как текст",
+  "@sendAsText": {
+    "type": "String"
+  },
+  "sendAudio": "Отправить аудио",
+  "@sendAudio": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendFile": "Отправить файл",
+  "@sendFile": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chooseFromFiles": "Выбрать из файлов",
+  "@chooseFromFiles": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "choosePhotoOrVideo": "Выбрать фото или видео",
+  "@choosePhotoOrVideo": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "pasteMore": "Вставить ещё",
+  "clipboardHasNoImage": "В буфере нет изображения",
+  "sendImage": "Отправить изображение",
+  "@sendImage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendMessages": "Отправить сообщения",
+  "@sendMessages": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendOriginal": "Отправить оригинал",
+  "@sendOriginal": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendSticker": "Отправить стикер",
+  "@sendSticker": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sendVideo": "Отправить видео",
+  "@sendVideo": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sentAFile": "📁 Файл от {username}",
+  "@sentAFile": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "sentAnAudio": "🎤 Аудио от {username}",
+  "@sentAnAudio": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "sentAPicture": "🖼️ Изображение от {username}",
+  "@sentAPicture": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "sentASticker": "😊 Стикер от {username}",
+  "@sentASticker": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "sentAVideo": "🎥 Видео от {username}",
+  "@sentAVideo": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "sentCallInformations": "Информация о звонке от {senderName}",
+  "@sentCallInformations": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "setAsCanonicalAlias": "Установить как основной псевдоним",
+  "@setAsCanonicalAlias": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Свои эмодзи",
+  "@setCustomEmotes": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "setInvitationLink": "Установить ссылку для приглашения",
+  "@setInvitationLink": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Установить уровень разрешений",
+  "@setPermissionsLevel": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "setStatus": "Задать статус",
+  "@setStatus": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "settings": "Настройки",
+  "@settings": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "share": "Поделиться",
+  "@share": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sharedTheLocation": "{username} поделился местоположением",
+  "@sharedTheLocation": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "shareLocation": "Поделиться местоположением",
+  "@shareLocation": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "showPassword": "Показать пароль",
+  "@showPassword": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "singlesignon": "Единая точка входа",
+  "@singlesignon": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "skip": "Пропустить",
+  "@skip": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "sourceCode": "Исходный код",
+  "@sourceCode": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "spaceIsPublic": "Публичное пространство",
+  "@spaceIsPublic": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "spaceName": "Название пространства",
+  "@spaceName": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "startedACall": "{senderName} начал звонок",
+  "@startedACall": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "status": "Статус",
+  "@status": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "statusExampleMessage": "Как у вас сегодня дела?",
+  "@statusExampleMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "submit": "Отправить",
+  "@submit": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "synchronizingPleaseWait": "Синхронизация… Пожалуйста, подождите.",
+  "@synchronizingPleaseWait": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "systemTheme": "Системная",
+  "@systemTheme": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "theyDontMatch": "Они не совпадают",
+  "@theyDontMatch": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "theyMatch": "Они совпадают",
+  "@theyMatch": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "title": "Liza",
+  "@title": {
+    "description": "Title for the application",
+    "type": "String",
+    "placeholders": {}
+  },
+  "toggleFavorite": "Переключить избранное",
+  "@toggleFavorite": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "toggleMuted": "Переключить без звука",
+  "@toggleMuted": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "toggleUnread": "Прочитано / Не прочитано",
+  "@toggleUnread": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Слишком много запросов. Пожалуйста, повторите попытку позже!",
+  "@tooManyRequestsWarning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "transferFromAnotherDevice": "Перенос с другого устройства",
+  "@transferFromAnotherDevice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "tryToSendAgain": "Попробуйте отправить ещё раз",
+  "@tryToSendAgain": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "fileNoLongerAvailableToResend": "Файл больше недоступен — отправить повторно нельзя",
+  "@fileNoLongerAvailableToResend": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "uploadFailedTryFromMessage": "Не удалось загрузить файл. Нажмите значок повтора на сообщении.",
+  "@uploadFailedTryFromMessage": {},
+  "couldNotSendMessage": "Не удалось отправить",
+  "@couldNotSendMessage": {},
+  "uploadFileTooLargeForServer": "Файл слишком большой для сервера",
+  "@uploadFileTooLargeForServer": {},
+  "unavailable": "Недоступен",
+  "@unavailable": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unbannedUser": "{username} разблокировал {targetName}",
+  "@unbannedUser": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "unblockDevice": "Разблокировать сеанс",
+  "@unblockDevice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unknownDevice": "Неизвестный сеанс",
+  "@unknownDevice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unknownEncryptionAlgorithm": "Неизвестный алгоритм шифрования",
+  "@unknownEncryptionAlgorithm": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unknownEvent": "Неизвестное событие '{type}'",
+  "@unknownEvent": {
+    "type": "String",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "unmuteChat": "Включить уведомления",
+  "@unmuteChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "unpin": "Открепить",
+  "@unpin": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "userAndOthersAreTyping": "{username} и ещё {count, plural, one{{count} печатает…} few{{count} печатают…} many{{count} печатают…} other{{count} печатают…}}",
+  "@userAndOthersAreTyping": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "userAndUserAreTyping": "{username} и {username2} печатают…",
+  "@userAndUserAreTyping": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "username2": {
+        "type": "String"
+      }
+    }
+  },
+  "userIsTyping": "{username} печатает…",
+  "@userIsTyping": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeftTheChat": "{username} покинул чат",
+  "@userLeftTheChat": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "username": "Имя пользователя",
+  "@username": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "userSentUnknownEvent": "{username} отправил событие типа «{type}»",
+  "@userSentUnknownEvent": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "verified": "Проверено",
+  "@verified": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "verify": "Проверить",
+  "@verify": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "verifyStart": "Начать проверку",
+  "@verifyStart": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "verifySuccess": "Вы успешно проверены!",
+  "@verifySuccess": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "verifyTitle": "Проверка другой учётной записи",
+  "@verifyTitle": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "videoCall": "Видеозвонок",
+  "@videoCall": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "visibilityOfTheChatHistory": "Видимость истории чата",
+  "@visibilityOfTheChatHistory": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "visibleForAllParticipants": "Видима для всех участников",
+  "@visibleForAllParticipants": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "visibleForEveryone": "Видна всем",
+  "@visibleForEveryone": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "voiceMessage": "Голосовое сообщение",
+  "@voiceMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "waitingPartnerAcceptRequest": "Жду, когда партнер примет запроc…",
+  "@waitingPartnerAcceptRequest": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "waitingPartnerEmoji": "Жду, когда партнер примет эмодзи…",
+  "@waitingPartnerEmoji": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "waitingPartnerNumbers": "В ожидании партнёра, чтобы принять числа…",
+  "@waitingPartnerNumbers": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "wallpaper": "Обои:",
+  "@wallpaper": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "warning": "Предупреждение!",
+  "@warning": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Мы отправили вам электронное письмо",
+  "@weSentYouAnEmail": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "whoCanPerformWhichAction": "Кто и какое действие может выполнять",
+  "@whoCanPerformWhichAction": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "whoIsAllowedToJoinThisGroup": "Кому разрешено вступать в эту группу",
+  "@whoIsAllowedToJoinThisGroup": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "whyDoYouWantToReportThis": "Почему вы хотите сообщить об этом?",
+  "@whyDoYouWantToReportThis": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "wipeChatBackup": "Удалить резервную копию чата, чтобы создать новый ключ восстановления?",
+  "@wipeChatBackup": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "По этим адресам вы можете восстановить свой пароль.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "writeAMessage": "Напишите сообщение…",
+  "@writeAMessage": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "yes": "Да",
+  "@yes": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "you": "Вы",
+  "@you": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "youAreNoLongerParticipatingInThisChat": "Вы больше не участвуете в этом чате",
+  "@youAreNoLongerParticipatingInThisChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "youHaveBeenBannedFromThisChat": "Вы были заблокированы в этом чате",
+  "@youHaveBeenBannedFromThisChat": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "yourPublicKey": "Ваш открытый ключ",
+  "@yourPublicKey": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "chatHasBeenAddedToThisSpace": "Чат был добавлен в это пространство",
+  "@chatHasBeenAddedToThisSpace": {},
+  "addToSpace": "Добавить в пространство",
+  "@addToSpace": {},
+  "scanQrCode": "Сканировать QR-код",
+  "@scanQrCode": {},
+  "sendOnEnter": "Отправлять по Enter",
+  "@sendOnEnter": {},
+  "homeserver": "Домашний сервер",
+  "@homeserver": {},
+  "serverRequiresEmail": "Этот сервер должен подтвердить ваш адрес электронной почты для регистрации.",
+  "@serverRequiresEmail": {},
+  "enableMultiAccounts": "(БЕТА) Включить несколько учетных записей на этом устройстве",
+  "@enableMultiAccounts": {},
+  "bundleName": "Название пакета",
+  "@bundleName": {},
+  "removeFromBundle": "Удалить из этого пакета",
+  "@removeFromBundle": {},
+  "addToBundle": "Добавить в пакет",
+  "@addToBundle": {},
+  "editBundlesForAccount": "Изменить наборы для этого аккаунта",
+  "@editBundlesForAccount": {},
+  "addAccount": "Добавить аккаунт",
+  "@addAccount": {},
+  "link": "Ссылка",
+  "@link": {},
+  "oneClientLoggedOut": "Один из ваших клиентов вышел",
+  "@oneClientLoggedOut": {},
+  "yourChatBackupHasBeenSetUp": "Резервное копирование чата настроено.",
+  "@yourChatBackupHasBeenSetUp": {},
+  "unverified": "Не проверено",
+  "@unverified": {},
+  "commandHint_clearcache": "Очистить кэш",
+  "@commandHint_clearcache": {
+    "type": "String",
+    "description": "Usage hint for the command /clearcache"
+  },
+  "commandHint_discardsession": "Удалить сеанс",
+  "@commandHint_discardsession": {
+    "type": "String",
+    "description": "Usage hint for the command /discardsession"
+  },
+  "commandHint_dm": "Начните личный чат\nИспользуйте --no-encryption, чтобы отключить шифрование",
+  "@commandHint_dm": {
+    "type": "String",
+    "description": "Usage hint for the command /dm"
+  },
+  "messageInfo": "Информация о сообщении",
+  "@messageInfo": {},
+  "openGallery": "Открыть галерею",
+  "@openGallery": {},
+  "removeFromSpace": "Удалить из пространства",
+  "@removeFromSpace": {},
+  "commandHint_create": "Создайте пустой групповой чат\nИспользуйте --no-encryption, чтобы отключить шифрование",
+  "@commandHint_create": {
+    "type": "String",
+    "description": "Usage hint for the command /create"
+  },
+  "commandHint_menu": "Создавайте ботов и мини-приложения и управляйте ими",
+  "@commandHint_menu": {
+    "type": "String",
+    "description": "Usage hint for the command /menu"
+  },
+  "commandHint_myapps": "Ваши мини-приложения",
+  "@commandHint_myapps": {
+    "type": "String",
+    "description": "Usage hint for the command /myapps"
+  },
+  "commandHint_newapp": "Создать mini App",
+  "@commandHint_newapp": {
+    "type": "String",
+    "description": "Usage hint for the command /newapp"
+  },
+  "sender": "Отправитель",
+  "@sender": {},
+  "addToSpaceDescription": "Выберите пространство, чтобы добавить к нему этот чат.",
+  "@addToSpaceDescription": {},
+  "start": "Начать",
+  "@start": {},
+  "time": "Время",
+  "@time": {},
+  "messageType": "Тип сообщения",
+  "@messageType": {},
+  "repeatPassword": "Повторите пароль",
+  "@repeatPassword": {},
+  "openVideoCamera": "Открыть камеру для видео",
+  "@openVideoCamera": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "videoWithSize": "Видео ({size})",
+  "@videoWithSize": {
+    "type": "String",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "publish": "Опубликовать",
+  "@publish": {},
+  "dismiss": "Отклонить",
+  "@dismiss": {},
+  "markAsRead": "Отметить как прочитанное",
+  "@markAsRead": {},
+  "reportUser": "Сообщить о пользователе",
+  "@reportUser": {},
+  "hideFromMemberList": "Скрыть из списка",
+  "@hideFromMemberList": {},
+  "returnToMemberList": "Вернуть в список",
+  "@returnToMemberList": {},
+  "memberHiddenBadge": "скрыт",
+  "@memberHiddenBadge": {},
+  "showHiddenMembers": "Показать скрытых",
+  "@showHiddenMembers": {},
+  "openChat": "Открыть чат",
+  "@openChat": {},
+  "reactedWith": "{sender} реагирует с {reaction}",
+  "@reactedWith": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "reaction": {
+        "type": "String"
+      }
+    }
+  },
+  "emojis": "Эмодзи",
+  "@emojis": {},
+  "voiceCall": "Голосовой звонок",
+  "@voiceCall": {},
+  "unsupportedAndroidVersion": "Неподдерживаемая версия Android",
+  "@unsupportedAndroidVersion": {},
+  "unsupportedAndroidVersionLong": "Для этой функции требуется более новая версия Android. Проверьте наличие обновлений или поддержку Lineage OS.",
+  "@unsupportedAndroidVersionLong": {},
+  "placeCall": "Совершить звонок",
+  "@placeCall": {},
+  "videoCallsBetaWarning": "Обратите внимание, что видеозвонки в настоящее время находятся в бета-версии. Они могут работать не так, как ожидалось, или вообще не работать на всех платформах.",
+  "@videoCallsBetaWarning": {},
+  "experimentalVideoCalls": "Экспериментальные видеозвонки",
+  "@experimentalVideoCalls": {},
+  "emailOrUsername": "Email или имя пользователя",
+  "@emailOrUsername": {},
+  "pinMessage": "Закрепить в чате",
+  "@pinMessage": {},
+  "confirmEventUnpin": "Вы уверены, что хотите навсегда открепить событие?",
+  "@confirmEventUnpin": {},
+  "switchToAccount": "Переключиться на учётную запись {number}",
+  "@switchToAccount": {
+    "type": "number",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "nextAccount": "Следующий аккаунт",
+  "@nextAccount": {},
+  "previousAccount": "Предыдущая учётная запись",
+  "@previousAccount": {},
+  "addWidget": "Добавить виджет",
+  "@addWidget": {},
+  "widgetVideo": "Видео",
+  "@widgetVideo": {},
+  "widgetEtherpad": "Текстовая записка",
+  "@widgetEtherpad": {},
+  "widgetCustom": "Пользовательский",
+  "@widgetCustom": {},
+  "widgetJitsi": "Совещание Jitsi",
+  "@widgetJitsi": {},
+  "widgetName": "Имя",
+  "@widgetName": {},
+  "widgetUrlError": "Этот URL не действителен.",
+  "@widgetUrlError": {},
+  "widgetNameError": "Пожалуйста, укажите отображаемое имя.",
+  "@widgetNameError": {},
+  "errorAddingWidget": "Ошибка при добавлении виджета.",
+  "@errorAddingWidget": {},
+  "separateChatTypes": "Разделять личные чаты и группы",
+  "@separateChatTypes": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "youRejectedTheInvitation": "Вы отклонили приглашение",
+  "@youRejectedTheInvitation": {},
+  "youAcceptedTheInvitation": "👍 Вы приняли приглашение",
+  "@youAcceptedTheInvitation": {},
+  "youUnbannedUser": "Вы разблокировали {user}",
+  "@youUnbannedUser": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youJoinedTheChat": "Вы присоединились к чату",
+  "@youJoinedTheChat": {},
+  "youKickedAndBanned": "🙅 Вы исключили и заблокировали {user}",
+  "@youKickedAndBanned": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youInvitedUser": "📩 Вы пригласили {user}",
+  "@youInvitedUser": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youKicked": "👞 Вы исключили {user}",
+  "@youKicked": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youHaveWithdrawnTheInvitationFor": "Вы отозвали приглашение для {user}",
+  "@youHaveWithdrawnTheInvitationFor": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youBannedUser": "Вы заблокировали {user}",
+  "@youBannedUser": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "youInvitedBy": "📩 Вы были приглашены {user}",
+  "@youInvitedBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "recoveryKeyLost": "Ключ восстановления утерян?",
+  "@recoveryKeyLost": {},
+  "users": "Пользователи",
+  "@users": {},
+  "unlockOldMessages": "Разблокировать старые сообщения",
+  "@unlockOldMessages": {},
+  "storeInSecureStorageDescription": "Сохраните ключ восстановления в безопасном хранилище этого устройства.",
+  "@storeInSecureStorageDescription": {},
+  "storeSecurlyOnThisDevice": "Сохранить на этом устройстве",
+  "@storeSecurlyOnThisDevice": {},
+  "saveKeyManuallyDescription": "Сохраните этот ключ вручную, вызвав диалог общего доступа системы или буфера обмена.",
+  "@saveKeyManuallyDescription": {},
+  "recoveryKey": "Ключ восстановления",
+  "@recoveryKey": {},
+  "pleaseEnterRecoveryKey": "Введите ключ восстановления:",
+  "@pleaseEnterRecoveryKey": {},
+  "pleaseEnterRecoveryKeyDescription": "Чтобы разблокировать старые сообщения, введите ключ восстановления, сгенерированный в предыдущем сеансе. Ваш ключ восстановления НЕ является вашим паролем.",
+  "@pleaseEnterRecoveryKeyDescription": {},
+  "storeInAndroidKeystore": "Сохранить в Android KeyStore",
+  "@storeInAndroidKeystore": {},
+  "storeInAppleKeyChain": "Сохранить в Apple KeyChain",
+  "@storeInAppleKeyChain": {},
+  "user": "Пользователь",
+  "@user": {},
+  "confirmMatrixId": "Пожалуйста, подтвердите Matrix ID, чтобы удалить свою учётную запись.",
+  "@confirmMatrixId": {},
+  "supposedMxid": "Это должно быть {mxid}",
+  "@supposedMxid": {
+    "type": "String",
+    "placeholders": {
+      "mxid": {
+        "type": "String"
+      }
+    }
+  },
+  "dehydrateTor": "Пользователи TOR: Экспорт сеанса",
+  "@dehydrateTor": {},
+  "indexedDbErrorLong": "К сожалению, по умолчанию хранилище сообщений не включено в приватном режиме.\nПожалуйста, посетите\n- about:config\n- установите для dom.indexedDB.privateBrowsing.enabled значение true\nВ противном случае запуск Liza будет невозможен.",
+  "@indexedDbErrorLong": {},
+  "custom": "Пользовательское",
+  "@custom": {},
+  "hydrate": "Восстановить из файла резервной копии",
+  "@hydrate": {},
+  "hydrateTor": "Пользователи TOR: Импорт экспорта сеанса",
+  "@hydrateTor": {},
+  "hydrateTorLong": "В прошлый раз вы экспортировали свой сеанс в TOR? Быстро импортируйте его и продолжайте общение.",
+  "@hydrateTorLong": {},
+  "dehydrateTorLong": "Для пользователей TOR рекомендуется экспортировать сеанс перед закрытием окна.",
+  "@dehydrateTorLong": {},
+  "dehydrate": "Экспорт сеанса и очистка данных",
+  "@dehydrate": {},
+  "dehydrateWarning": "Это действие не может быть отменено. Убедитесь, что вы безопасно сохранили файл резервной копии.",
+  "@dehydrateWarning": {},
+  "indexedDbErrorTitle": "Проблемы с приватным режимом",
+  "@indexedDbErrorTitle": {},
+  "otherCallingPermissions": "Микрофон, камера и другие разрешения Liza",
+  "@otherCallingPermissions": {},
+  "enterSpace": "Войти в пространство",
+  "@enterSpace": {},
+  "screenSharingDetail": "Вы делитесь своим экраном в Liza",
+  "@screenSharingDetail": {},
+  "callingAccountDetails": "Позволяет Liza использовать родное android приложение для звонков.",
+  "@callingAccountDetails": {},
+  "newSpace": "Новое пространство",
+  "@newSpace": {},
+  "appearOnTop": "Появляться сверху",
+  "@appearOnTop": {},
+  "commandHint_markasdm": "Пометить как личный чат",
+  "@commandHint_markasdm": {},
+  "appearOnTopDetails": "Позволяет приложению отображаться сверху (не требуется, если у вас уже настроен Liza как аккаунт для звонков)",
+  "@appearOnTopDetails": {},
+  "foregroundServiceRunning": "Это уведомление появляется, когда запущена основная служба.",
+  "@foregroundServiceRunning": {},
+  "newGroup": "Новая группа",
+  "@newGroup": {},
+  "enterRoom": "Войти в чат",
+  "@enterRoom": {},
+  "allSpaces": "Все пространства",
+  "@allSpaces": {},
+  "callingPermissions": "Разрешения на звонки",
+  "@callingPermissions": {},
+  "callingAccount": "Аккаунт для звонков",
+  "@callingAccount": {},
+  "commandHint_markasgroup": "Пометить как группу",
+  "@commandHint_markasgroup": {},
+  "whyIsThisMessageEncrypted": "Почему это сообщение нечитаемо?",
+  "@whyIsThisMessageEncrypted": {},
+  "noKeyForThisMessage": "Это может произойти, если сообщение было отправлено до того, как вы вошли в свою учётную запись на данном устройстве.\n\nТакже возможно, что отправитель заблокировал ваше устройство или что-то пошло не так с интернет-соединением.\n\nВы можете прочитать сообщение на другом сеансе? Тогда вы можете перенести сообщение с него! Перейдите в Настройки > Сеансы и убедитесь, что ваши сеансы проверили друг друга. Когда вы откроете комнату в следующий раз и оба сеанса будут открыты, ключи будут переданы автоматически.\n\nВы не хотите потерять ключи при выходе из системы или переключении сеансов? Убедитесь, что вы включили резервное копирование чата в настройках.",
+  "@noKeyForThisMessage": {},
+  "screenSharingTitle": "демонстрация экрана",
+  "@screenSharingTitle": {},
+  "numChats": "{number, plural, one{{number} чат} few{{number} чата} many{{number} чатов} other{{number} чата}}",
+  "@numChats": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "fileIsTooBigForServer": "Отправка не удалась! Сервер поддерживает только вложения размером до {max}.",
+  "@fileIsTooBigForServer": {},
+  "hideUnimportantStateEvents": "Скрыть необязательные события статуса",
+  "@hideUnimportantStateEvents": {},
+  "sorryThatsNotPossible": "Извините... это невозможно",
+  "@sorryThatsNotPossible": {},
+  "openLinkInBrowser": "Открыть ссылку в браузере",
+  "@openLinkInBrowser": {},
+  "fileHasBeenSavedAt": "Файл сохранён в {path}",
+  "@fileHasBeenSavedAt": {
+    "type": "String",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "filesHaveBeenSaved": "{count, plural, one{{count} файл сохранён} few{{count} файла сохранено} many{{count} файлов сохранено} other{{count} файла сохранено}}",
+  "@filesHaveBeenSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadFolder": "Папка для сохранения",
+  "@downloadFolder": {},
+  "downloadFolderDefault": "Папка «Загрузки» (по умолчанию)",
+  "@downloadFolderDefault": {},
+  "commandHint_cuddle": "Отправить улыбку",
+  "@commandHint_cuddle": {},
+  "readUpToHere": "Непрочитанное",
+  "@readUpToHere": {},
+  "commandHint_hug": "Отправить обнимашки",
+  "@commandHint_hug": {},
+  "cuddleContent": "{senderName} обнимает вас",
+  "@cuddleContent": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "hugContent": "{senderName} обнимает вас",
+  "@hugContent": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "jump": "Перейти",
+  "@jump": {},
+  "doNotShowAgain": "Не показывать снова",
+  "@doNotShowAgain": {},
+  "newSpaceDescription": "Пространства позволяют объединять ваши чаты и создавать частные или общедоступные сообщества.",
+  "@newSpaceDescription": {},
+  "disableEncryptionWarning": "В целях безопасности вы не можете отключить шифрование в чате, где оно было включено.",
+  "@disableEncryptionWarning": {},
+  "deviceKeys": "Ключи сеансов:",
+  "@deviceKeys": {},
+  "noBackupWarning": "Внимание! Без резервного копирования, вы потеряете доступ к своим зашифрованным сообщениям. Крайне рекомендуется включить резервное копирование перед выходом.",
+  "@noBackupWarning": {},
+  "noOtherDevicesFound": "Другие сеансы не найдены",
+  "@noOtherDevicesFound": {},
+  "reportErrorDescription": "😭 О, нет. Что-то пошло не так. При желании вы можете сообщить об этой ошибке разработчикам.",
+  "@reportErrorDescription": {},
+  "report": "пожаловаться",
+  "@report": {},
+  "allRooms": "Все групповые чаты",
+  "@allRooms": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "startFirstChat": "Начните первый чат",
+  "@startFirstChat": {},
+  "jumpToLastReadMessage": "Последнее прочитанное сообщение",
+  "@jumpToLastReadMessage": {},
+  "wasDirectChatDisplayName": "Пустой чат (был {oldDisplayName})",
+  "@wasDirectChatDisplayName": {
+    "type": "String",
+    "placeholders": {
+      "oldDisplayName": {
+        "type": "String"
+      }
+    }
+  },
+  "encryptThisChat": "Зашифровать этот чат",
+  "@encryptThisChat": {},
+  "reopenChat": "Открыть чат заново",
+  "@reopenChat": {},
+  "commandHint_googly": "Отправить выпученные глаза",
+  "@commandHint_googly": {},
+  "signInWith": "Войти с {provider}",
+  "@signInWith": {
+    "type": "String",
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "notAnImage": "Это не файл изображения.",
+  "@notAnImage": {},
+  "importNow": "Импортировать сейчас",
+  "@importNow": {},
+  "importEmojis": "Импортировать эмодзи",
+  "@importEmojis": {},
+  "importFromZipFile": "Импортировать из ZIP-файла",
+  "@importFromZipFile": {},
+  "exportEmotePack": "Экспортировать набор эмодзи как ZIP",
+  "@exportEmotePack": {},
+  "replace": "Заменить",
+  "@replace": {},
+  "googlyEyesContent": "{senderName} выпучил глаза",
+  "@googlyEyesContent": {
+    "type": "String",
+    "placeholders": {
+      "senderName": {
+        "type": "String"
+      }
+    }
+  },
+  "signInWithPassword": "Войти с помощью пароля",
+  "@signInWithPassword": {},
+  "pleaseTryAgainLaterOrChooseDifferentServer": "Повторите попытку позже или выберите другой сервер.",
+  "@pleaseTryAgainLaterOrChooseDifferentServer": {},
+  "sendTypingNotifications": "Отправлять уведомления о наборе текста",
+  "@sendTypingNotifications": {},
+  "createGroup": "Создать группу",
+  "@createGroup": {},
+  "createChannel": "Создать канал",
+  "@createChannel": {},
+  "channelName": "Название канала",
+  "@channelName": {},
+  "channelIsPublic": "Публичный канал",
+  "@channelIsPublic": {},
+  "channelCanBeFoundViaSearch": "Канал можно найти через поиск",
+  "@channelCanBeFoundViaSearch": {},
+  "inviteContactToGroupQuestion": "Вы хотите пригласить {contact} в чат \"{groupName}\"?",
+  "@inviteContactToGroupQuestion": {},
+  "tryAgain": "Повторите попытку",
+  "@tryAgain": {},
+  "addChatDescription": "Добавить описание чата...",
+  "@addChatDescription": {},
+  "chatPermissions": "Права в чате",
+  "@chatPermissions": {},
+  "companyPermissions": "Права в компании",
+  "@companyPermissions": {},
+  "spacePermissions": "Права в пространстве",
+  "@spacePermissions": {},
+  "chatDescription": "Описание чата",
+  "@chatDescription": {},
+  "description": "Описание",
+  "@description": {},
+  "chatDescriptionHasBeenChanged": "Описание чата изменено",
+  "@chatDescriptionHasBeenChanged": {},
+  "noChatDescriptionYet": "Описание чата не создано.",
+  "@noChatDescriptionYet": {},
+  "invalidServerName": "Недопустимое имя сервера",
+  "@invalidServerName": {},
+  "optionalRedactReason": "(Необязательно) Причина удаления...",
+  "@optionalRedactReason": {},
+  "redactMessageDescription": "Сообщение будет удалено для всех участников. Это необратимо.",
+  "@redactMessageDescription": {},
+  "messagesStyle": "Сообщения:",
+  "@messagesStyle": {},
+  "shareInviteLink": "Поделиться ссылкой",
+  "@shareInviteLink": {},
+  "redactedBy": "{username} отредактировал это событие",
+  "@redactedBy": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "directChat": "Личный чат",
+  "@directChat": {},
+  "profileNotFound": "Пользователь не найден на сервере. Это может быть проблемой подключения или пользователь не существует.",
+  "@profileNotFound": {},
+  "setTheme": "Тема:",
+  "@setTheme": {},
+  "redactedByBecause": "{username} отредактировал это событие. Причина: \"{reason}\"",
+  "@redactedByBecause": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "setChatDescription": "Установить описание чата",
+  "@setChatDescription": {},
+  "setColorTheme": "Цветовая тема:",
+  "@setColorTheme": {},
+  "invite": "Пригласить",
+  "@invite": {},
+  "invitePrivateChat": "📨 Вас пригласили в приватный чат",
+  "@invitePrivateChat": {},
+  "inviteGroupChat": "📨 Вас пригласили в групповой чат",
+  "@inviteGroupChat": {},
+  "invalidInput": "Недопустимый ввод!",
+  "@invalidInput": {},
+  "wrongPinEntered": "Неверный PIN. Повторите через {seconds} с…",
+  "@wrongPinEntered": {
+    "type": "String",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "emoteKeyboardNoRecents": "Недавно использованные эмодзи появятся здесь...",
+  "@emoteKeyboardNoRecents": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "banUserDescription": "Заблокированные в чате пользователи не смогут перезайти в чат, пока они не будут разблокированы.",
+  "@banUserDescription": {},
+  "banUserDescriptionChannel": "Заблокированные в канале пользователи не смогут перезайти в канал, пока они не будут разблокированы.",
+  "@banUserDescriptionChannel": {},
+  "removeDevicesDescription": "Вы завершите этот сеанс и больше не будете получать сообщения.",
+  "@removeDevicesDescription": {},
+  "unbanUserDescription": "Пользователь сможет при желании зайти в чат снова.",
+  "@unbanUserDescription": {},
+  "unbanUserDescriptionChannel": "Пользователь сможет при желании зайти в канал снова.",
+  "@unbanUserDescriptionChannel": {},
+  "pushNotificationsNotAvailable": "Push-уведомления недоступны",
+  "@pushNotificationsNotAvailable": {},
+  "makeAdminDescription": "Как только вы назначите этого пользователя администратором, вы не сможете этого отменить, так как их права доступа и ваши будут одинаковы.",
+  "@makeAdminDescription": {},
+  "archiveRoomDescription": "Вы выйдете из чата — он переместится в архив. Другие участники останутся в чате и увидят, что вы вышли. Удалить чат насовсем можно в разделе «Архив».",
+  "leaveChatAction": "Выйти из чата",
+  "leaveSpaceDescription": "Вы покинете это пространство. У других участников оно сохранится.",
+  "unsubscribeFromCompanyDescription": "Вы отпишетесь от компании и перестанете видеть её общие чаты. У других участников компания сохранится.",
+  "@archiveRoomDescription": {},
+  "hasKnocked": "{user} постучался",
+  "@hasKnocked": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "learnMore": "Узнать больше",
+  "@learnMore": {},
+  "roomUpgradeDescription": "Затем чат будет воссоздан с новой версией комнаты. Все участники будут уведомлены о необходимости перейти в новый чат. Вы можете узнать больше о версиях комнат на https://spec.matrix.org/latest/rooms/",
+  "@roomUpgradeDescription": {},
+  "pleaseEnterANumber": "Пожалуйста, введите число больше 0",
+  "@pleaseEnterANumber": {},
+  "kickUserDescription": "Пользователь исключён из чата, но не заблокирован. В публичных чатах он может вернуться в любой момент.",
+  "@kickUserDescription": {},
+  "kickUserDescriptionChannel": "Пользователь исключён из канала, но не заблокирован. В публичных каналах он может вернуться в любой момент.",
+  "@kickUserDescriptionChannel": {},
+  "blockListDescription": "Вы можете игнорировать тревожащих вас пользователей. Вы не будете получать сообщения или приглашения в чат от пользователей из вашего личного чёрного списка.",
+  "@blockListDescription": {},
+  "blockedUsers": "Чёрный список",
+  "@blockedUsers": {},
+  "block": "Заблокировать",
+  "@block": {},
+  "blockUsername": "Игнорировать по имени пользователя",
+  "@blockUsername": {},
+  "createGroupAndInviteUsers": "Создать и начать приглашать",
+  "@createGroupAndInviteUsers": {},
+  "startConversation": "Начать общение",
+  "@startConversation": {},
+  "draftChatHint": "Чат появится после отправки первого сообщения.",
+  "@draftChatHint": {},
+  "groupCanBeFoundViaSearch": "Группа может быть найдена поиском",
+  "@groupCanBeFoundViaSearch": {},
+  "noUsersFoundWithQuery": "К сожалению пользователей с именем \"{query}\" не найдено. Убедитесь, что вы не совершили опечатку.",
+  "@noUsersFoundWithQuery": {
+    "type": "String",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "yourGlobalUserIdIs": "Ваш глобальный идентификатор — ",
+  "@yourGlobalUserIdIs": {},
+  "commandHint_sendraw": "Отправить сырой json",
+  "@commandHint_sendraw": {},
+  "wrongRecoveryKey": "Простите… судя по всему это неверный ключ восстановления.",
+  "@wrongRecoveryKey": {},
+  "groupName": "Название группы",
+  "@groupName": {},
+  "databaseMigrationTitle": "База данных оптимизированна",
+  "@databaseMigrationTitle": {},
+  "searchChatsRooms": "Поиск #чатов, @людей...",
+  "@searchChatsRooms": {},
+  "databaseMigrationBody": "Пожалуйста, подождите. Это может занять некоторое время.",
+  "@databaseMigrationBody": {},
+  "publicSpaces": "Публичные пространства",
+  "@publicSpaces": {},
+  "passwordIsWrong": "Вы ввели неверный пароль",
+  "@passwordIsWrong": {},
+  "pleaseEnterYourCurrentPassword": "Пожалуйста, введите свой текущий пароль",
+  "@pleaseEnterYourCurrentPassword": {},
+  "publicLink": "Публичная ссылка",
+  "@publicLink": {},
+  "nothingFound": "Ничего не найдено…",
+  "@nothingFound": {},
+  "newPassword": "Новый пароль",
+  "@newPassword": {},
+  "passwordsDoNotMatch": "Пароли не совпадают",
+  "@passwordsDoNotMatch": {},
+  "select": "Выбрать",
+  "@select": {},
+  "pleaseChooseAStrongPassword": "Пожалуйста, подберите сильный пароль",
+  "@pleaseChooseAStrongPassword": {},
+  "leaveEmptyToClearStatus": "Чтобы очистить статус, оставьте поле пустым.",
+  "@leaveEmptyToClearStatus": {},
+  "joinSpace": "Войти в пространство",
+  "@joinSpace": {},
+  "searchForUsers": "Поиск @пользователей...",
+  "@searchForUsers": {},
+  "thisDevice": "Текущий сеанс:",
+  "@thisDevice": {},
+  "decline": "Отклонить",
+  "@decline": {},
+  "databaseBuildErrorBody": "Невозможно собрать базу данных SQlite. Приложение пытается использовать старую базу данных. Пожалуйста, сообщите об этой ошибке разработчикам по адресу {url}. Сообщение об ошибке: {error}",
+  "@databaseBuildErrorBody": {
+    "type": "String",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "initAppError": "Произошла ошибка при запуске приложения",
+  "@initAppError": {},
+  "sessionLostBody": "Ваш сеанс утерян. Пожалуйста, сообщите об этой ошибке разработчикам по адресу {url}. Сообщение об ошибке: {error}",
+  "@sessionLostBody": {
+    "type": "String",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "restoreSessionBody": "Приложение пытается восстановить сеанс из резервной копии. Пожалуйста, сообщите об этой ошибке разработчикам по адресу {url}. Сообщение об ошибке: {error}",
+  "@restoreSessionBody": {
+    "type": "String",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "subspace": "Субпространство",
+  "@subspace": {},
+  "addChatOrSubSpace": "Добавить чат или субпространство",
+  "@addChatOrSubSpace": {},
+  "youInvitedToBy": "📩 Вы были приглашены по ссылке на:\n{alias}",
+  "@youInvitedToBy": {
+    "placeholders": {
+      "alias": {
+        "type": "String"
+      }
+    }
+  },
+  "sendReadReceipts": "Отправка статуса о прочтении",
+  "@sendReadReceipts": {},
+  "verifyOtherUser": "🔐 Подтвердить другого пользователя",
+  "@verifyOtherUser": {},
+  "verifyOtherDevice": "🔐 Подтвердить другой сеанс",
+  "@verifyOtherDevice": {},
+  "forwardMessageTo": "Переслать сообщение в {roomName}?",
+  "@forwardMessageTo": {
+    "type": "String",
+    "placeholders": {
+      "roomName": {
+        "type": "String"
+      }
+    }
+  },
+  "sendReadReceiptsDescription": "Другие участники чата могут видеть, когда вы прочитали сообщение.",
+  "@sendReadReceiptsDescription": {},
+  "transparent": "Прозрачный",
+  "@transparent": {},
+  "verifyOtherUserDescription": "Если вы подтвердите другого пользователя, то вы можете быть уверены зная, кому вы действительно пишете. 💪\n\nКогда вы начинаете подтверждение, вы и другой пользователь увидите всплывающее окно в приложении. Там вы увидите ряд чисел или эмодзи, которые вы должны сравнить друг с другом.\n\nЛучший способ сделать это - встретиться в реальной жизни или по видео звонку. 👭",
+  "@verifyOtherUserDescription": {},
+  "verifyOtherDeviceDescription": "При подтверждении другого сеанса эти сеансы могут обмениваться ключами, повышая общую безопасность. 💪 При запуске подтверждения в приложении на обоих сеансах появится всплывающее окно. Там вы увидите ряд чисел или эмодзи, которые вы должны сравнить друг с другом. Лучше иметь оба сеанса под рукой перед началом проверки. 🤳",
+  "@verifyOtherDeviceDescription": {},
+  "formattedMessagesDescription": "Отображать форматирование: жирный текст, курсив и другую разметку Markdown.",
+  "@formattedMessagesDescription": {},
+  "acceptedKeyVerification": "{sender} принял подтверждение ключей",
+  "@acceptedKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "canceledKeyVerification": "{sender} отклонил подтверждение ключей",
+  "@canceledKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "sendTypingNotificationsDescription": "Другие участники чата могут видеть, когда вы набираете новое сообщение.",
+  "@sendTypingNotificationsDescription": {},
+  "formattedMessages": "Форматированные сообщения",
+  "@formattedMessages": {},
+  "startedKeyVerification": "{sender} начал подтверждение ключей",
+  "@startedKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "isReadyForKeyVerification": "{sender} готов к подтверждению ключей",
+  "@isReadyForKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedKeyVerification": "{sender} запросил подтверждение ключей",
+  "@requestedKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "completedKeyVerification": "{sender} завершил подтверждение ключей",
+  "@completedKeyVerification": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      }
+    }
+  },
+  "incomingMessages": "Входящие сообщения",
+  "@incomingMessages": {},
+  "presencesToggle": "Показывать сообщения в статусах других пользователей",
+  "@presencesToggle": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "presenceStyle": "Представление:",
+  "@presenceStyle": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "hidePresences": "Скрыть список статусов?",
+  "@hidePresences": {},
+  "stickers": "Стикеры",
+  "@stickers": {},
+  "discover": "Исследовать",
+  "@discover": {},
+  "globalChatId": "ID глобального чата",
+  "@globalChatId": {},
+  "customEmojisAndStickersBody": "Добавить или поделиться пользовательскими эмодзи или стикерами, которые могут быть применены в любом чате.",
+  "@customEmojisAndStickersBody": {},
+  "hideMemberChangesInPublicChatsBody": "Для улучшения читаемости не показывать на временной шкале входы и выходы из чата.",
+  "@hideMemberChangesInPublicChatsBody": {},
+  "knocking": "Ожидание ответа",
+  "@knocking": {},
+  "accessAndVisibility": "Доступность и видимость",
+  "@accessAndVisibility": {},
+  "publicChatAddresses": "Адресы публичного чата",
+  "@publicChatAddresses": {},
+  "channelType": "Тип канала",
+  "@channelType": {},
+  "channelTypePublic": "Публичный",
+  "@channelTypePublic": {},
+  "channelTypePrivate": "Частный",
+  "@channelTypePrivate": {},
+  "channelTypePublicHint": "Канал можно найти по ссылке и в поиске",
+  "@channelTypePublicHint": {},
+  "channelTypePrivateHint": "Присоединиться можно только по приглашению",
+  "@channelTypePrivateHint": {},
+  "groupType": "Тип группы",
+  "@groupType": {},
+  "groupTypePublic": "Публичная",
+  "@groupTypePublic": {},
+  "groupTypePrivate": "Частная",
+  "@groupTypePrivate": {},
+  "groupTypePublicHint": "Группу можно найти в поиске и вступить в неё",
+  "@groupTypePublicHint": {},
+  "groupTypePrivateHint": "Присоединиться можно только по приглашению",
+  "@groupTypePrivateHint": {},
+  "companyType": "Тип компании",
+  "@companyType": {},
+  "companyTypePublic": "Публичная",
+  "@companyTypePublic": {},
+  "companyTypePrivate": "Частная",
+  "@companyTypePrivate": {},
+  "companyTypePublicHint": "Компанию можно найти в поиске и вступить в неё",
+  "@companyTypePublicHint": {},
+  "companyTypePrivateHint": "Присоединиться можно только по приглашению",
+  "@companyTypePrivateHint": {},
+  "channelProtectContent": "Запретить сохранение контента",
+  "@channelProtectContent": {},
+  "channelProtectContentDescription": "Подписчики не смогут пересылать, копировать и сохранять посты. Скриншоты запрещает только Android — на iPhone, компьютере и в браузере снимок экрана остаётся возможен. Не действует на модераторов и администраторов.",
+  "@channelProtectContentDescription": {},
+  "groupProtectContent": "Запретить сохранение контента",
+  "@groupProtectContent": {},
+  "groupProtectContentDescription": "Участники не смогут пересылать, копировать и сохранять сообщения. Скриншоты запрещает только Android — на iPhone, компьютере и в браузере снимок экрана остаётся возможен. Не действует на модераторов и администраторов.",
+  "@groupProtectContentDescription": {},
+  "protectContentExemptHint": "Запрет включён, но на вас он не действует: у вас права модератора или администратора. Чтобы проверить, откройте чат под обычным участником.",
+  "@protectContentExemptHint": {},
+  "channelLink": "Ссылка на канал",
+  "@channelLink": {},
+  "channelLinkHint": "Задайте короткий адрес — по нему канал можно отправить и найти в поиске",
+  "@channelLinkHint": {},
+  "channelLinkSave": "Сохранить",
+  "@channelLinkSave": {},
+  "channelLinkEdit": "Изменить",
+  "@channelLinkEdit": {},
+  "channelLinkCopied": "Ссылка скопирована",
+  "@channelLinkCopied": {},
+  "channelHandleTooShort": "Не короче 5 символов",
+  "@channelHandleTooShort": {},
+  "displaynameTooLong": "Не длиннее 256 символов",
+  "@displaynameTooLong": {},
+  "channelHandleTooLong": "Не длиннее 32 символов",
+  "@channelHandleTooLong": {},
+  "channelHandleBadFormat": "Только латиница, цифры и подчёркивание; начинается с буквы",
+  "@channelHandleBadFormat": {},
+  "channelHandleReserved": "Этот адрес зарезервирован",
+  "@channelHandleReserved": {},
+  "channelHandleTaken": "Этот адрес уже занят",
+  "@channelHandleTaken": {},
+  "channelHandleSaveFailed": "Не удалось сохранить адрес",
+  "@channelHandleSaveFailed": {},
+  "channelLinkNotFound": "Канал не найден или больше не публичный",
+  "@channelLinkNotFound": {},
+  "channelLinkOpenFailed": "Не удалось открыть канал. Проверьте соединение и попробуйте снова",
+  "@channelLinkOpenFailed": {},
+  "channelOldAliasesTitle": "Старые адреса будут удалены",
+  "@channelOldAliasesTitle": {},
+  "channelOldAliasesBody": "У канала есть старые адреса: {aliases}. Они будут удалены, и ссылки с ними перестанут работать.",
+  "@channelOldAliasesBody": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    }
+  },
+  "accessAndVisibilityDescription": "Кому разрешено войти в этот чат и как этот чат может быть обнаружен.",
+  "@accessAndVisibilityDescription": {},
+  "accessAndVisibilityDescriptionChannel": "Кому разрешено войти в этот канал и как этот канал может быть обнаружен.",
+  "@accessAndVisibilityDescriptionChannel": {},
+  "userRole": "Роль пользователя",
+  "@userRole": {},
+  "noDatabaseEncryption": "Шифрование базы данных не поддерживается на этой платформе",
+  "@noDatabaseEncryption": {},
+  "appLockDescription": "Заблокировать приложение когда не используется пин код",
+  "@appLockDescription": {},
+  "calls": "Звонки",
+  "@calls": {},
+  "customEmojisAndStickers": "Пользовательские эмодзи и стикеры",
+  "@customEmojisAndStickers": {},
+  "hideRedactedMessages": "Скрыть редактированные сообщения",
+  "@hideRedactedMessages": {},
+  "hideInvalidOrUnknownMessageFormats": "Скрыть неправильные или неизвестные форматы сообщения",
+  "@hideInvalidOrUnknownMessageFormats": {},
+  "hideRedactedMessagesBody": "Если кто-то редактирует сообщение, оно будет скрыто в чате.",
+  "@hideRedactedMessagesBody": {},
+  "hideMemberChangesInPublicChats": "Скрыть изменения участников в публичных чатах",
+  "@hideMemberChangesInPublicChats": {},
+  "overview": "Обзор",
+  "@overview": {},
+  "notifyMeFor": "Уведомлять меня о",
+  "@notifyMeFor": {},
+  "passwordRecoverySettings": "Настройки восстановления пароля",
+  "@passwordRecoverySettings": {},
+  "userWouldLikeToChangeTheChat": "{user} желает присоединиться к чату.",
+  "@userWouldLikeToChangeTheChat": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "knock": "Постучаться",
+  "@knock": {},
+  "usersMustKnock": "Пользователи должны постучаться",
+  "@usersMustKnock": {},
+  "noOneCanJoin": "Никто не может присоединиться",
+  "@noOneCanJoin": {},
+  "noPublicLinkHasBeenCreatedYet": "Публичная ссылка ещё не была создана",
+  "@noPublicLinkHasBeenCreatedYet": {},
+  "chatCanBeDiscoveredViaSearchOnServer": "Чат может быть обнаружен через поиск в {server}",
+  "@chatCanBeDiscoveredViaSearchOnServer": {
+    "type": "String",
+    "placeholders": {
+      "server": {
+        "type": "String"
+      }
+    }
+  },
+  "createNewAddress": "Создать новый адрес",
+  "@createNewAddress": {},
+  "minimumPowerLevel": "{level} является минимальным уровнем.",
+  "@minimumPowerLevel": {
+    "type": "String",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "commandHint_ignore": "Игнорировать этот Matrix ID",
+  "@commandHint_ignore": {},
+  "commandHint_unignore": "Не игнорировать этот Matrix ID",
+  "@commandHint_unignore": {},
+  "restricted": "Запрещено",
+  "@restricted": {},
+  "knockRestricted": "Стук для участников пространств",
+  "@knockRestricted": {},
+  "searchIn": "Поиск в чате \"{chat}\"...",
+  "@searchIn": {
+    "type": "String",
+    "placeholders": {
+      "chat": {
+        "type": "String"
+      }
+    }
+  },
+  "searchMore": "Найти еще...",
+  "@searchMore": {},
+  "gallery": "Галерея",
+  "@gallery": {},
+  "files": "Файлы",
+  "@files": {},
+  "swipeRightToLeftToReply": "Для ответа проведите справа налево",
+  "@swipeRightToLeftToReply": {},
+  "userLevel": "Пользователь",
+  "@userLevel": {},
+  "moderatorLevel": "Модератор",
+  "@moderatorLevel": {},
+  "adminLevel": "Администратор",
+  "@adminLevel": {},
+  "changeGeneralChatSettings": "Изменить общие настройки чата",
+  "@changeGeneralChatSettings": {},
+  "changeTheChatPermissions": "Изменить права доступа к чату",
+  "@changeTheChatPermissions": {},
+  "changeTheDescriptionOfTheGroup": "Изменить описание чата",
+  "@changeTheDescriptionOfTheGroup": {},
+  "inviteOtherUsers": "Пригласить других пользователей в этот чат",
+  "@inviteOtherUsers": {},
+  "changeTheVisibilityOfChatHistory": "Изменить видимость истории чата",
+  "@changeTheVisibilityOfChatHistory": {},
+  "unread": "Новые",
+  "@unread": {},
+  "space": "Пространство",
+  "@space": {},
+  "spaces": "Пространства",
+  "@spaces": {},
+  "markAsUnread": "Отметить как непрочитанное",
+  "@markAsUnread": {},
+  "goToSpace": "Перейти к пространству: {space}",
+  "@goToSpace": {
+    "type": "String",
+    "space": {}
+  },
+  "sendCanceled": "Отправка отменена",
+  "@sendCanceled": {},
+  "noChatsFoundHere": "Не было найдено ни одного чата. Начать с кем-нибудь новый чат можно, нажав кнопку ниже. ⤵️",
+  "@noChatsFoundHere": {},
+  "updateInstalled": "🎉 Обновление {version} успешно установлено!",
+  "@updateInstalled": {
+    "type": "String",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "changelog": "Список изменений",
+  "@changelog": {},
+  "invitedBy": "Приглашение от {user}",
+  "@invitedBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "doesNotSeemToBeAValidHomeserver": "Этот домашний сервер выглядит несовместимым. Нет ли в ссылке опечаток?",
+  "@doesNotSeemToBeAValidHomeserver": {},
+  "noMoreChatsFound": "Больше чатов не обнаружено...",
+  "@noMoreChatsFound": {},
+  "alwaysUse24HourFormat": "true",
+  "@alwaysUse24HourFormat": {
+    "description": "Set to true to always display time of day in 24 hour format."
+  },
+  "uploadPhasePreparing": "Подготовка",
+  "@uploadPhasePreparing": {},
+  "uploadPhaseCompressing": "Сжатие",
+  "@uploadPhaseCompressing": {},
+  "uploadPhaseUploading": "Отправка",
+  "@uploadPhaseUploading": {},
+  "compressVideo": "Сжатие видео...",
+  "@compressVideo": {},
+  "oneOfYourDevicesIsNotVerified": "Один из ваших сеансов не подтверждён",
+  "@oneOfYourDevicesIsNotVerified": {},
+  "chatPermissionsDescription": "Задайте уровень доступа для выполнения определённых действий. Доступны три уровня:\n• Пользователь — базовый уровень доступа.\n• Модератор — включает все права пользователя, а также дополнительные права модератора.\n• Администратор — наивысший уровень, включает все права пользователя и модератора, а также дополнительные права администратора.",
+  "@chatPermissionsDescription": {},
+  "prepareSendingAttachment": "Подготовка к отправке вложения...",
+  "@prepareSendingAttachment": {},
+  "sendRoomNotifications": "Упоминать @room",
+  "@sendRoomNotifications": {},
+  "calculatingFileSize": "Вычисление размера файла…",
+  "@calculatingFileSize": {},
+  "sendingAttachment": "Отправка вложения...",
+  "@sendingAttachment": {},
+  "generatingVideoThumbnail": "Создание превью видео...",
+  "@generatingVideoThumbnail": {},
+  "noticeChatBackupDeviceVerification": "Примечание: Если вы подключите все свои сеансы к резервному копированию чатов, то они автоматически станут подтверждёнными.",
+  "@noticeChatBackupDeviceVerification": {},
+  "changeTheCanonicalRoomAlias": "Изменить основной общедоступный адрес чата",
+  "@changeTheCanonicalRoomAlias": {},
+  "changeTheCanonicalChannelAlias": "Изменить основной общедоступный адрес канала",
+  "@changeTheCanonicalChannelAlias": {},
+  "loginWithMatrixId": "Войти через Matrix ID",
+  "@loginWithMatrixId": {},
+  "whatIsAHomeserver": "Для чего нужен домашний сервер?",
+  "@whatIsAHomeserver": {},
+  "homeserverDescription": "Все ваши данные хранятся на домашнем сервере, прямо как у вашего провайдера электронной почты. Вы можете выбрать, какому серверу вы их доверите, при этом сохраняя возможность общаться со всеми. Узнайте больше на https://matrix.org.",
+  "@homeserverDescription": {},
+  "discoverHomeservers": "Список домашних серверов",
+  "@discoverHomeservers": {},
+  "joinedChats": "Вступленные чаты",
+  "@joinedChats": {},
+  "serverInformation": "Информация о сервере:",
+  "@serverInformation": {},
+  "sendingAttachmentCountOfCount": "Отправляется вложение {index} из {length}...",
+  "@sendingAttachmentCountOfCount": {
+    "type": "integer",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "welcomeText": "Привет! Это Liza — общение и сделки в одном месте. Совершайте покупки и продажи прямо в диалоге: AI-ассистент, чат-боты и мини-приложения всегда рядом.",
+  "@welcomeText": {},
+  "noContactInformationProvided": "Сервер не предоставляет никакой правдивой контактной информации",
+  "@noContactInformationProvided": {},
+  "aboutHomeserver": "О сервере {homeserver}",
+  "@aboutHomeserver": {
+    "type": "String",
+    "placeholders": {
+      "homeserver": {
+        "type": "String"
+      }
+    }
+  },
+  "boldText": "Жирный шрифт",
+  "@boldText": {},
+  "strikeThrough": "Перечёркнутый",
+  "@strikeThrough": {},
+  "underline": "Подчёркнутый",
+  "@underline": {},
+  "monospace": "Моноширинный",
+  "@monospace": {},
+  "spoiler": "Спойлер",
+  "@spoiler": {},
+  "pleaseFillOut": "Пожалуйста, заполните",
+  "@pleaseFillOut": {},
+  "invalidUrl": "Не верный URL",
+  "@invalidUrl": {},
+  "addLink": "Добавить ссылку",
+  "@addLink": {},
+  "italicText": "Курсив",
+  "@italicText": {},
+  "unableToJoinChat": "Невозможно присоединиться к чату. Возможно, другая сторона уже закончила разговор.",
+  "@unableToJoinChat": {},
+  "continueText": "Продолжить",
+  "@continueText": {},
+  "blur": "Размытие:",
+  "@blur": {},
+  "opacity": "Прозрачность:",
+  "@opacity": {},
+  "setWallpaper": "Установить обои",
+  "@setWallpaper": {},
+  "manageAccount": "Управление аккаунтом",
+  "@manageAccount": {},
+  "settingsEmailTitle": "Почта",
+  "@settingsEmailTitle": {},
+  "settingsEmailNotSet": "Не указан",
+  "@settingsEmailNotSet": {},
+  "settingsEmailVerified": "Подтверждён",
+  "@settingsEmailVerified": {},
+  "settingsEmailChange": "Изменить",
+  "@settingsEmailChange": {},
+  "settingsEmailEnterAddress": "Введите адрес почты",
+  "@settingsEmailEnterAddress": {},
+  "settingsEmailEnterCode": "Введите код из письма",
+  "@settingsEmailEnterCode": {},
+  "settingsEmailTaken": "Этот адрес уже используется",
+  "@settingsEmailTaken": {},
+  "settingsEmailUnauthorized": "Войдите заново, чтобы изменить почту",
+  "@settingsEmailUnauthorized": {},
+  "settingsIntegrationsTitle": "Интеграции",
+  "@settingsIntegrationsTitle": {},
+  "settingsIntegrationsXlTitle": "Платформа XL",
+  "@settingsIntegrationsXlTitle": {},
+  "settingsIntegrationsXlHint": "Вставьте API-ключ из вашего кабинета XL: Settings → API keys",
+  "@settingsIntegrationsXlHint": {},
+  "settingsIntegrationsXlField": "API-ключ XL",
+  "@settingsIntegrationsXlField": {},
+  "settingsIntegrationsConnected": "Подключено",
+  "@settingsIntegrationsConnected": {},
+  "settingsIntegrationsNotConnected": "Не подключено",
+  "@settingsIntegrationsNotConnected": {},
+  "settingsIntegrationsSave": "Подключить",
+  "@settingsIntegrationsSave": {},
+  "settingsIntegrationsDisconnect": "Отключить",
+  "@settingsIntegrationsDisconnect": {},
+  "settingsMcpTitle": "MCP-подключения",
+  "@settingsMcpTitle": {},
+  "settingsMcpAddShort": "Добавить МСР",
+  "@settingsMcpAddShort": {},
+  "settingsMcpIntro": "Расширьте возможности Лизы — подключайте к своему ИИ-ассистенту внешние сервисы.",
+  "@settingsMcpIntro": {},
+  "settingsMcpConnectedSection": "Подключенные расширения",
+  "@settingsMcpConnectedSection": {},
+  "settingsMcpCatalogSection": "Каталог расширений",
+  "@settingsMcpCatalogSection": {},
+  "settingsMcpFree": "Бесплатно",
+  "@settingsMcpFree": {},
+  "settingsMcpConnect": "Подключить",
+  "@settingsMcpConnect": {},
+  "settingsMcpDisconnect": "Отключить",
+  "@settingsMcpDisconnect": {},
+  "settingsMcpManage": "Управление подключением",
+  "@settingsMcpManage": {},
+  "settingsMcpDescVkusvill": "Поиск товаров, состав и КБЖУ, сборка корзины",
+  "@settingsMcpDescVkusvill": {},
+  "settingsMcpDescXl": "Управление кабинетом XL: товары, заказы, оплата",
+  "@settingsMcpDescXl": {},
+  "settingsMcpMore": "Подробнее",
+  "@settingsMcpMore": {},
+  "settingsMcpLess": "Свернуть",
+  "@settingsMcpLess": {},
+  "settingsMcpTopics": "Тематики",
+  "@settingsMcpTopics": {},
+  "settingsMcpExamples": "Примеры команд",
+  "@settingsMcpExamples": {},
+  "settingsMcpExampleCopied": "Команда скопирована",
+  "@settingsMcpExampleCopied": {},
+  "settingsMcpAddresseeLiza": "Команды пишите в личном чате с Лизой ИИ.",
+  "@settingsMcpAddresseeLiza": {},
+  "settingsMcpAddresseeXlBot": "Команды пишите боту @xl_bot — это отдельный чат, не Лиза ИИ.",
+  "@settingsMcpAddresseeXlBot": {},
+  "settingsMcpAboutVkusvill": "Лиза ищет товары в каталоге ВкусВилла, показывает цену, состав и КБЖУ, подбирает замену, находит магазины у метро, рецепты и скидки и собирает корзину — ссылку на оплату присылает в чат. Названия станций и городов из запроса передаются ВкусВиллу.",
+  "@settingsMcpAboutVkusvill": {},
+  "settingsMcpLimitsVkusvill": "Пока не умеет: оформлять доставку и оплату в чате — даёт ссылку на корзину на сайте ВкусВилла.",
+  "@settingsMcpLimitsVkusvill": {},
+  "settingsMcpAboutXl": "Управление кабинетом XL из диалога: товары, заказы и ссылки на оплату. Подключается персональным API-ключом.",
+  "@settingsMcpAboutXl": {},
+  "settingsMcpTopic_vkusvill_search": "Поиск товаров по названию",
+  "@settingsMcpTopic_vkusvill_search": {},
+  "settingsMcpTopic_vkusvill_price": "Цена и наличие",
+  "@settingsMcpTopic_vkusvill_price": {},
+  "settingsMcpTopic_vkusvill_details": "Состав, КБЖУ, детали",
+  "@settingsMcpTopic_vkusvill_details": {},
+  "settingsMcpTopic_vkusvill_cart": "Сборка корзины и ссылка на оплату",
+  "@settingsMcpTopic_vkusvill_cart": {},
+  "settingsMcpTopic_vkusvill_shops": "Магазины у метро и в городе",
+  "@settingsMcpTopic_vkusvill_shops": {},
+  "settingsMcpTopic_vkusvill_recipes": "Рецепты и корзина по рецепту",
+  "@settingsMcpTopic_vkusvill_recipes": {},
+  "settingsMcpTopic_vkusvill_discount": "Скидки и акции",
+  "@settingsMcpTopic_vkusvill_discount": {},
+  "settingsMcpTopic_vkusvill_analogs": "Замена и похожие товары",
+  "@settingsMcpTopic_vkusvill_analogs": {},
+  "settingsMcpTopic_vkusvill_barcode": "Товар по штрихкоду",
+  "@settingsMcpTopic_vkusvill_barcode": {},
+  "settingsMcpEx_vkusvill_milk": "Найди молоко без лактозы",
+  "@settingsMcpEx_vkusvill_milk": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpEx_vkusvill_kbju": "Состав и КБЖУ творога",
+  "@settingsMcpEx_vkusvill_kbju": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpEx_vkusvill_cart": "Собери корзину на завтрак",
+  "@settingsMcpEx_vkusvill_cart": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpEx_vkusvill_shop": "Где ВкусВилл у метро Тверская",
+  "@settingsMcpEx_vkusvill_shop": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpEx_vkusvill_recipe": "Дай рецепт сырников и собери корзину",
+  "@settingsMcpEx_vkusvill_recipe": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpEx_vkusvill_discount": "Какие сейчас скидки",
+  "@settingsMcpEx_vkusvill_discount": {
+    "description": "команда боту, НЕ переводить: гейт mcp_intent на сервере кириллический, перевод делает пример неработающим"
+  },
+  "settingsMcpAllConnected": "Все доступные расширения уже подключены",
+  "@settingsMcpAllConnected": {},
+  "settingsMcpNoLizaChat": "Сначала откройте чат с Лизой ИИ",
+  "@settingsMcpNoLizaChat": {},
+  "settingsMcpNoPermission": "Недостаточно прав в чате с Лизой, чтобы сохранить подключение",
+  "@settingsMcpNoPermission": {},
+  "settingsIntegrationsSaved": "Кабинет XL подключён",
+  "@settingsIntegrationsSaved": {},
+  "settingsIntegrationsKeyUnreadable": "Не удалось прочитать сохранённый ключ. Подключите заново",
+  "@settingsIntegrationsKeyUnreadable": {},
+  "handleSettingsTitle": "Имя пользователя",
+  "@handleSettingsTitle": {},
+  "handleFieldLabel": "Имя пользователя",
+  "@handleFieldLabel": {},
+  "handleHint": "Латинские буквы, цифры и подчёркивание, от 5 до 32 символов",
+  "@handleHint": {},
+  "handleTaken": "Пользователь с таким именем уже существует",
+  "@handleTaken": {},
+  "handleInvalid": "Только латинские буквы, цифры и подчёркивание, от 5 до 32 символов, начиная с буквы",
+  "@handleInvalid": {},
+  "handleSaved": "Ник сохранён",
+  "@handleSaved": {},
+  "handleRulesHint": "По нику вас смогут найти другие пользователи через @имя",
+  "@handleRulesHint": {},
+  "handleTooShort": "Не короче 5 символов",
+  "@handleTooShort": {},
+  "handleTooLong": "Не длиннее 32 символов",
+  "@handleTooLong": {},
+  "handleBadFormat": "Имя должно начинаться с латинской буквы; допустимы латиница, цифры и подчёркивание",
+  "@handleBadFormat": {},
+  "handleReserved": "Это имя зарезервировано, выберите другое",
+  "@handleReserved": {},
+  "handleUnavailable": "Имя пользователя пока недоступно на этом сервере",
+  "@handleUnavailable": {},
+  "handleNetworkError": "Не удалось связаться с сервером. Проверьте соединение и попробуйте ещё раз",
+  "@handleNetworkError": {},
+  "contactServerAdmin": "Админ сервера",
+  "@contactServerAdmin": {},
+  "contactServerSecurity": "Безопасность контактов сервера",
+  "@contactServerSecurity": {},
+  "supportPage": "Поддержка",
+  "@supportPage": {},
+  "name": "Имя",
+  "@name": {},
+  "version": "Версия",
+  "@version": {},
+  "website": "Сайт",
+  "@website": {},
+  "sendImages": "Отправить {count} изображение",
+  "@sendImages": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "compress": "Сжатие",
+  "@compress": {},
+  "notificationRuleMessage": "Сообщение",
+  "@notificationRuleMessage": {},
+  "appWantsToUseForLoginDescription": "Вы позволяете приложению и веб-сайту делиться информацией о вас.",
+  "@appWantsToUseForLoginDescription": {},
+  "newChatRequest": "📩 Запрос нового чата",
+  "@newChatRequest": {},
+  "allDevices": "Все сеансы",
+  "@allDevices": {},
+  "roomNotificationSettings": "Настройки уведомлений чата",
+  "@roomNotificationSettings": {},
+  "notificationRuleContainsUserName": "Содержит имя пользователя",
+  "@notificationRuleContainsUserName": {},
+  "notificationRuleMaster": "Отключить все уведомления",
+  "@notificationRuleMaster": {},
+  "notificationRuleSuppressNoticesDescription": "Отключить уведомления от автоматизированных клиентов, таких как боты.",
+  "@notificationRuleSuppressNoticesDescription": {},
+  "notificationRuleInviteForMe": "Приглашение для меня",
+  "@notificationRuleInviteForMe": {},
+  "notificationRuleMemberEventDescription": "Отключить уведомления о событиях о членстве.",
+  "@notificationRuleMemberEventDescription": {},
+  "notificationRuleIsRoomMention": "Упоминание чата",
+  "@notificationRuleIsRoomMention": {},
+  "notificationRuleReactionDescription": "Отключить уведомления о реакциях.",
+  "@notificationRuleReactionDescription": {},
+  "notificationRuleCall": "Звонок",
+  "@notificationRuleCall": {},
+  "notificationRuleSuppressEditsDescription": "Отключить уведомления о отредактированных сообщениях.",
+  "@notificationRuleSuppressEditsDescription": {},
+  "notificationRuleEncrypted": "Зашифровано",
+  "@notificationRuleEncrypted": {},
+  "more": "Больше",
+  "@more": {},
+  "synchronizingPleaseWaitCounter": " Синхронизация… ({percentage}%)",
+  "@synchronizingPleaseWaitCounter": {
+    "type": "String",
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+  "appWantsToUseForLogin": "Использовать '{server}' для входа",
+  "@appWantsToUseForLogin": {
+    "type": "String",
+    "placeholders": {
+      "server": {
+        "type": "String"
+      }
+    }
+  },
+  "contentNotificationSettings": "Настройки уведомлений по тексту",
+  "@contentNotificationSettings": {},
+  "generalNotificationSettings": "Общие настройки уведомлений",
+  "@generalNotificationSettings": {},
+  "userSpecificNotificationSettings": "Настроки уведомлений пользователя",
+  "@userSpecificNotificationSettings": {},
+  "otherNotificationSettings": "Другие настройки уведомлений",
+  "@otherNotificationSettings": {},
+  "notificationRuleContainsUserNameDescription": "Уведомляет пользователя, когда сообщение содержит его имя пользователя.",
+  "@notificationRuleContainsUserNameDescription": {},
+  "notificationRuleMasterDescription": "Перекрывает все другие правила и отключает все уведомления.",
+  "@notificationRuleMasterDescription": {},
+  "notificationRuleSuppressNotices": "Отключить автоматические сообщения",
+  "@notificationRuleSuppressNotices": {},
+  "notificationRuleIsUserMention": "Упоминание пользователя",
+  "@notificationRuleIsUserMention": {},
+  "notificationRuleContainsDisplayName": "Содержит отображаемое имя",
+  "@notificationRuleContainsDisplayName": {},
+  "notificationRuleReaction": "Реакция",
+  "@notificationRuleReaction": {},
+  "takeAPhoto": "Снять фото",
+  "@takeAPhoto": {},
+  "recordAVideo": "Записать видео",
+  "@recordAVideo": {},
+  "camera": "Камера",
+  "@camera": {},
+  "enterNewChat": "Введите новый чат",
+  "@enterNewChat": {},
+  "otherPartyNotLoggedIn": "Другая сторона в настоящее время не вошла в систему и поэтому не может получать сообщения!",
+  "@otherPartyNotLoggedIn": {},
+  "deletedAccount": "Удалённый аккаунт",
+  "@deletedAccount": {},
+  "deletedAccountCannotWrite": "Аккаунт удалён",
+  "@deletedAccountCannotWrite": {},
+  "open": "Открыть",
+  "@open": {},
+  "waitingForServer": "Ожидание сервера...",
+  "@waitingForServer": {},
+  "appIntroduction": "Liza объединяет общение и сделки. Нажмите *Продолжить*, чтобы начать.",
+  "@appIntroduction": {},
+  "previous": "Предыдущий",
+  "@previous": {},
+  "notificationRuleCallDescription": "Уведомляет пользователя про звонки.",
+  "@notificationRuleCallDescription": {},
+  "notificationRuleEncryptedRoomOneToOne": "Зашифрованный личный чат",
+  "@notificationRuleEncryptedRoomOneToOne": {},
+  "notificationRuleEncryptedRoomOneToOneDescription": "Уведомляет пользователя про сообщение в зашифрованных личных чатах.",
+  "@notificationRuleEncryptedRoomOneToOneDescription": {},
+  "notificationRuleRoomOneToOne": "Личный чат",
+  "@notificationRuleRoomOneToOne": {},
+  "ignoreUser": "Игнорировать пользователя",
+  "@ignoreUser": {},
+  "normalUser": "Пользователь",
+  "@normalUser": {},
+  "commandHint_roomupgrade": "Обновить комнату до указанной версии",
+  "@commandHint_roomupgrade": {},
+  "notificationRuleInviteForMeDescription": "Уведомляет пользователя, когда его приглашают в чат.",
+  "@notificationRuleInviteForMeDescription": {},
+  "unknownPushRule": "Неизвестное правило оповещения '{rule}'",
+  "@unknownPushRule": {
+    "type": "String",
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "checkList": "Контрольный список",
+  "@checkList": {},
+  "changedTheChatDescription": "{username} изменил описание чата",
+  "@changedTheChatDescription": {},
+  "changedTheChatName": "{username} изменил имя чата",
+  "@changedTheChatName": {},
+  "notificationRuleMemberEvent": "Мероприятие участника",
+  "@notificationRuleMemberEvent": {},
+  "notificationRuleIsUserMentionDescription": "Уведомляет пользователя, когда он упоминается непосредственно в сообщении.",
+  "@notificationRuleIsUserMentionDescription": {},
+  "notificationRuleContainsDisplayNameDescription": "Уведомляет пользователя, когда сообщение содержит его имя отображения.",
+  "@notificationRuleContainsDisplayNameDescription": {},
+  "notificationRuleIsRoomMentionDescription": "Уведомляет пользователя о наличии упоминания чата.",
+  "@notificationRuleIsRoomMentionDescription": {},
+  "notificationRuleRoomnotif": "Уведомление всему чату",
+  "@notificationRuleRoomnotif": {},
+  "notificationRuleRoomnotifDescription": "Уведомляет пользователя, когда сообщение содержит '@room'.",
+  "@notificationRuleRoomnotifDescription": {},
+  "notificationRuleTombstone": "Надгробный камень",
+  "@notificationRuleTombstone": {},
+  "notificationRuleTombstoneDescription": "Уведомляет пользователя о сообщениях о деактивации чата.",
+  "@notificationRuleTombstoneDescription": {},
+  "notificationRuleRoomServerAcl": "ACL сервера комнаты",
+  "@notificationRuleRoomServerAcl": {},
+  "notificationRuleRoomServerAclDescription": "Удаляет уведомления о списках контроля доступа к серверу комнат (ACL).",
+  "@notificationRuleRoomServerAclDescription": {},
+  "notificationRuleSuppressEdits": "Подавление правки",
+  "@notificationRuleSuppressEdits": {},
+  "notificationRuleRoomOneToOneDescription": "Уведомляет пользователя о сообщениях в разделах один на один.",
+  "@notificationRuleRoomOneToOneDescription": {},
+  "notificationRuleMessageDescription": "Уведомляет пользователя об общих сообщениях.",
+  "@notificationRuleMessageDescription": {},
+  "notificationRuleEncryptedDescription": "Уведомляет пользователя о сообщениях в зашифрованных чатах.",
+  "@notificationRuleEncryptedDescription": {},
+  "notificationRuleJitsi": "Джици",
+  "@notificationRuleJitsi": {},
+  "notificationRuleJitsiDescription": "Уведомляет пользователя о событиях виджета Jitsi.",
+  "@notificationRuleJitsiDescription": {},
+  "notificationRuleServerAcl": "Запретить события ACL сервера",
+  "@notificationRuleServerAcl": {},
+  "notificationRuleServerAclDescription": "Удаляет уведомления о событиях ACL сервера.",
+  "@notificationRuleServerAclDescription": {},
+  "sentVoiceMessage": "️🎙️ {duration} - Голосовое сообщение от {sender}",
+  "@sentVoiceMessage": {
+    "type": "String",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "deletePushRuleCanNotBeUndone": "Если вы удалите эту настройку уведомлений, это невозможно отменить.",
+  "@deletePushRuleCanNotBeUndone": {},
+  "shareKeysWith": "Поделиться ключами с...",
+  "@shareKeysWith": {},
+  "shareKeysWithDescription": "Каким сеансам следует доверять, чтобы они могли читать ваши сообщения в зашифрованных чатах?",
+  "@shareKeysWithDescription": {},
+  "crossVerifiedDevicesIfEnabled": "Если включено, кросс-проверенные сеансы",
+  "@crossVerifiedDevicesIfEnabled": {},
+  "crossVerifiedDevices": "Кросс-верифицированные сеансы",
+  "@crossVerifiedDevices": {},
+  "verifiedDevicesOnly": "Только проверенные сеансы",
+  "@verifiedDevicesOnly": {},
+  "optionalMessage": "(Необязательно) сообщение...",
+  "@optionalMessage": {},
+  "notSupportedOnThisDevice": "Не поддерживается на этом устройстве",
+  "@notSupportedOnThisDevice": {},
+  "approve": "Утверждать",
+  "@approve": {},
+  "youHaveKnocked": "Вы постучали",
+  "@youHaveKnocked": {},
+  "pleaseWaitUntilInvited": "Пожалуйста, подождите, пока кто-нибудь из чата не пригласит вас.",
+  "@pleaseWaitUntilInvited": {},
+  "commandHint_logout": "Выйти из текущего сеанса",
+  "@commandHint_logout": {},
+  "commandHint_logoutall": "Выйти из всех активных сеансов",
+  "@commandHint_logoutall": {},
+  "displayNavigationRail": "Показать навигационный рельс на мобильном устройстве",
+  "@displayNavigationRail": {},
+  "customReaction": "Пользовательская реакция",
+  "@customReaction": {},
+  "moreEvents": "Больше событий",
+  "@moreEvents": {},
+  "declineInvitation": "Отказаться от приглашения",
+  "@declineInvitation": {},
+  "noMessagesYet": "Пока нет сообщений",
+  "@noMessagesYet": {},
+  "longPressToRecordVoiceMessage": "Нажмите длиннее, чтобы записать голосовое сообщение.",
+  "@longPressToRecordVoiceMessage": {},
+  "pause": "Пауза",
+  "@pause": {},
+  "resume": "Резюмировать",
+  "@resume": {},
+  "newSubSpace": "Новое подпространство",
+  "@newSubSpace": {},
+  "moveToDifferentSpace": "Переместить в другое пространство",
+  "@moveToDifferentSpace": {},
+  "moveUp": "Переместить вверх",
+  "@moveUp": {},
+  "moveDown": "Переместить вниз",
+  "@moveDown": {},
+  "removeFromSpaceDescription": "Чат будет удален из пространства, но все равно появится в вашем списке чатов.",
+  "@removeFromSpaceDescription": {},
+  "countChats": "{chats, plural, =0{нет чатов} one{{chats} чат} few{{chats} чата} many{{chats} чатов} other{{chats} чата}}",
+  "@countChats": {
+    "type": "String",
+    "placeholders": {
+      "chats": {
+        "type": "int"
+      }
+    }
+  },
+  "spaceMemberOf": "Участник пространства из {spaces}",
+  "@spaceMemberOf": {
+    "type": "String",
+    "placeholders": {
+      "spaces": {
+        "type": "String"
+      }
+    }
+  },
+  "spaceMemberOfCanKnock": "Участник пространства из {spaces} может постучать",
+  "@spaceMemberOfCanKnock": {
+    "type": "String",
+    "placeholders": {
+      "spaces": {
+        "type": "String"
+      }
+    }
+  },
+  "donate": "Пожертвовать",
+  "@donate": {},
+  "startedAPoll": "{username} начал опрос.",
+  "@startedAPoll": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "poll": "Опрос",
+  "@poll": {},
+  "startPoll": "Начать опрос",
+  "@startPoll": {},
+  "endPoll": "Завершить опрос",
+  "@endPoll": {},
+  "answersVisible": "Ответы видны",
+  "@answersVisible": {},
+  "answersHidden": "Ответы скрыты",
+  "@answersHidden": {},
+  "pollQuestion": "Вопрос по опросу",
+  "@pollQuestion": {},
+  "answerOption": "Вариант ответа",
+  "@answerOption": {},
+  "addAnswerOption": "Добавить вариант ответа",
+  "@addAnswerOption": {},
+  "allowMultipleAnswers": "Разрешить несколько ответов",
+  "@allowMultipleAnswers": {},
+  "pollHasBeenEnded": "Опрос завершен",
+  "@pollHasBeenEnded": {},
+  "answersWillBeVisibleWhenPollHasEnded": "Ответы будут видны после завершения опроса",
+  "@answersWillBeVisibleWhenPollHasEnded": {},
+  "replyInThread": "Ответить в потоке",
+  "@replyInThread": {},
+  "thread": "Нить",
+  "@thread": {},
+  "backToMainChat": "Вернуться в основной чат",
+  "@backToMainChat": {},
+  "saveChanges": "Сохранить изменения",
+  "@saveChanges": {},
+  "createSticker": "Создать стикер или эмоджи",
+  "@createSticker": {},
+  "useAsSticker": "Использовать как стикер",
+  "@useAsSticker": {},
+  "useAsEmoji": "Использовать как эмодзи",
+  "@useAsEmoji": {},
+  "stickerPackNameAlreadyExists": "Имя набора стикеров уже существует",
+  "@stickerPackNameAlreadyExists": {},
+  "newStickerPack": "Новая упаковка стикеров",
+  "@newStickerPack": {},
+  "stickerPackName": "Имя упаковки стикеров",
+  "@stickerPackName": {},
+  "attribution": "Атрибуция",
+  "@attribution": {},
+  "skipChatBackup": "Пропустить резервную копию чата",
+  "@skipChatBackup": {},
+  "skipChatBackupWarning": "Вы уверены? Без включения резервного копирования чата вы можете потерять доступ к своим сообщениям, если переключите сеанс.",
+  "@skipChatBackupWarning": {},
+  "loadingMessages": "Загрузка сообщений",
+  "@loadingMessages": {},
+  "setupChatBackup": "Настроить резервную копию чата",
+  "@setupChatBackup": {},
+  "callLink": "Ссылка на созвон",
+  "@callLink": {},
+  "setCallLink": "Задать ссылку на созвон",
+  "@setCallLink": {},
+  "deleteCallLink": "Удалить ссылку на созвон",
+  "@deleteCallLink": {},
+  "joinCall": "Войти в звонок",
+  "@joinCall": {},
+  "callLinkInvalidUrl": "Введите корректный URL (начинается с https:// или http://)",
+  "@callLinkInvalidUrl": {},
+  "callLinkSaved": "Ссылка на созвон сохранена",
+  "@callLinkSaved": {},
+  "callLinkDeleted": "Ссылка на созвон удалена",
+  "@callLinkDeleted": {},
+  "noCallLinkYet": "Ссылка на созвон не задана.",
+  "@noCallLinkYet": {},
+  "accountNotFound": "Аккаунт не найден",
+  "@accountNotFound": {},
+  "contactAdminForAccess": "Для использования Liza необходимо привязать ваш ProdamusID к мессенджеру. Обратитесь к администратору для настройки доступа.",
+  "@contactAdminForAccess": {},
+  "selectAccount": "Выбрать аккаунт",
+  "@selectAccount": {},
+  "multipleAccountsHint": "У вас несколько аккаунтов. Выберите, в какой войти.",
+  "@multipleAccountsHint": {},
+  "signIn": "Войти",
+  "@signIn": {},
+  "lizaDescription": "Ваш личный ассистент в мире коммуникаций. Общайтесь с близкими, коллегами и клиентами — AI, чат-боты и мини-приложения всегда рядом.",
+  "@lizaDescription": {},
+  "back": "Назад",
+  "@back": {},
+  "sendLogs": "Отправить логи",
+  "@sendLogs": {},
+  "appLogs": "Логи приложения",
+  "@appLogs": {},
+  "copyLogs": "Скопировать текст лога",
+  "@copyLogs": {},
+  "sendLogsToChat": "Отправить логи в чат",
+  "@sendLogsToChat": {},
+  "logsCopied": "Лог скопирован в буфер обмена",
+  "@logsCopied": {},
+  "logsCopiedTruncated": "Лог большой — скопирована свежая часть. Полный — через «Поделиться файлом»",
+  "@logsCopiedTruncated": {},
+  "logsEmpty": "Лог пуст — записывать пока нечего",
+  "@logsEmpty": {},
+  "shareLogFile": "Поделиться файлом",
+  "@shareLogFile": {},
+  "openLogViewer": "Открыть просмотр логов",
+  "@openLogViewer": {},
+  "testPushNotification": "Тестовое уведомление",
+  "@testPushNotification": {},
+  "transcriptionNetworkFailed": "Ошибка сети. Проверьте подключение и попробуйте снова.",
+  "@transcriptionNetworkFailed": {},
+  "transcriptionTimeout": "Сервер не ответил вовремя. Попробуйте позже.",
+  "@transcriptionTimeout": {},
+  "transcriptionAuthFailed": "Ошибка авторизации. Попробуйте выйти и войти снова.",
+  "@transcriptionAuthFailed": {},
+  "transcriptionDecryptFailed": "Не удалось расшифровать голосовое сообщение.",
+  "@transcriptionDecryptFailed": {},
+  "transcriptionServerError": "Ошибка сервера. Попробуйте позже.",
+  "@transcriptionServerError": {},
+  "transcriptionServiceBusy": "Не удалось распознать текст: сервис занят",
+  "@transcriptionServiceBusy": {},
+  "videoDownloadingEncrypted": "Загрузка защищённого видео…\nНе сворачивайте приложение",
+  "@videoDownloadingEncrypted": {},
+  "videoDownloadSizeMb": "{size} МБ",
+  "@videoDownloadSizeMb": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "videoPlaybackFailed": "Не удалось воспроизвести видео",
+  "@videoPlaybackFailed": {},
+  "retry": "Повторить",
+  "@retry": {},
+  "getInviteLink": "Получить ссылку-приглашение",
+  "@getInviteLink": {},
+  "goToHome": "На главную",
+  "@goToHome": {},
+  "invitation": "Приглашение",
+  "@invitation": {},
+  "invitationError": "Не удалось обработать приглашение",
+  "@invitationError": {},
+  "invitationExpired": "Ссылка-приглашение устарела",
+  "@invitationExpired": {},
+  "invitationNeedsAccountOnTargetServer": "Нужна авторизация на сервере из ссылки",
+  "@invitationNeedsAccountOnTargetServer": {},
+  "invitationNotFound": "Ссылка-приглашение недействительна",
+  "@invitationNotFound": {},
+  "invitationRoomNoLongerExists": "Чат больше недоступен",
+  "@invitationRoomNoLongerExists": {},
+  "inviteLink": "Ссылка-приглашение",
+  "@inviteLink": {},
+  "inviteLinkCopied": "Ссылка скопирована",
+  "@inviteLinkCopied": {},
+  "inviteLinkLoadError": "Не удалось получить ссылку: {error}",
+  "@inviteLinkLoadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "inviteLinkShareHint": "Любой, у кого есть эта ссылка, может вступить в чат. Можно отозвать и выпустить новую.",
+  "@inviteLinkShareHint": {},
+  "revokeInviteLink": "Отозвать ссылку",
+  "@revokeInviteLink": {},
+  "newVersionAvailable": "Доступна новая версия Liza",
+  "@newVersionAvailable": {},
+  "installAppBanner": "Установить приложение Liza",
+  "openingLink": "Открываем…",
+  "openingLinkFailed": "Не удалось открыть ссылку",
+  "storyAddText": "Добавить текст",
+  "@storyAddText": {},
+  "storyAddCaption": "Добавить подпись...",
+  "@storyAddCaption": {},
+  "storyAddLink": "Добавить ссылку",
+  "@storyAddLink": {},
+  "storyPublish": "Опубликовать",
+  "@storyPublish": {},
+  "storyPublishFailed": "Не удалось опубликовать сторис",
+  "@storyPublishFailed": {},
+  "storyVideoTrimmedToMinute": "Видео обрезано до одной минуты",
+  "@storyVideoTrimmedToMinute": {},
+  "storyPickVideoSegment": "Выберите отрезок",
+  "@storyPickVideoSegment": {},
+  "storyVideoSegmentHint": "Видео длиннее минуты — потяните дорожку, чтобы выбрать, какую минуту опубликовать.",
+  "@storyVideoSegmentHint": {},
+  "storyMyStory": "Мой сторис",
+  "@storyMyStory": {},
+  "storyAdd": "Добавить",
+  "@storyAdd": {},
+  "storyDeleteConfirmTitle": "Удалить эту историю?",
+  "@storyDeleteConfirmTitle": {},
+  "storyPostedHoursAgo": "{hours} ч",
+  "@storyPostedHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "storyPostedMinutesAgo": "{minutes} мин",
+  "@storyPostedMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "storyCaptionMore": "подробнее",
+  "@storyCaptionMore": {},
+  "storyReplyHint": "Ответить лично...",
+  "@storyReplyHint": {},
+  "storyShare": "Поделиться",
+  "@storyShare": {},
+  "storyCopyLink": "Копировать ссылку",
+  "@storyCopyLink": {},
+  "storyLinkCopied": "Ссылка скопирована",
+  "@storyLinkCopied": {},
+  "storyReplySent": "Отправлено",
+  "@storyReplySent": {},
+  "storyCardFallback": "📷 История: {name}",
+  "@storyCardFallback": {},
+  "storyUnavailable": "История недоступна",
+  "@storyUnavailable": {},
+  "storyCardTitle": "История",
+  "@storyCardTitle": {},
+  "storyNotifyMenuLabel": "Уведомлять об историях",
+  "@storyNotifyMenuLabel": {},
+  "storyNotifyEnabled": "Вы получите уведомление, когда {name} опубликует новую историю",
+  "@storyNotifyEnabled": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "storyNotifyDisabled": "Уведомления об историях {name} отключены",
+  "@storyNotifyDisabled": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "removeFromStore": "Удалить из магазина",
+  "@removeFromStore": {},
+  "removeFromStoreDescription": "Участник будет удалён и не сможет вернуться по ранее выданному приглашению. Продолжить?",
+  "@removeFromStoreDescription": {},
+  "revokeInvitation": "Отозвать приглашение",
+  "@revokeInvitation": {},
+  "revokeInvitationDescription": "Приглашение будет отозвано и больше не сработает. Продолжить?",
+  "@revokeInvitationDescription": {},
+  "blockedAndRemovedMembers": "Заблокированные и удалённые",
+  "@blockedAndRemovedMembers": {},
+  "blockedAndRemovedMembersDescription": "Управление участниками, которых вы забанили, удалили или у кого отозвали приглашение.",
+  "@blockedAndRemovedMembersDescription": {},
+  "noBlockedMembers": "Нет заблокированных или удалённых участников",
+  "@noBlockedMembers": {},
+  "restoreMember": "Восстановить",
+  "@restoreMember": {},
+  "restoreMemberDescription": "Участник снова получит доступ к магазину и сможет пользоваться приглашениями. Продолжить?",
+  "@restoreMemberDescription": {},
+  "memberRestored": "Участник восстановлен",
+  "@memberRestored": {},
+  "memberStatusBanned": "Заблокирован",
+  "@memberStatusBanned": {},
+  "memberStatusRemoved": "Удалён",
+  "@memberStatusRemoved": {},
+  "memberStatusInviteRevoked": "Приглашение отозвано",
+  "@memberStatusInviteRevoked": {},
+  "filterAll": "Все",
+  "@filterAll": {},
+  "searchByNameOrId": "Поиск по имени или ID",
+  "@searchByNameOrId": {},
+  "channelNewPostHint": "Новый пост",
+  "@channelNewPostHint": {},
+  "addChannelStory": "Добавить историю канала",
+  "@addChannelStory": {},
+  "createStory": "Создать историю",
+  "@createStory": {},
+  "createBot": "Создать бота",
+  "@createBot": {},
+  "createMiniApp": "Создать mini-app",
+  "@createMiniApp": {},
+  "connectAiAgent": "Подключить ИИ-агента",
+  "@connectAiAgent": {},
+  "channelComments": "Комментарии",
+  "@channelComments": {},
+  "enableChannelComments": "Включить комментарии",
+  "@enableChannelComments": {},
+  "disableChannelComments": "Отключить комментарии",
+  "@disableChannelComments": {},
+  "disableChannelCommentsConfirmTitle": "Отключить комментарии?",
+  "@disableChannelCommentsConfirmTitle": {},
+  "disableChannelCommentsConfirmText": "Подписчики больше не смогут комментировать посты. Комментарии сохранятся и вернутся, если включить их снова.",
+  "@disableChannelCommentsConfirmText": {},
+  "channelCommentsEnabled": "Комментарии включены",
+  "@channelCommentsEnabled": {},
+  "channelCommentsDisabled": "Комментарии отключены",
+  "@channelCommentsDisabled": {},
+  "channelDetails": "Детали канала",
+  "@channelDetails": {},
+  "openChannelDiscussion": "Обсуждение",
+  "@openChannelDiscussion": {},
+  "deleteChannel": "Удалить канал",
+  "@deleteChannel": {},
+  "deleteChannelConfirm": "Удалить канал у всех подписчиков? Действие необратимо.",
+  "@deleteChannelConfirm": {},
+  "channelDeleted": "Канал удалён",
+  "@channelDeleted": {},
+  "channelDiscussionRoomName": "{channelName} - обсуждение",
+  "@channelDiscussionRoomName": {
+    "placeholders": {
+      "channelName": {
+        "type": "String"
+      }
+    }
+  },
+  "channelViewCount": "{count, plural, one{{count} просмотр} few{{count} просмотра} many{{count} просмотров} other{{count} просмотра}}",
+  "@channelViewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelCommentsCount": "{count, plural, one{{count} комментарий} few{{count} комментария} many{{count} комментариев} other{{count} комментария}}",
+  "@channelCommentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelAddComment": "Прокомментировать",
+  "@channelAddComment": {},
+  "channelLeave": "Покинуть канал",
+  "@channelLeave": {},
+  "visibilityOfTheChannelHistory": "Видимость истории канала",
+  "@visibilityOfTheChannelHistory": {},
+  "configureChannel": "Настроить канал",
+  "@configureChannel": {},
+  "whoIsAllowedToJoinThisChannel": "Кому разрешено вступать в этот канал",
+  "@whoIsAllowedToJoinThisChannel": {},
+  "postToChannel": "Публиковать в канале",
+  "@postToChannel": {},
+  "changeGeneralChannelSettings": "Изменить общие настройки канала",
+  "@changeGeneralChannelSettings": {},
+  "banFromChannel": "Заблокировать в канале",
+  "@banFromChannel": {},
+  "kickFromChannel": "Исключить из канала",
+  "@kickFromChannel": {},
+  "unbanFromChannel": "Разблокировать в канале",
+  "@unbanFromChannel": {},
+  "deleteChannelPost": "Удалить публикацию",
+  "@deleteChannelPost": {},
+  "inviteOtherUsersToChannel": "Пригласить других пользователей в этот канал",
+  "@inviteOtherUsersToChannel": {},
+  "changeTheNameOfTheChannel": "Изменить название канала",
+  "@changeTheNameOfTheChannel": {},
+  "changeTheDescriptionOfTheChannel": "Изменить описание канала",
+  "@changeTheDescriptionOfTheChannel": {},
+  "changeTheChannelPermissions": "Изменить права доступа к каналу",
+  "@changeTheChannelPermissions": {},
+  "changeTheVisibilityOfChannelHistory": "Изменить видимость истории канала",
+  "@changeTheVisibilityOfChannelHistory": {},
+  "editChannelAvatar": "Изменить аватар канала",
+  "@editChannelAvatar": {},
+  "channelLeaveSoleAdminMessage": "Вы единственный администратор этого канала. После вашего выхода администратором станет {username}.",
+  "@channelLeaveSoleAdminMessage": {
+    "type": "String",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "channelLeaveSoleMemberMessage": "Вы единственный участник этого канала. После вашего выхода канал будет удалён.",
+  "@channelLeaveSoleMemberMessage": {},
+  "channelSubscribe": "Подписаться",
+  "@channelSubscribe": {
+    "description": "Кнопка подписки на канал внизу экрана для читателя без подписки"
+  },
+  "channelSubscribersCount": "{count, plural, one{{count} подписчик} few{{count} подписчика} many{{count} подписчиков} other{{count} подписчика}}",
+  "@channelSubscribersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelDiscussionOpenFailed": "Не удалось открыть обсуждение",
+  "@channelDiscussionOpenFailed": {},
+  "channelDiscussionOpenSlow": "Обсуждение ещё загружается. Попробуйте ещё раз",
+  "@channelDiscussionOpenSlow": {},
+  "channelThreadEmpty": "Комментариев пока нет. Оставьте первый.",
+  "@channelThreadEmpty": {},
+  "channelOpenFullDiscussion": "Открыть обсуждение",
+  "@channelOpenFullDiscussion": {},
+  "thereAreCountUsersBlocked": "{count, plural, one{Заблокирован {count} пользователь} few{Заблокировано {count} пользователя} many{Заблокировано {count} пользователей} other{Заблокировано {count} пользователя}}",
+  "@thereAreCountUsersBlocked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unreadChats": "{unreadCount, plural, one{{unreadCount} непрочитанный чат} few{{unreadCount} непрочитанных чата} many{{unreadCount} непрочитанных чатов} other{{unreadCount} непрочитанных чата}}",
+  "@unreadChats": {
+    "placeholders": {
+      "unreadCount": {
+        "type": "int"
+      }
+    }
+  },
+  "countVotes": "{count, plural, one{{count} голос} few{{count} голоса} many{{count} голосов} other{{count} голоса}}",
+  "@countVotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countReplies": "{count, plural, one{{count} ответ} few{{count} ответа} many{{count} ответов} other{{count} ответа}}",
+  "@countReplies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countFiles": "{count, plural, one{{count} файл} few{{count} файла} many{{count} файлов} other{{count} файла}}",
+  "@countFiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countInvited": "{count, plural, one{{count} приглашён} few{{count} приглашено} many{{count} приглашено} other{{count} приглашено}}",
+  "@countInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countChatsAndCountParticipants": "{chats, plural, one{{chats} чат} few{{chats} чата} many{{chats} чатов} other{{chats} чата}}, {participants, plural, one{{participants} участник} few{{participants} участника} many{{participants} участников} other{{participants} участника}}",
+  "@countChatsAndCountParticipants": {
+    "placeholders": {
+      "chats": {
+        "type": "int"
+      },
+      "participants": {
+        "type": "int"
+      }
+    }
+  },
+  "transcribe": "Распознать текст",
+  "@transcribe": {},
+  "transcribing": "Распознавание…",
+  "@transcribing": {},
+  "transcriptionFailed": "Не удалось распознать текст",
+  "@transcriptionFailed": {},
+  "noMoreResultsFound": "Больше результатов нет",
+  "@noMoreResultsFound": {},
+  "chatSearchedUntil": "Чат просмотрен до {time}",
+  "@chatSearchedUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "serverLimitReached": "Достигнут лимит сервера. Ожидание {seconds} с…",
+  "@serverLimitReached": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "unreadChatsInApp": "{appname}: непрочитанных чатов — {unread}",
+  "@unreadChatsInApp": {
+    "placeholders": {
+      "appname": {
+        "type": "String"
+      },
+      "unread": {
+        "type": "String"
+      }
+    }
+  },
+  "signInWithLabel": "Войти через:",
+  "@signInWithLabel": {},
+  "versionWithNumber": "Версия: {version}",
+  "@versionWithNumber": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "versionWithBuildNumber": "Версия: {version} ({buildNumber})",
+  "@versionWithBuildNumber": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "buildNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "sendLogsDescription": "Отправить журналы отладки для диагностики проблем",
+  "@sendLogsDescription": {},
+  "logs": "Журналы",
+  "@logs": {},
+  "advancedConfigs": "Расширенные настройки",
+  "@advancedConfigs": {},
+  "advancedConfigurations": "Расширенная конфигурация",
+  "@advancedConfigurations": {},
+  "baseUrl": "Базовый URL",
+  "@baseUrl": {},
+  "federationBaseUrl": "Базовый URL федерации",
+  "@federationBaseUrl": {},
+  "identityServer": "Сервер идентификации",
+  "@identityServer": {},
+  "clientWellKnownInformation": "Информация well-known клиента",
+  "@clientWellKnownInformation": {},
+  "miniAppMore": "Ещё",
+  "@miniAppMore": {},
+  "miniAppCopyLink": "Скопировать ссылку",
+  "@miniAppCopyLink": {},
+  "miniAppCreatingLink": "Создаём ссылку…",
+  "@miniAppCreatingLink": {},
+  "miniAppLoadTimeout": "Превышено время загрузки",
+  "@miniAppLoadTimeout": {},
+  "miniAppLinkFailed": "Не удалось создать ссылку",
+  "@miniAppLinkFailed": {},
+  "miniAppLinkCopied": "Ссылка скопирована",
+  "@miniAppLinkCopied": {},
+  "miniAppPrepareFailed": "Не удалось подготовить приложение",
+  "@miniAppPrepareFailed": {},
+  "miniAppInvalidInvoice": "Некорректные данные invoice",
+  "@miniAppInvalidInvoice": {},
+  "miniAppAuthError": "Ошибка авторизации",
+  "@miniAppAuthError": {},
+  "miniAppInvoiceFailed": "Не удалось создать invoice",
+  "@miniAppInvoiceFailed": {},
+  "miniAppPaymentUnavailable": "Платёжная система недоступна",
+  "@miniAppPaymentUnavailable": {},
+  "miniAppPaymentTitle": "Оплата",
+  "@miniAppPaymentTitle": {},
+  "miniAppPaymentRequest": "Приложение «{appName}» запрашивает оплату.",
+  "@miniAppPaymentRequest": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppPay": "Заплатить {amount}",
+  "@miniAppPay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppReturnWithoutPayment": "Возврат без подтверждения оплаты",
+  "@miniAppReturnWithoutPayment": {},
+  "miniAppOpenLinkTitle": "Открыть ссылку?",
+  "@miniAppOpenLinkTitle": {},
+  "miniAppCloseTitle": "Закрыть приложение?",
+  "@miniAppCloseTitle": {},
+  "miniAppCloseWarning": "Несохранённые данные могут быть потеряны.",
+  "@miniAppCloseWarning": {},
+  "miniAppPaymentDone": "Оплата прошла. Нажмите «Готово».",
+  "@miniAppPaymentDone": {},
+  "miniAppDone": "Готово",
+  "@miniAppDone": {},
+  "miniAppBackToStore": "Вернуться в магазин",
+  "@miniAppBackToStore": {},
+  "miniAppProcessTerminated": "Процесс WebView завершён",
+  "@miniAppProcessTerminated": {},
+  "miniAppLoadFailed": "Не удалось загрузить приложение",
+  "@miniAppLoadFailed": {},
+  "miniAppDataBody": "Данные из Mini App",
+  "@miniAppDataBody": {},
+  "miniAppOpenBotChatFailed": "Не удалось открыть чат с ботом",
+  "@miniAppOpenBotChatFailed": {},
+  "miniAppUploadImageFailed": "Не удалось загрузить изображение",
+  "@miniAppUploadImageFailed": {},
+  "botInvoiceTitle": "Ваш заказ",
+  "@botInvoiceTitle": {},
+  "botInvoiceTotal": "Итого",
+  "@botInvoiceTotal": {},
+  "botInvoiceProceed": "Оформить",
+  "@botInvoiceProceed": {},
+  "botInvoiceComingSoon": "Скоро",
+  "@botInvoiceComingSoon": {},
+  "botInvoiceCheckoutTitle": "Оформление заказа",
+  "@botInvoiceCheckoutTitle": {},
+  "botInvoicePhoneLabel": "Номер телефона",
+  "@botInvoicePhoneLabel": {},
+  "botInvoicePhoneInvalid": "Введите корректный номер телефона",
+  "@botInvoicePhoneInvalid": {},
+  "botInvoiceProceedToPay": "Перейти к оплате",
+  "@botInvoiceProceedToPay": {},
+  "botInvoicePaymentTitle": "Оплата",
+  "@botInvoicePaymentTitle": {},
+  "botInvoicePaid": "Оплачено",
+  "@botInvoicePaid": {},
+  "botInvoicePaymentError": "Ошибка оплаты",
+  "@botInvoicePaymentError": {},
+  "botInvoicePaymentUnavailable": "Оплата недоступна",
+  "@botInvoicePaymentUnavailable": {},
+  "botFatherDescription": "Создавайте ботов и mini App и управляйте ими.",
+  "@botFatherDescription": {},
+  "botFatherLoadFailed": "Не удалось загрузить список. Проверьте соединение и попробуйте снова.",
+  "@botFatherLoadFailed": {},
+  "botFatherSearch": "Поиск",
+  "@botFatherSearch": {},
+  "botFatherSearchBot": "Поиск бота",
+  "@botFatherSearchBot": {},
+  "botFatherMyBots": "Мои боты",
+  "@botFatherMyBots": {},
+  "botFatherMyApps": "Мои приложения",
+  "@botFatherMyApps": {},
+  "botFatherCreateBot": "Создать бота",
+  "@botFatherCreateBot": {},
+  "botFatherCreateApp": "Создать mini App",
+  "@botFatherCreateApp": {},
+  "botFatherBack": "Назад",
+  "@botFatherBack": {},
+  "botFatherOpenBotChat": "Открыть чат с ботом",
+  "@botFatherOpenBotChat": {},
+  "botFatherShowToken": "Показать токен",
+  "@botFatherShowToken": {},
+  "botFatherDeleteBot": "Удалить бота",
+  "@botFatherDeleteBot": {},
+  "botFatherOpenApp": "Открыть mini App",
+  "@botFatherOpenApp": {},
+  "botFatherChangeBot": "Изменить бота",
+  "@botFatherChangeBot": {},
+  "botFatherAttachToBot": "Привязать к боту",
+  "@botFatherAttachToBot": {},
+  "botFatherAppManage": "Настройки, ссылка и удаление",
+  "@botFatherAppManage": {},
+  "botFatherPickBotForApp": "Приложение «{appName}» — выберите бота",
+  "@botFatherPickBotForApp": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "botFatherNoBots": "У вас пока нет ботов. Создайте бота (/newbot), затем вернитесь и привяжите приложение.",
+  "@botFatherNoBots": {},
+  "botFatherBotsNotFound": "Боты не найдены.",
+  "@botFatherBotsNotFound": {},
+  "botFatherTokenBody": "Токен: {name}",
+  "@botFatherTokenBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "botFatherDeleteBody": "Удалить: {name}",
+  "@botFatherDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "botFatherManageBody": "Управление: {name}",
+  "@botFatherManageBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "botFatherAttachBody": "Привязать «{appName}» к «{botName}»",
+  "@botFatherAttachBody": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "botName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppCatalogTitle": "Приложения",
+  "@miniAppCatalogTitle": {},
+  "miniAppCatalogOpenChatToLaunch": "Откройте любой чат, чтобы запустить приложение",
+  "@miniAppCatalogOpenChatToLaunch": {},
+  "miniAppCatalogOpenChatToCabinet": "Откройте любой чат, чтобы открыть кабинет",
+  "@miniAppCatalogOpenChatToCabinet": {},
+  "miniAppCatalogFirstParty": "Продамус",
+  "@miniAppCatalogFirstParty": {},
+  "miniAppCatalogThirdParty": "Стороннее",
+  "@miniAppCatalogThirdParty": {},
+  "miniAppCatalogEmpty": "Пока нет доступных приложений.\nПотяните вниз, чтобы обновить.",
+  "@miniAppCatalogEmpty": {},
+  "miniAppCatalogConnectOwn": "Подключить своё",
+  "@miniAppCatalogConnectOwn": {},
+  "miniAppCatalogLoadFailed": "Не удалось загрузить приложения.\n{error}",
+  "@miniAppCatalogLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppDeveloperCabinet": "Кабинет разработчика",
+  "@miniAppDeveloperCabinet": {},
+  "miniAppAndOthers": "{appName} и ещё {count, plural, one{{count} приложение} few{{count} приложения} many{{count} приложений} other{{count} приложения}}",
+  "@miniAppAndOthers": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatInputOpen": "Открыть",
+  "@chatInputOpen": {},
+  "chatInputMenu": "Меню",
+  "@chatInputMenu": {},
+  "miniAppOrderNumber": "Заказ #{orderId}",
+  "@miniAppOrderNumber": {
+    "placeholders": {
+      "orderId": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppOrder": "Заказ",
+  "@miniAppOrder": {},
+  "miniAppOrderTotal": "Итого:",
+  "@miniAppOrderTotal": {},
+  "miniAppStatusPending": "Ожидает оплату",
+  "@miniAppStatusPending": {},
+  "miniAppStatusPaid": "Оплачен",
+  "@miniAppStatusPaid": {},
+  "miniAppStatusProcessing": "В обработке",
+  "@miniAppStatusProcessing": {},
+  "miniAppStatusShipped": "Отправлен",
+  "@miniAppStatusShipped": {},
+  "miniAppStatusDelivered": "Доставлен",
+  "@miniAppStatusDelivered": {},
+  "miniAppStatusCancelled": "Отменён",
+  "@miniAppStatusCancelled": {},
+  "miniAppStatusFailed": "Ошибка оплаты",
+  "@miniAppStatusFailed": {},
+  "miniAppListDefaultTitle": "Ваши приложения",
+  "@miniAppListDefaultTitle": {},
+  "miniAppChoiceSelected": "Выбрано: {label}",
+  "@miniAppChoiceSelected": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "miniAppFallbackName": "Мини-приложение",
+  "@miniAppFallbackName": {},
+  "miniAppLaunchSemantics": "Мини-приложение {appName}. Кнопка: {buttonText}",
+  "@miniAppLaunchSemantics": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      },
+      "buttonText": {
+        "type": "String"
+      }
+    }
+  },
+  "chatBlockUser": "Заблокировать",
+  "@chatBlockUser": {},
+  "chatBlockUserWarning": "Пользователь больше не сможет отправлять вам сообщения.",
+  "@chatBlockUserWarning": {},
+  "chatUnblockUser": "Разблокировать",
+  "@chatUnblockUser": {},
+  "loginUsername": "Логин",
+  "@loginUsername": {},
+  "dialerHangup": "Завершить",
+  "@dialerHangup": {},
+  "dialerAnswer": "Ответить",
+  "@dialerAnswer": {},
+  "testNotificationSent": "Тестовое уведомление отправлено",
+  "@testNotificationSent": {},
+  "testNotificationError": "Ошибка: {error}",
+  "@testNotificationError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pollParseError": "Не удалось разобрать событие опроса…",
+  "@pollParseError": {},
+  "youAreNotInThisChat": "Вы не участник этого чата",
+  "@youAreNotInThisChat": {},
+  "youAreNotInThisChatMessage": "Вам пришла ссылка на сообщение из закрытого чата, но вы не состоите в нём. Открыть чат могут только его участники.",
+  "@youAreNotInThisChatMessage": {},
+  "logTruncated": "=== [обрезано: скопирован конец лога; полный — «Поделиться файлом»] ===\n",
+  "@logTruncated": {},
+  "roleFilterAll": "Все",
+  "@roleFilterAll": {},
+  "roleFilterAdmins": "Администраторы",
+  "@roleFilterAdmins": {},
+  "roleFilterModerators": "Модераторы",
+  "@roleFilterModerators": {},
+  "roleFilterUsers": "Пользователи",
+  "@roleFilterUsers": {},
+  "memberFilterOnServer": "На сервере",
+  "@memberFilterOnServer": {},
+  "memberFilterInCompany": "В компании",
+  "@memberFilterInCompany": {},
+  "accessManagement": "Управление доступами",
+  "@accessManagement": {},
+  "accessDossierServer": "Сервер",
+  "@accessDossierServer": {},
+  "accessDossierSpaces": "Компании",
+  "@accessDossierSpaces": {},
+  "accessDossierChannels": "Каналы",
+  "@accessDossierChannels": {},
+  "accessDossierChats": "Чаты",
+  "@accessDossierChats": {},
+  "accessDossierBots": "Боты",
+  "@accessDossierBots": {},
+  "accessFilterAll": "Все",
+  "@accessFilterAll": {},
+  "unnamedRoom": "Без названия",
+  "@unnamedRoom": {},
+  "accessLevelAdmin": "Администратор",
+  "@accessLevelAdmin": {},
+  "accessLevelModerator": "Модератор",
+  "@accessLevelModerator": {},
+  "accessLevelUser": "Пользователь",
+  "@accessLevelUser": {},
+  "accessDeactivateAccount": "Деактивировать аккаунт",
+  "@accessDeactivateAccount": {},
+  "accessReactivateAccount": "Реактивировать аккаунт",
+  "@accessReactivateAccount": {},
+  "accessDeactivateConfirmTitle": "Деактивировать аккаунт?",
+  "@accessDeactivateConfirmTitle": {},
+  "accessDeactivateConfirmMessage": "{name} потеряет доступ: активные сессии будут завершены, вход заблокирован. Чаты, компании и данные сохранятся — действие обратимо.",
+  "@accessDeactivateConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accessReactivateConfirmTitle": "Реактивировать аккаунт?",
+  "@accessReactivateConfirmTitle": {},
+  "accessReactivateConfirmMessage": "{name} снова получит доступ к аккаунту и сможет войти.",
+  "@accessReactivateConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accessAccountDeactivated": "Аккаунт деактивирован",
+  "@accessAccountDeactivated": {},
+  "accessAccountReactivated": "Аккаунт реактивирован",
+  "@accessAccountReactivated": {},
+  "accessForeignServerAccount": "Аккаунт принадлежит другому серверу",
+  "@accessForeignServerAccount": {},
+  "accessDossierEmpty": "Нет членств на этом сервере",
+  "@accessDossierEmpty": {},
+  "accessDossierLoadFailed": "Не удалось загрузить данные о доступах",
+  "@accessDossierLoadFailed": {},
+  "channelDescription": "Описание канала",
+  "@channelDescription": {},
+  "setChannelDescription": "Задать описание канала",
+  "@setChannelDescription": {},
+  "noChannelDescriptionYet": "Описания канала пока нет.",
+  "@noChannelDescriptionYet": {},
+  "channelDescriptionHasBeenChanged": "Описание канала изменено",
+  "@channelDescriptionHasBeenChanged": {},
+  "channelPermissions": "Права в канале",
+  "@channelPermissions": {},
+  "channelPermissionsDescription": "Задайте уровень доступа для выполнения определённых действий. Доступны три уровня:\n• Пользователь — базовый уровень доступа.\n• Модератор — включает все права пользователя, а также дополнительные права модератора.\n• Администратор — наивысший уровень, включает все права пользователя и модератора, а также дополнительные права администратора.",
+  "@channelPermissionsDescription": {},
+  "leftTheChannel": "Покинул канал",
+  "@leftTheChannel": {},
+  "memberViaChildRoomsOnly": "Только в дочерних чатах",
+  "@memberViaChildRoomsOnly": {},
+  "roleAdminOfCompany": "Админ компании",
+  "@roleAdminOfCompany": {},
+  "roleModeratorOfCompany": "Модератор компании",
+  "@roleModeratorOfCompany": {},
+  "roleAdminOfSpace": "Админ пространства",
+  "@roleAdminOfSpace": {},
+  "roleModeratorOfSpace": "Модератор пространства",
+  "@roleModeratorOfSpace": {},
+  "roleAdminInRooms": "{count, plural, one{Админ в {count} сущности} few{Админ в {count} сущностях} many{Админ в {count} сущностях} other{Админ в {count} сущностях}}",
+  "@roleAdminInRooms": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roleModeratorInRooms": "{count, plural, one{Модератор в {count} сущности} few{Модератор в {count} сущностях} many{Модератор в {count} сущностях} other{Модератор в {count} сущностях}}",
+  "@roleModeratorInRooms": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roleBadgeBot": "Бот",
+  "demoAuthContinue": "Продолжить",
+  "@demoAuthContinue": {},
+  "demoAuthSmsTitle": "Введите код",
+  "@demoAuthSmsTitle": {},
+  "demoAuthSmsHint": "Мы отправили СМС на номер {phone}.",
+  "@demoAuthSmsHint": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthResendIn": "Отправить повторно через {time}",
+  "@demoAuthResendIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthEmailCodeTitle": "Код подтверждения",
+  "@demoAuthEmailCodeTitle": {},
+  "demoAuthEmailCodeHint": "Проверьте почту {email} (не забудьте о папке со спамом) и введите код, который получили в письме.",
+  "@demoAuthEmailCodeHint": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthInvalidPhone": "Введите корректный номер телефона",
+  "@demoAuthInvalidPhone": {},
+  "demoAuthInvalidCode": "Неверный код",
+  "@demoAuthInvalidCode": {},
+  "demoAuthCodeExpired": "Срок действия кода истёк",
+  "@demoAuthCodeExpired": {},
+  "demoAuthAttemptsExhausted": "Попытки исчерпаны, запросите код заново",
+  "@demoAuthAttemptsExhausted": {},
+  "demoAuthSessionExpired": "Сессия истекла, начните заново",
+  "@demoAuthSessionExpired": {},
+  "demoAuthGenericError": "Что-то пошло не так. Попробуйте ещё раз",
+  "@demoAuthGenericError": {},
+  "demoAuthResendTooSoon": "Код уже отправлен, подождите немного",
+  "@demoAuthResendTooSoon": {},
+  "demoAuthEmailSendFailed": "Не удалось отправить письмо. Попробуйте ещё раз",
+  "@demoAuthEmailSendFailed": {},
+  "demoAuthInvalidEmail": "Введите корректный адрес почты",
+  "@demoAuthInvalidEmail": {},
+  "demoAuthDeliveryFailed": "Не удалось отправить код. Попробуйте ещё раз или напишите в поддержку",
+  "@demoAuthDeliveryFailed": {},
+  "demoAuthRateLimited": "Слишком много запросов кода. Попробуйте позже",
+  "@demoAuthRateLimited": {},
+  "demoAuthDetailLimitPerHour": "Лимит на отправку кода исчерпан. Новый код можно запросить через час",
+  "@demoAuthDetailLimitPerHour": {},
+  "demoAuthDetailAttemptsExhausted": "Слишком много неверных попыток — этот код больше не действует",
+  "@demoAuthDetailAttemptsExhausted": {},
+  "demoAuthDetailExpired": "Срок действия кода истёк",
+  "@demoAuthDetailExpired": {},
+  "demoAuthDetailNotFound": "Код не найден. Запросите новый",
+  "@demoAuthDetailNotFound": {},
+  "demoAuthDetailInvalid": "Неверный код",
+  "@demoAuthDetailInvalid": {},
+  "demoAuthResendLimitReached": "Слишком много попыток повторной отправки",
+  "@demoAuthResendLimitReached": {},
+  "supportContactTitle": "Написать в поддержку",
+  "@supportContactTitle": {},
+  "supportContactEmail": "Email для связи",
+  "@supportContactEmail": {},
+  "supportContactText": "Текст обращения",
+  "@supportContactText": {},
+  "supportContactSend": "Отправить",
+  "@supportContactSend": {},
+  "supportContactSent": "Обращение отправлено, ответим на почту",
+  "@supportContactSent": {},
+  "supportContactButton": "Написать в поддержку",
+  "@supportContactButton": {},
+  "demoAuthRegistrationRejected": "Не удалось создать аккаунт для этого номера. Проверьте номер и попробуйте снова или напишите в поддержку",
+  "@demoAuthRegistrationRejected": {},
+  "demoAuthKeycloakError": "Сервис авторизации недоступен. Попробуйте позже",
+  "@demoAuthKeycloakError": {},
+  "demoAuthSynapseError": "Сервер Liza недоступен. Попробуйте позже",
+  "@demoAuthSynapseError": {},
+  "invitePeople": "Пригласить людей",
+  "@invitePeople": {},
+  "inviteFriends": "Пригласить друзей",
+  "@inviteFriends": {},
+  "inviteMessageText": "Я пользуюсь Liza. Присоединяйтесь! {link}",
+  "@inviteMessageText": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "contactsTitle": "Контакты",
+  "@contactsTitle": {},
+  "contactsPermissionRationale": "Разрешите доступ к контактам, чтобы увидеть, кто из ваших знакомых уже в Liza, и пригласить остальных.",
+  "@contactsPermissionRationale": {},
+  "contactsPermissionDenied": "Доступ к контактам запрещён. Включите его в настройках системы, чтобы найти знакомых в Liza.",
+  "@contactsPermissionDenied": {},
+  "openSettings": "Открыть настройки",
+  "@openSettings": {},
+  "writeMessage": "Написать",
+  "@writeMessage": {},
+  "noContactsToShow": "Нет контактов для показа",
+  "@noContactsToShow": {},
+  "contactsOnLiza": "Уже в Liza",
+  "@contactsOnLiza": {},
+  "contactsInviteHint": "Пригласить в Liza",
+  "@contactsInviteHint": {},
+  "lizaTagline": "Платформа для вашего общения",
+  "@lizaTagline": {},
+  "lizaTaglineDetails": "С людьми и ИИ-ассистентом Лизой — ищет, помогает, расширяется под вас.",
+  "@lizaTaglineDetails": {},
+  "demoAuthPhoneFieldTitle": "Введите номер телефона",
+  "@demoAuthPhoneFieldTitle": {},
+  "demoAuthPhonePlaceholder": "+7 (999) 999-99-99",
+  "@demoAuthPhonePlaceholder": {},
+  "demoAuthPhoneCaption": "Отправим код подтверждения для входа",
+  "@demoAuthPhoneCaption": {},
+  "demoAuthLegalNotice": "Нажимая «Продолжить», вы принимаете {terms} и {privacy}",
+  "@demoAuthLegalNotice": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthTermsLink": "условия использования",
+  "@demoAuthTermsLink": {},
+  "demoAuthPrivacyLink": "политику конфиденциальности",
+  "@demoAuthPrivacyLink": {},
+  "demoAuthOtherChannel": "Другой способ",
+  "@demoAuthOtherChannel": {},
+  "demoAuthResendAgain": "Отправить ещё раз",
+  "@demoAuthResendAgain": {},
+  "demoAuthStartingTitle": "Отправляем код",
+  "@demoAuthStartingTitle": {},
+  "demoAuthStartingHint": "Подождите, выбираем способ доставки",
+  "@demoAuthStartingHint": {},
+  "demoAuthChannelPickerTitle": "Как отправить код",
+  "@demoAuthChannelPickerTitle": {},
+  "demoAuthChannelPhone": "СМС-код",
+  "@demoAuthChannelPhone": {},
+  "demoAuthChannelEmail": "Email",
+  "@demoAuthChannelEmail": {},
+  "demoAuthChannelCurrent": "{channel} — сейчас",
+  "@demoAuthChannelCurrent": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsEmailReason": "Введите свой email. Резервный способ, если код для входа не придёт по SMS",
+  "@settingsEmailReason": {},
+  "termsOfUse": "Пользовательское соглашение",
+  "@termsOfUse": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "aboutSourceCodeLiza": "Исходный код Liza",
+  "@aboutSourceCodeLiza": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "aboutLicenseNotice": "FluffyChat, Synapse и Sygnal, на которых основана Liza, распространяются по лицензии GNU AGPL v3.",
+  "@aboutLicenseNotice": {
+    "type": "String",
+    "placeholders": {}
+  },
+  "newsPollNotAnonymous": "Опрос · не анонимный",
+  "newsPollMultipleHint": "Можно выбрать несколько вариантов",
+  "newsPollClosed": "Опрос закрыт",
+  "newsPollVoteCounted": "Ваш голос учтён",
+  "newsPollSending": "Отправляется…",
+  "newsPollVoteFailed": "Не удалось проголосовать. Попробуйте ещё раз",
+  "newsPollVote": "Проголосовать",
+  "newsPollRetractVote": "Отменить голос",
+  "newsPollResults": "Результаты",
+  "newsPollResultsTitle": "Результаты опроса",
+  "newsPollNoVotes": "Пока никто не голосовал",
+  "newsPollResultsForbidden": "Результаты доступны разработчикам из списка редакции",
+  "newsPollResultsFailed": "Не удалось загрузить результаты",
+  "newsPollRefresh": "Обновить",
+  "newsPollTotalVoters": "Проголосовали: {count}",
+  "newsPollOptionVotes": "Голосов: {count}"
+}

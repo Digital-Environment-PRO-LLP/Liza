@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+
+import 'package:matrix/matrix.dart';
+
+import 'package:liza/config/app_config.dart';
+import 'package:liza/pages/image_viewer/image_viewer.dart';
+import 'package:liza/widgets/mxc_image.dart';
+import '../../../widgets/blur_hash.dart';
+
+class ImageBubble extends StatelessWidget {
+  final Event event;
+  final bool tapToView;
+  final BoxFit fit;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? linkColor;
+  final bool thumbnailOnly;
+  final bool animated;
+  final double width;
+  final double height;
+  final void Function()? onTap;
+  final BorderRadius? borderRadius;
+  final Timeline? timeline;
+
+  /// Плашка времени (Liza-стиль) — в правом нижнем углу поверх картинки.
+  final Widget? timeOverlay;
+
+  const ImageBubble(
+    this.event, {
+    this.tapToView = true,
+    this.backgroundColor,
+    this.fit = BoxFit.contain,
+    this.thumbnailOnly = true,
+    this.width = 400,
+    this.height = 300,
+    this.animated = false,
+    this.onTap,
+    this.borderRadius,
+    this.timeline,
+    this.textColor,
+    this.linkColor,
+    this.timeOverlay,
+    super.key,
+  });
+
+  Widget _buildPlaceholder(BuildContext context) {
+    final String blurHashString =
+        event.infoMap['xyz.amorgan.blurhash'] is String
+        ? event.infoMap['xyz.amorgan.blurhash']
+        : 'LEHV6nWB2yk8pyo0adR*.7kCMdnj';
+    return SizedBox(
+      width: width,
+      height: height,
+      child: BlurHash(
+        blurhash: blurHashString,
+        width: width,
+        height: height,
+        fit: fit,
+      ),
+    );
+  }
+
+  void _onTap(BuildContext context) {
+    if (onTap != null) {
+      onTap!();
+      return;
+    }
+    if (!tapToView) return;
+    showDialog(
+      context: context,
+      builder: (_) =>
+          ImageViewer(event, timeline: timeline, outerContext: context),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final borderRadius =
+        this.borderRadius ?? BorderRadius.circular(AppConfig.borderRadius);
+
+    return Material(
+      color: Colors.transparent,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+        side: BorderSide(
+          color: event.messageType == MessageTypes.Sticker
+              ? Colors.transparent
+              : theme.dividerColor,
+        ),
+      ),
+      child: InkWell(
+        onTap: () => _onTap(context),
+        borderRadius: borderRadius,
+        child: Stack(
+          children: [
+            Hero(
+              tag: event.eventId,
+              child: MxcImage(
+                event: event,
+                width: width,
+                height: height,
+                fit: fit,
+                animated: animated,
+                isThumbnail: thumbnailOnly,
+                placeholder: event.messageType == MessageTypes.Sticker
+                    ? null
+                    : _buildPlaceholder,
+              ),
+            ),
+            if (timeOverlay != null)
+              Positioned(bottom: 6, right: 6, child: timeOverlay!),
+          ],
+        ),
+      ),
+    );
+  }
+}

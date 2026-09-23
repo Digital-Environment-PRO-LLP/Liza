@@ -1,0 +1,83 @@
+# syntax=docker/dockerfile:1
+# Dockerfile для разработки на основе официального editable.Dockerfile
+# Поддерживает hot reload и правильно компилирует Rust компоненты
+
+ARG PYTHON_VERSION=3.12
+
+FROM docker.io/library/python:${PYTHON_VERSION}-slim-bookworm
+
+# Устанавливаем системные зависимости
+RUN \
+   --mount=type=cache,target=/var/cache/apt,sharing=locked \
+   --mount=type=cache,target=/var/lib/apt,sharing=locked \
+ apt-get update -qq && apt-get install -yqq \
+    build-essential \
+    libffi-dev \
+    libjpeg-dev \
+    libpq-dev \
+    libssl-dev \
+    libwebp-dev \
+    libxml++2.6-dev \
+    libxslt1-dev \
+    libsystemd-dev \
+    libicu-dev \
+    libjemalloc-dev \
+    openssl \
+    zlib1g-dev \
+    git \
+    curl \
+    gosu \
+    libjpeg62-turbo \
+    libpq5 \
+    libwebp7 \
+    xmlsec1 \
+    libjemalloc2 \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем Rust
+ENV RUSTUP_HOME=/rust
+ENV CARGO_HOME=/cargo
+ENV PATH=/cargo/bin:/rust/bin:$PATH
+RUN mkdir /rust /cargo
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain 1.82.0 --profile minimal
+
+# Создаем базовую копию исходного кода для установки
+COPY synapse /editable-src/synapse/
+COPY rust /editable-src/rust/
+COPY pyproject.toml poetry.lock README.rst build_rust.py Cargo.toml Cargo.lock /editable-src/
+
+# Устанавливаем Poetry и зависимости
+RUN pip install poetry
+RUN poetry config virtualenvs.create false
+RUN cd /editable-src && poetry install --extras all
+RUN pip install synapse-s3-storage-provider
+# maturin — build backend для Synapse 1.151.0+ (pyproject.toml).
+# Нужен для pip install -e ".[all]" --no-build-isolation в start-dev.py;
+# без него pip падает с BackendUnavailable → .egg-info не обновляется →
+# ABI mismatch между Python и Rust .so → SIGSEGV. См. SIGSEGV_INVESTIGATION.md.
+RUN pip install "maturin>=1.0,<2.0"
+# ВРЕМЕННО ОТКЛЮЧЕНО: faster-whisper тянет PyAV, который вызывает SIGSEGV при GC
+# См. servers/synapse/SIGSEGV_INVESTIGATION.md
+# RUN pip install faster-whisper>=1.0.0 pydub>=0.25.1
+
+# Сохраняем скомпилированный Rust модуль и poetry.lock для проверок
+RUN cp /editable-src/synapse/synapse_rust.abi3.so /synapse_rust.abi3.so.bak || echo "Rust module not found, will be created at runtime"
+RUN cp /editable-src/poetry.lock /poetry.lock.bak
+
+# Копируем скрипты запуска
+COPY docker/start-dev.py /start.py
+COPY docker/conf /conf
+
+# Делаем скрипт исполняемым
+RUN chmod +x /start.py
+
+# Открываем порты
+EXPOSE 8008/tcp 8009/tcp 8448/tcp
+
+# Команда запуска
+ENTRYPOINT ["/start.py"]
+
+# Healthcheck
+HEALTHCHECK --start-period=5s --interval=15s --timeout=5s \
+    CMD curl -fSs http://localhost:8008/health || exit 1

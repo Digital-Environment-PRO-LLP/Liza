@@ -1,0 +1,213 @@
+"""Тесты матрицы прав access_admin."""
+
+import asyncio
+import unittest
+
+from synapse_modules.access_admin._permissions import PermissionChecker
+
+SERVER = "liza.example"
+
+
+def _run(coro):
+    return asyncio.run(coro)
+
+
+class _FakeAccountData:
+    def __init__(self, roles: dict[str, str]):
+        self._roles = roles
+
+    async def get_global(self, user_id: str, type_: str):
+        role = self._roles.get(user_id)
+        return None if role is None else {"role": role}
+
+
+class _FakeSpaces:
+    def __init__(
+        self,
+        powers: dict[tuple[str, str], list[int]] = None,
+        room_powers: dict[tuple[str, str], int] = None,
+    ):
+        self._powers = powers or {}
+        self._room_powers = room_powers or {}
+
+    async def shared_space_powers(self, caller_id: str, target_id: str):
+        return self._powers.get((caller_id, target_id), [])
+
+    async def power_in_room(self, user_id: str, room_id: str) -> int:
+        return self._room_powers.get((user_id, room_id), 0)
+
+
+def _checker(roles=None, powers=None, server_admins=None, room_powers=None):
+    admins = set(server_admins or ())
+
+    async def _is_server_admin(user_id: str) -> bool:
+        return user_id in admins
+
+    return PermissionChecker(
+        account_data=_FakeAccountData(roles or {}),
+        spaces_lookup=_FakeSpaces(powers, room_powers),
+        server_name=SERVER,
+        is_server_admin=_is_server_admin,
+    )
+
+
+class MayViewTestCase(unittest.TestCase):
+    def test_server_admin_by_role_may_view(self):
+        c = _checker(roles={"@boss:liza.example": "admin"})
+        self.assertTrue(
+            _run(c.may_view("@boss:liza.example", "@u:liza.example"))
+        )
+
+    def test_space_admin_may_view(self):
+        c = _checker(powers={("@boss:liza.example", "@u:liza.example"): [100]})
+        self.assertTrue(
+            _run(c.may_view("@boss:liza.example", "@u:liza.example"))
+        )
+
+    def test_moderator_may_not_view(self):
+        c = _checker(powers={("@mod:liza.example", "@u:liza.example"): [50]})
+        self.assertFalse(
+            _run(c.may_view("@mod:liza.example", "@u:liza.example"))
+        )
+
+    def test_plain_user_may_not_view(self):
+        c = _checker(roles={"@u:liza.example": "user"})
+        self.assertFalse(
+            _run(c.may_view("@u:liza.example", "@other:liza.example"))
+        )
+
+    def test_admin_in_unrelated_space_may_not_view(self):
+        """PL 100 в чужом пространстве не даёт прав: список пуст."""
+        c = _checker(powers={("@boss:liza.example", "@other:liza.example"): []})
+        self.assertFalse(
+            _run(c.may_view("@boss:liza.example", "@other:liza.example"))
+        )
+
+    def test_server_admin_flag_without_role_may_view(self):
+        """users.admin=1 в Synapse, но роль в каталоге НЕ admin (прод-кейс)."""
+        c = _checker(
+            roles={"@admin:liza.example": "user"},
+            server_admins={"@admin:liza.example"},
+        )
+        self.assertTrue(
+            _run(c.may_view("@admin:liza.example", "@u:liza.example"))
+        )
+
+    def test_server_admin_flag_without_any_role_entry_may_view(self):
+        c = _checker(server_admins={"@admin:liza.example"})
+        self.assertTrue(
+            _run(c.may_view("@admin:liza.example", "@u:liza.example"))
+        )
+
+    def test_no_shared_space_with_federated_target_may_not_view(self):
+        """Страховка после Task 4: is_local_room больше не фильтрует по
+        домену, поэтому shared_space_powers теперь способен вернуть
+        пространства и с федеративным участием. Но право по-прежнему
+        держится на ФАКТЕ общего пространства — если у вызывающего и
+        федеративной цели общих пространств нет, доступа быть не должно.
+        """
+        c = _checker(powers={("@boss:liza.example", "@ivan:other.example"): []})
+        self.assertFalse(
+            _run(c.may_view("@boss:liza.example", "@ivan:other.example"))
+        )
+
+
+class MayDeactivateTestCase(unittest.TestCase):
+    def test_server_admin_may_deactivate_local(self):
+        c = _checker(roles={"@boss:liza.example": "admin"})
+        allowed, reason = _run(
+            c.may_deactivate("@boss:liza.example", "@u:liza.example")
+        )
+        self.assertTrue(allowed)
+        self.assertIsNone(reason)
+
+    def test_space_admin_may_deactivate_local(self):
+        c = _checker(powers={("@boss:liza.example", "@u:liza.example"): [100]})
+        allowed, reason = _run(
+            c.may_deactivate("@boss:liza.example", "@u:liza.example")
+        )
+        self.assertTrue(allowed)
+        self.assertIsNone(reason)
+
+    def test_cannot_deactivate_self(self):
+        c = _checker(roles={"@boss:liza.example": "admin"})
+        allowed, reason = _run(
+            c.may_deactivate("@boss:liza.example", "@boss:liza.example")
+        )
+        self.assertFalse(allowed)
+        self.assertEqual(reason, "self")
+
+    def test_cannot_deactivate_foreign_server_account(self):
+        c = _checker(roles={"@boss:liza.example": "admin"})
+        allowed, reason = _run(
+            c.may_deactivate("@boss:liza.example", "@u:other.example")
+        )
+        self.assertFalse(allowed)
+        self.assertEqual(reason, "foreign_server")
+
+    def test_plain_user_forbidden(self):
+        c = _checker()
+        allowed, reason = _run(
+            c.may_deactivate("@u:liza.example", "@other:liza.example")
+        )
+        self.assertFalse(allowed)
+        self.assertEqual(reason, "forbidden")
+
+    def test_self_check_precedes_permission_check(self):
+        """Обычный юзер на самом себе получает 'self', не 'forbidden'."""
+        c = _checker()
+        allowed, reason = _run(
+            c.may_deactivate("@u:liza.example", "@u:liza.example")
+        )
+        self.assertFalse(allowed)
+        self.assertEqual(reason, "self")
+
+    def test_server_admin_flag_may_deactivate_without_role_or_pl(self):
+        c = _checker(
+            roles={"@admin:liza.example": "user"},
+            server_admins={"@admin:liza.example"},
+        )
+        allowed, reason = _run(
+            c.may_deactivate("@admin:liza.example", "@u:liza.example")
+        )
+        self.assertTrue(allowed)
+        self.assertIsNone(reason)
+
+
+class MayViewSpaceTestCase(unittest.TestCase):
+    """Порог модератора (PL>=50) — иначе список участников пространства
+    "ломается" для роли, которой клиент его показывает (chat_topology.dart
+    canSeeMembersAt: moderatorPowerLevel), см. согласование Task 6."""
+
+    SPACE = "!space:liza.example"
+
+    def test_pl_100_in_space_may_view(self):
+        c = _checker(room_powers={("@boss:liza.example", self.SPACE): 100})
+        self.assertTrue(_run(c.may_view_space("@boss:liza.example", self.SPACE)))
+
+    def test_pl_50_in_space_may_view(self):
+        """Граница — главный кейс правки: модератор, не только админ."""
+        c = _checker(room_powers={("@mod:liza.example", self.SPACE): 50})
+        self.assertTrue(_run(c.may_view_space("@mod:liza.example", self.SPACE)))
+
+    def test_pl_49_in_space_may_not_view(self):
+        c = _checker(room_powers={("@u:liza.example", self.SPACE): 49})
+        self.assertFalse(_run(c.may_view_space("@u:liza.example", self.SPACE)))
+
+    def test_pl_0_or_not_member_may_not_view(self):
+        c = _checker()
+        self.assertFalse(_run(c.may_view_space("@u:liza.example", self.SPACE)))
+
+    def test_server_admin_may_view_without_pl(self):
+        c = _checker(server_admins={"@admin:liza.example"})
+        self.assertTrue(
+            _run(c.may_view_space("@admin:liza.example", self.SPACE))
+        )
+
+    def test_admin_role_may_view_without_pl(self):
+        c = _checker(roles={"@boss:liza.example": "admin"})
+        self.assertTrue(_run(c.may_view_space("@boss:liza.example", self.SPACE)))
+
+
+if __name__ == "__main__":
+    unittest.main()

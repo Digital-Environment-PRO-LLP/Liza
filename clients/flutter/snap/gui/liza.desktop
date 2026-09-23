@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Liza
+GenericName=Matrix Client
+Comment=Matrix messenger by Prodamus
+Exec=liza-messenger
+Icon=${SNAP}/meta/gui/liza.png
+Terminal=false
+Type=Application
+Categories=Network;Chat;InstantMessaging;

@@ -1,0 +1,14 @@
+Liza — Matrix-клиент на основе FluffyChat.
+
+Этот каталог содержит модифицированную версию FluffyChat
+(https://github.com/krille-chan/fluffychat),
+Copyright (C) 2019-2026 Christian Kußowski и авторы FluffyChat.
+
+Модификации Liza: Copyright (C) 2026 авторы Liza.
+
+И оригинальный код, и модификации распространяются на условиях
+GNU Affero General Public License версии 3 (см. файл LICENSE).
+Исходный код Liza: https://github.com/Digital-Environment-PRO-LLP/Liza
+
+Пакет packages/swipe_to_action распространяется по лицензии MIT
+(см. packages/swipe_to_action/LICENSE).

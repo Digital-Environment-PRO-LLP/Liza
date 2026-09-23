@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider для pasteboard.writeImage: плагин пишет PNG в context.cacheDir
+     и отдаёт его наружу через ContentProvider с authority ${applicationId}.provider.
+     Без этого «Скопировать изображение» падает IllegalArgumentException. -->
+<paths>
+    <cache-path name="pasteboard_cache" path="." />
+</paths>

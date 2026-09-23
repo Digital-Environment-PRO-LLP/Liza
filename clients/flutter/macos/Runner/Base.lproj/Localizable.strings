@@ -1,0 +1,91 @@
+/* Standard Matrix/Sygnal push notification loc-keys */
+
+/* Message with sender and content: "Alice: Hello" */
+"MSG_FROM_USER_WITH_CONTENT" = "%1$@: %2$@";
+
+/* Message with content only */
+"MSG_WITH_CONTENT" = "%1$@: %2$@";
+
+/* Message from user (no content) */
+"MSG_FROM_USER" = "%@ sent a message";
+
+/* Message from user in a room */
+"MSG_FROM_USER_IN_ROOM" = "%1$@ in %2$@";
+
+/* Image from user */
+"IMAGE_FROM_USER" = "%@ sent an image";
+
+/* Video from user */
+"VIDEO_FROM_USER" = "%@ sent a video";
+
+/* Audio from user */
+"AUDIO_FROM_USER" = "%@ sent an audio message";
+
+/* File from user */
+"FILE_FROM_USER" = "%@ sent a file";
+
+/* Sticker from user */
+"STICKER_FROM_USER" = "%@ sent a sticker";
+
+/* Reaction from user */
+"REACT_FROM_USER" = "%@ reacted";
+
+/* Key verification request */
+"KEY_VERIFICATION_REQUEST" = "%@ is requesting verification";
+
+/* Incoming VoIP call */
+"VOIP_INCOMING" = "Incoming call from %@";
+
+/* Reply */
+"MSG_REPLY" = "%@ replied";
+
+/* Invite from user */
+"INVITE_FROM_USER" = "%@ invited you";
+
+/* Invite from user to room */
+"INVITE_FROM_USER_TO_ROOM" = "%1$@ invited you to %2$@";
+
+/* Room invite */
+"ROOM_INVITE_FROM_USER" = "%@ invited you to a room";
+
+/* Location from user */
+"LOCATION_FROM_USER" = "%@ shared their location";
+
+/* Message from user in a room with content */
+"MSG_FROM_USER_IN_ROOM_WITH_CONTENT" = "%1$@ in %2$@: %3$@";
+
+/* Room name title for messages in a room */
+"MSG_FROM_USER_IN_ROOM_TITLE" = "%1$@";
+
+/* Image from user in a room */
+"IMAGE_FROM_USER_IN_ROOM" = "%1$@ sent an image in %2$@";
+
+/* Emote action from user */
+"ACTION_FROM_USER" = "%1$@ %2$@";
+
+/* Emote action from user in a room */
+"ACTION_FROM_USER_IN_ROOM" = "%2$@ %3$@ in %1$@";
+
+/* Voice call from user */
+"VOICE_CALL_FROM_USER" = "Voice call from %1$@";
+
+/* Voice call from user in a room */
+"VOICE_CALL_FROM_USER_IN_ROOM" = "Voice call from %1$@ in %2$@";
+
+/* Video call from user */
+"VIDEO_CALL_FROM_USER" = "Video call from %1$@";
+
+/* Video call from user in a room */
+"VIDEO_CALL_FROM_USER_IN_ROOM" = "Video call from %1$@ in %2$@";
+
+/* Invite to unnamed chat */
+"USER_INVITE_TO_CHAT" = "%1$@ invited you to chat";
+
+/* Invite to named room */
+"USER_INVITE_TO_NAMED_ROOM" = "%1$@ invited you to %2$@";
+
+/* Encrypted message */
+"ENCRYPTED_MSG" = "New encrypted message";
+
+/* Fallback for unknown keys */
+"UNSUPPORTED_KEY" = "New message";

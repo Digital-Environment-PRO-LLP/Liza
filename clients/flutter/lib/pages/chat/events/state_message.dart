@@ -1,0 +1,106 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+import 'package:matrix/matrix.dart';
+
+import 'package:liza/config/setting_keys.dart';
+import 'package:liza/config/themes.dart';
+import 'package:liza/l10n/l10n.dart';
+import 'package:liza/utils/matrix_sdk_extensions/matrix_locals.dart';
+import '../../../config/app_config.dart';
+
+class StateMessage extends StatelessWidget {
+  final Event event;
+  final void Function()? onExpand;
+  final bool isCollapsed;
+  const StateMessage(
+    this.event, {
+    this.onExpand,
+    this.isCollapsed = false,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hiddenEventTypes.contains(event.type)) {
+      return const SizedBox.shrink();
+    }
+    if (event.type == EventTypes.RoomMember &&
+        shouldHideMemberEvent(
+          event.content['membership'] as String?,
+          event.prevContent?['membership'] as String?,
+        )) {
+      return const SizedBox.shrink();
+    }
+    final theme = Theme.of(context);
+    return AnimatedSize(
+      duration: LizaThemes.animationDuration,
+      curve: LizaThemes.animationCurve,
+      child: isCollapsed
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Material(
+                    color: theme.colorScheme.surface.withAlpha(128),
+                    borderRadius: BorderRadius.circular(
+                      AppConfig.borderRadius / 3,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: event.calcLocalizedBodyFallback(
+                                MatrixLocals(L10n.of(context)),
+                              ),
+                            ),
+                            if (onExpand != null) ...[
+                              const TextSpan(text: '\n'),
+                              TextSpan(
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = onExpand,
+                                text: L10n.of(context).moreEvents,
+                              ),
+                            ],
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11 * AppSettings.fontSizeFactor.value,
+                          decoration: event.redacted
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+const _hiddenEventTypes = {
+  EventTypes.RoomPowerLevels,
+  EventTypes.RoomJoinRules,
+  EventTypes.HistoryVisibility,
+  'm.room.guest_access',
+};
+
+/// Показываем только реальный вход/выход/бан; смену ника-аватарки (join→join) скрываем.
+bool shouldHideMemberEvent(String? membership, String? prevMembership) {
+  if (membership == 'join') return prevMembership == 'join';
+  return membership != 'leave' && membership != 'ban';
+}

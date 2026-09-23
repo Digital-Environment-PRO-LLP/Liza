@@ -1,0 +1,869 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld unread messages" : {
+      "comment" : "Default notification title",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ungelesene Nachricht"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ungelesene nachrichten"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Unread message"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld unread messages"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "MSG_FROM_USER" : {
+      "comment" : "Push notification: message from a specific user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) сообщение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat eine Nachricht gesendet"
+          }
+        }
+      }
+    },
+    "MSG_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: message from user in a room. %1$@ is the sender name, %2$@ is the room name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "MSG_FROM_USER_WITH_CONTENT" : {
+      "comment" : "Push notification: message with content. %1$@ is the sender name, %2$@ is the content.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "MSG_FROM_USER_IN_ROOM_WITH_CONTENT" : {
+      "comment" : "Push notification: message with content in a room. %1$@ is the sender, %2$@ is the room, %3$@ is the content.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in %2$@: %3$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ в %2$@: %3$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in %2$@: %3$@"
+          }
+        }
+      }
+    },
+    "IMAGE_FROM_USER" : {
+      "comment" : "Push notification: image from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent an image"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) изображение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat ein Bild gesendet"
+          }
+        }
+      }
+    },
+    "IMAGE_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: image from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent an image in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) изображение в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat ein Bild in %2$@ gesendet"
+          }
+        }
+      }
+    },
+    "VIDEO_FROM_USER" : {
+      "comment" : "Push notification: video from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a video"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) видео"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat ein Video gesendet"
+          }
+        }
+      }
+    },
+    "VIDEO_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: video from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a video in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) видео в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat ein Video in %2$@ gesendet"
+          }
+        }
+      }
+    },
+    "AUDIO_FROM_USER" : {
+      "comment" : "Push notification: audio from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent an audio message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) аудиосообщение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat eine Sprachnachricht gesendet"
+          }
+        }
+      }
+    },
+    "AUDIO_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: audio from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent an audio message in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) аудиосообщение в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat eine Sprachnachricht in %2$@ gesendet"
+          }
+        }
+      }
+    },
+    "FILE_FROM_USER" : {
+      "comment" : "Push notification: file from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a file"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) файл"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat eine Datei gesendet"
+          }
+        }
+      }
+    },
+    "FILE_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: file from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a file in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) файл в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat eine Datei in %2$@ gesendet"
+          }
+        }
+      }
+    },
+    "STICKER_FROM_USER" : {
+      "comment" : "Push notification: sticker from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a sticker"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) стикер"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat einen Sticker gesendet"
+          }
+        }
+      }
+    },
+    "STICKER_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: sticker from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sent a sticker in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отправил(а) стикер в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat einen Sticker in %2$@ gesendet"
+          }
+        }
+      }
+    },
+    "LOCATION_FROM_USER" : {
+      "comment" : "Push notification: location from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ shared a location"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ поделился(-ась) местоположением"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat einen Standort geteilt"
+          }
+        }
+      }
+    },
+    "LOCATION_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: location from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ shared a location in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ поделился(-ась) местоположением в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat einen Standort in %2$@ geteilt"
+          }
+        }
+      }
+    },
+    "REACT_FROM_USER" : {
+      "comment" : "Push notification: reaction from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ reacted to a message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отреагировал(а) на сообщение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat auf eine Nachricht reagiert"
+          }
+        }
+      }
+    },
+    "REACT_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: reaction from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ reacted to a message in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ отреагировал(а) на сообщение в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat auf eine Nachricht in %2$@ reagiert"
+          }
+        }
+      }
+    },
+    "KEY_REQUEST_FROM_USER" : {
+      "comment" : "Push notification: key request from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ requested encryption keys"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ запросил(а) ключи шифрования"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat Verschlüsselungsschlüssel angefragt"
+          }
+        }
+      }
+    },
+    "INVITE_FROM_USER" : {
+      "comment" : "Push notification: invite from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ invited you"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ пригласил(а) вас"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat dich eingeladen"
+          }
+        }
+      }
+    },
+    "INVITE_FROM_USER_TO_ROOM" : {
+      "comment" : "Push notification: invite to a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ invited you to %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ пригласил(а) вас в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat dich in %2$@ eingeladen"
+          }
+        }
+      }
+    },
+    "CALL_FROM_USER" : {
+      "comment" : "Push notification: call from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call from %1$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звонок от %1$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anruf von %1$@"
+          }
+        }
+      }
+    },
+    "CALL_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: call from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call from %1$@ in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звонок от %1$@ в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anruf von %1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "VOICE_CALL_FROM_USER" : {
+      "comment" : "Push notification: voice call from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice call from %1$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голосовой звонок от %1$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprachanruf von %1$@"
+          }
+        }
+      }
+    },
+    "VOICE_CALL_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: voice call from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice call from %1$@ in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голосовой звонок от %1$@ в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprachanruf von %1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "VIDEO_CALL_FROM_USER" : {
+      "comment" : "Push notification: video call from user. %1$@ is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video call from %1$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видеозвонок от %1$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoanruf von %1$@"
+          }
+        }
+      }
+    },
+    "VIDEO_CALL_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: video call from user in a room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video call from %1$@ in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видеозвонок от %1$@ в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoanruf von %1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "MSG_FROM_USER_IN_ROOM_TITLE" : {
+      "comment" : "Push notification title: room name for messages in a room. %1$@ is the room name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@"
+          }
+        }
+      }
+    },
+    "ACTION_FROM_USER" : {
+      "comment" : "Push notification: emote action from user. %1$@ is the sender, %2$@ is the action.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "ACTION_FROM_USER_IN_ROOM" : {
+      "comment" : "Push notification: emote action from user in a room. %1$@ is the room, %2$@ is the sender, %3$@ is the action.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %3$@ in %1$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %3$@ в %1$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %3$@ in %1$@"
+          }
+        }
+      }
+    },
+    "USER_INVITE_TO_CHAT" : {
+      "comment" : "Push notification: invite to unnamed chat. %1$@ is the sender.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ invited you to chat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ приглашает вас в чат"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat dich zum Chat eingeladen"
+          }
+        }
+      }
+    },
+    "USER_INVITE_TO_NAMED_ROOM" : {
+      "comment" : "Push notification: invite to named room. %1$@ is the sender, %2$@ is the room.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ invited you to %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ приглашает вас в %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat dich in %2$@ eingeladen"
+          }
+        }
+      }
+    },
+    "MSG_WITH_CONTENT" : {
+      "comment" : "Push notification: message with content (legacy key). %1$@ is the sender, %2$@ is the content.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "ENCRYPTED_MSG" : {
+      "comment" : "Push notification: encrypted message.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New encrypted message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое зашифрованное сообщение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue verschlüsselte Nachricht"
+          }
+        }
+      }
+    },
+    "New message - open app to read" : {
+      "comment" : "Default notification body",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Nachricht - App öffnen zum lesen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое сообщение — откройте приложение"
+          }
+        }
+      }
+    },
+    "%@ sent a message" : {
+      "comment" : "Encrypted message notification body. Variable is the sender name.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ sent a message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ отправил(а) сообщение"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ hat eine Nachricht gesendet"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
