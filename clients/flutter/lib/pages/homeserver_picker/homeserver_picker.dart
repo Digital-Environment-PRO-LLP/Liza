@@ -18,6 +18,7 @@ import 'package:liza/config/app_config.dart';
 import 'package:liza/config/setting_keys.dart';
 import 'package:liza/l10n/l10n.dart';
 import 'package:liza/pages/auth_select/auth_select.dart';
+import 'package:liza/pages/demo_auth/demo_auth_flow.dart' show addAccountPath;
 import 'package:liza/pages/homeserver_picker/auth_outcome_view.dart';
 import 'package:liza/pages/homeserver_picker/homeserver_picker_view.dart';
 import 'package:liza/utils/auth_diagnostics.dart';
@@ -62,6 +63,21 @@ class _PollResult {
     this.action,
     this.outcome,
   });
+}
+
+/// Переход к подтверждению номера. Из «Добавить аккаунт» — вложенным
+/// маршрутом: верхний /auth/phone под loggedInRedirect уводил уже вошедшего
+/// в список чатов, не заказав код.
+void openPhoneAuth(
+  BuildContext context,
+  String phone, {
+  required bool addMultiAccount,
+}) {
+  if (addMultiAccount) {
+    context.push('$addAccountPath/phone', extra: phone);
+  } else {
+    context.go('/auth/phone', extra: phone);
+  }
 }
 
 class HomeserverPicker extends StatefulWidget {
@@ -274,6 +290,12 @@ class HomeserverPickerController extends State<HomeserverPicker> {
   /// multi-account flows.
   String get _basePath =>
       GoRouter.of(context).routeInformationProvider.value.uri.path;
+
+  void submitPhoneAction(String phone) => openPhoneAuth(
+    context,
+    phone,
+    addMultiAccount: widget.addMultiAccount,
+  );
 
   /// Starts an analysis of the given homeserver. It uses the current domain and
   /// makes sure that it is prefixed with https. Then it searches for the

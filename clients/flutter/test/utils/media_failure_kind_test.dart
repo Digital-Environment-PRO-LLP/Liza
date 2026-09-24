@@ -16,9 +16,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:matrix/matrix.dart';
 
+import 'package:liza/pages/chat/events/audio_autoplay_service.dart';
 import 'package:liza/utils/matrix_sdk_extensions/event_extension.dart';
+import 'package:liza/utils/monitoring.dart';
 import 'package:liza/utils/transcription_service.dart';
+import 'test_client.dart';
 
 void main() {
   group('mediaFailureKind — закрытый перечень, сеть ≠ расшифровка', () {
@@ -95,6 +99,113 @@ void main() {
         }
       }
     });
+  });
+
+  // Инцидент 2026-09-23 (GlitchTip #2057, iPhone15,2, сборка 3764): алёрт
+  // `[audio-fail] reason=download-fail kind=other …` не нёс НИ ОДНОЙ зацепки —
+  // что именно упало, знал только лог на устройстве.
+  group('err при kind=other — тип ошибки доезжает до дежурного', () {
+    // AC:RL-media-failure-kind/9 AC:RL-mediadiag-no-secret/err
+    test('AC-9: mediaFailureErrorType = имя типа, БЕЗ текста/пути/токена', () {
+      final cases = <Object, String>{
+        const FileSystemException(
+          'Cannot open file',
+          '/var/mobile/tmp/liza_media_cache/mxc_AbCdEf',
+        ): 'FileSystemException',
+        const PathNotFoundException(
+          '/tmp/liza_media_cache/mxc_AbCdEf',
+          OSError('No such file'),
+        ): 'PathNotFoundException',
+        StateError('Bearer syt_secret_token @u:liza'): 'StateError',
+        const FormatException('mxc://synapse.liza/AbCdEf'): 'FormatException',
+        <String, dynamic>{'errcode': 'M_UNKNOWN'}: '_Map',
+      };
+      const forbidden = ['mxc', '/', 'bearer', 'syt_', '@', '<', ' '];
+      cases.forEach((error, expected) {
+        final type = mediaFailureErrorType(error);
+        expect(type, expected);
+        expect(type.length, lessThanOrEqualTo(40));
+        for (final bad in forbidden) {
+          expect(
+            type.toLowerCase(),
+            isNot(contains(bad)),
+            reason: 'err="$type" не должен нести "$bad"',
+          );
+        }
+      });
+    });
+
+    // AC:RL-media-failure-kind/10
+    test(
+      'AC-10: реальный audioIssueContext — err идёт сразу за kind только при '
+      'other и переживает бюджет title на ∀ хостах парка',
+      () async {
+        final client = await prepareTestClient();
+        final room = Room(
+          id: '!r:synapse.liza.laba.prodamus.tech',
+          client: client,
+        );
+        Event voice({bool encrypted = false, String mime = 'audio/mp4'}) =>
+            Event(
+              content: {
+                'msgtype': 'm.audio',
+                'body': 'voice.m4a',
+                if (!encrypted) 'url': 'mxc://synapse.liza/AbCdEf',
+                if (encrypted)
+                  'file': {'url': 'mxc://synapse.liza/AbCdEf', 'v': 'v2'},
+                'info': {'mimetype': mime, 'size': 200000},
+              },
+              type: EventTypes.Message,
+              eventId: r'$e',
+              senderId: '@a:synapse.liza.laba.prodamus.tech',
+              originServerTs: DateTime(2026, 9, 23),
+              room: room,
+            );
+        const error = PathNotFoundException('/tmp/x', OSError('gone'));
+
+        final ctx = audioIssueContext(voice(), error: error);
+        expect(ctx.keys.take(2), ['kind', 'err']);
+        expect(ctx['kind'], 'other');
+        expect(ctx['err'], 'PathNotFoundException');
+        for (final e in <Object>[
+          const SocketException('reset'),
+          TimeoutException('slow'),
+          const MediaDownloadException(statusCode: 404),
+          kDecryptFailure,
+          'Unable to download file from local store.',
+        ]) {
+          expect(
+            audioIssueContext(voice(), error: e).containsKey('err'),
+            isFalse,
+            reason: 'err только для other, не для ${mediaFailureKind(e)}',
+          );
+        }
+        expect(audioIssueContext(voice()).containsKey('err'), isFalse);
+
+        for (final host in [
+          'synapse.liza.laba.prodamus.tech',
+          'liza.cyber-agro.ru',
+          'victoryeng.liza.ru',
+        ]) {
+          for (final encrypted in [false, true]) {
+            final title = Monitoring.buildAlertTitle(
+              prefix: Monitoring.audioFailurePrefix,
+              reason: 'download-fail',
+              host: host,
+              context: audioIssueContext(
+                voice(encrypted: encrypted, mime: 'application/octet-stream'),
+                error: StateError('x'),
+              ),
+            );
+            expect(
+              title.length,
+              lessThanOrEqualTo(Monitoring.maxAlertTitleLength),
+            );
+            expect(title, contains('kind=other err=StateError'));
+          }
+        }
+      },
+    );
   });
 
   group('TranscriptionService.stageOneKindFor — честный вид ошибки', () {

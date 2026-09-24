@@ -2410,6 +2410,8 @@
   "@addAccount": {},
   "link": "Ссылка",
   "@link": {},
+  "accountAlreadyAdded": "Этот аккаунт уже добавлен",
+  "@accountAlreadyAdded": {},
   "oneClientLoggedOut": "Один из ваших клиентов вышел",
   "@oneClientLoggedOut": {},
   "yourChatBackupHasBeenSetUp": "Резервное копирование чата настроено.",

@@ -112,6 +112,16 @@ class BroadcastRoleChangeTestCase(unittest.TestCase):
             )
         self.assertEqual(sent["remote"], {})
 
+    def test_broadcast_carries_extra_roles(self) -> None:
+        # Иначе to-device владельцу затирал бы в клиенте доп. роль developer.
+        self.store._account_data["@owner:test"] = {
+            "com.liza.user_role": {"role": "ai", "extra_roles": ("user",)}
+        }
+        _run(self.broadcaster.broadcast_role_change("@owner:test"))
+        msg = self.store.sent[0]["local"]["@owner:test"]["*"]
+        self.assertEqual(msg["content"]["role"]["extra_roles"], ["user"])
+        self.assertEqual(msg["content"]["role"]["code"], "ai")
+
     def test_broadcast_when_role_cleared(self) -> None:
         # account_data missing -> role: None
         self.store._shared_rooms["@alice:test"] = {"@bob:test"}

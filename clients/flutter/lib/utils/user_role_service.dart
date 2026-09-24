@@ -70,9 +70,18 @@ class UserRoleService {
   /// (объект с label/color от сервера); если только legacy string - конвертим
   /// через захардкоженный _legacyLabels на лету.
   void applyOwnAccountData(String userId, Map<String, dynamic> content) {
+    // Источник правды доп. ролей — верхнеуровневое поле записи (role_v2 его
+    // дублирует, но legacy-записи role_v2 не имеют).
+    final extras = RoleView.parseExtraRoles(content['extra_roles']);
     final v2 = content['role_v2'];
     if (v2 is Map<String, dynamic>) {
-      _roleCache[userId] = RoleView.fromJson(v2);
+      final view = RoleView.fromJson(v2);
+      _roleCache[userId] = RoleView(
+        code: view.code,
+        label: view.label,
+        color: view.color,
+        extraRoles: extras,
+      );
       _fetchedAt[userId] = DateTime.now();
       rolesVersion.value++;
       return;
@@ -80,8 +89,9 @@ class UserRoleService {
     final raw = content['role'];
     if (raw is String) {
       final label = _legacyLabels[raw];
-      _roleCache[userId] =
-          label == null ? null : RoleView(code: raw, label: label);
+      _roleCache[userId] = label == null
+          ? null
+          : RoleView(code: raw, label: label, extraRoles: extras);
       _fetchedAt[userId] = DateTime.now();
       rolesVersion.value++;
     }
@@ -127,6 +137,11 @@ class UserRoleService {
   /// Returns cached role for [userId], or null if not loaded.
   RoleView? getRole(String userId) => _roleCache[userId];
 
+  /// Whether [userId] has the "developer" role (main or extra_roles), from
+  /// cache. For a freshly logged-in account that is not the active client yet.
+  bool isDeveloper(String userId) =>
+      _roleCache[userId]?.hasRole(developerRole) ?? false;
+
   /// Cached role of the currently logged-in user, or null if not yet loaded.
   RoleView? get currentUserRole {
     final id = activeClient().userID;
@@ -134,15 +149,16 @@ class UserRoleService {
     return _roleCache[id];
   }
 
-  /// Whether the currently logged-in user has the "developer" role.
-  /// Returns false when the role is not yet loaded - safe default that hides
-  /// developer-only UI for regular users.
-  bool get isCurrentUserDeveloper => currentUserRole?.code == developerRole;
+  /// Whether the currently logged-in user has the "developer" role - as the
+  /// main role or a personal extra role (extra_roles). Returns false when the
+  /// role is not yet loaded - safe default that hides developer-only UI.
+  bool get isCurrentUserDeveloper =>
+      currentUserRole?.hasRole(developerRole) ?? false;
 
-  /// Whether the currently logged-in user has the "admin" role.
+  /// Whether the currently logged-in user has the "admin" role (main or extra).
   /// Returns false when the role is not yet loaded - safe default that hides
   /// admin-only UI for regular users.
-  bool get isCurrentUserAdmin => currentUserRole?.code == adminRole;
+  bool get isCurrentUserAdmin => currentUserRole?.hasRole(adminRole) ?? false;
 
   /// All cached user IDs that have the "ai" role.
   Set<String> get aiUserIds => _roleCache.entries

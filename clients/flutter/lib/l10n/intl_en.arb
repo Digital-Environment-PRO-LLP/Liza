@@ -1771,6 +1771,8 @@
     "type": "String",
     "placeholders": {}
   },
+  "accountAlreadyAdded": "This account has already been added",
+  "@accountAlreadyAdded": {},
   "oneClientLoggedOut": "One of your clients has been logged out",
   "@oneClientLoggedOut": {},
   "addAccount": "Add account",

@@ -80,5 +80,21 @@ void main() {
       const b = RoleView(code: 'x', label: 'X', color: Color(0xFF000000));
       expect(a, isNot(b));
     });
+
+    test('extra_roles парсятся, учитываются в hasRole и равенстве', () {
+      final v = RoleView.fromJson({
+        'code': 'admin',
+        'label': 'Администратор',
+        'extra_roles': ['developer', '', 3],
+      });
+      expect(v.extraRoles, ['developer']);
+      expect(v.hasRole('admin'), isTrue);
+      expect(v.hasRole('developer'), isTrue);
+      expect(v.hasRole('moderator'), isFalse);
+      expect(v, isNot(const RoleView(code: 'admin', label: 'Администратор')));
+      final plain = RoleView.fromJson({'code': 'admin', 'label': 'A'});
+      expect(plain.extraRoles, isEmpty);
+      expect(plain.hasRole('developer'), isFalse);
+    });
   });
 }

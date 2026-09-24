@@ -98,6 +98,22 @@ String mediaFailureKind(Object error) {
   return 'other';
 }
 
+/// Имя типа ошибки для класса `other` [mediaFailureKind] — ЕДИНСТВЕННЫЙ след
+/// причины, доезжающий до дежурного (notifier видит только title алёрта).
+///
+/// Зачем: issue GlitchTip #2057 (2026-09-23, iPhone15,2, сборка 3764) пришёл как
+/// `kind=other` без единой зацепки — `Logs().v` с текстом ошибки остаётся на
+/// устройстве, а серверный лог отвечает только за сетевую часть. Конечный набор
+/// типов держит кардинальность низкой; текст ошибки НЕ берём (пин
+/// `RL-mediadiag-no-secret`: в `FileSystemException` лежит путь с mxc id).
+/// Дженерики срезаем (`_Map<String, dynamic>` → `_Map`), длину ограничиваем.
+String mediaFailureErrorType(Object error) {
+  final name = RegExp(r'^[A-Za-z0-9_$]+')
+      .stringMatch(error.runtimeType.toString());
+  if (name == null || name.isEmpty) return 'unknown';
+  return name.length > 40 ? name.substring(0, 40) : name;
+}
+
 /// mxc, для которых в этой сессии уже пытались вылечить отравленный дисковый
 /// файл-кэш SDK. Живёт всю сессию: без него упорно-битый на сервере файл
 /// зациклил бы перекачку на каждый тап. Ключ — mxc с учётом `getThumbnail`

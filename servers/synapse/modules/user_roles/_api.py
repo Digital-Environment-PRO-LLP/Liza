@@ -17,7 +17,14 @@ if TYPE_CHECKING:
     from ._broadcast import RoleBroadcaster
     from ._catalog import RoleCatalog
 
-from ._roles import ACCOUNT_DATA_TYPE, DEFAULT_ROLE
+from ._roles import (
+    ACCOUNT_DATA_TYPE,
+    ADMIN_ROLE,
+    DEFAULT_ROLE,
+    EXTRA_ROLES_KEY,
+    stored_extra_roles,
+    with_extra_roles,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +129,7 @@ class UserRoleHandler:
             # отдавал актуальный label/color, даже если admin поменял каталог
             # уже после записи в account_data.
             view = await self._catalog.enrich(role_code)
+            view = with_extra_roles(view, stored_extra_roles(data))
             return 200, {"user_id": user_id, "role": view}
         return 200, {"user_id": user_id, "role": role_code}
 
@@ -144,10 +152,56 @@ class UserRoleHandler:
                 "message": f"Role '{new_role}' not found in catalog",
             }
 
+        # Ключа нет в теле — доп. роли сохраняются, только пока основная роль та
+        # же. Смена основной роли без ключа их снимает: liza-roles и liza-bot-api
+        # шлют только {"role"}, и понижение до user не должно оставлять
+        # «висящий» developer. [] — снять все.
+        if EXTRA_ROLES_KEY in body:
+            raw_extras = body[EXTRA_ROLES_KEY]
+            if not isinstance(raw_extras, list) or not all(
+                isinstance(r, str) and r for r in raw_extras
+            ):
+                return 400, {
+                    "error": "bad_request",
+                    "message": "extra_roles must be a list of non-empty strings",
+                }
+            # Серверные гейты (channel_guard, access_admin) читают только
+            # основную роль: admin доп. ролью дал бы в клиенте кнопки, на
+            # которые сервер отвечает 403.
+            if ADMIN_ROLE in raw_extras:
+                return 400, {
+                    "error": "bad_request",
+                    "message": "admin can only be the main role",
+                }
+            for code in raw_extras:
+                if await self._catalog.enrich(code) is None:
+                    return 404, {
+                        "error": "not_found",
+                        "message": f"Role '{code}' not found in catalog",
+                    }
+        else:
+            stored = await self._account_data.get_global(
+                target_user_id, ACCOUNT_DATA_TYPE
+            )
+            old_role = stored.get("role") if isinstance(stored, Mapping) else None
+            raw_extras = stored_extra_roles(stored)
+            if raw_extras and old_role != new_role:
+                logger.info(
+                    "Extra roles dropped on main role change: %s %s -> %s (extra=%s)",
+                    target_user_id,
+                    old_role,
+                    new_role,
+                    raw_extras,
+                )
+                raw_extras = []
+        extras = [r for r in dict.fromkeys(raw_extras) if r != new_role]
+
+        view = with_extra_roles(view, extras)
+        content: dict = {"role": new_role, "role_v2": view}
+        if extras:
+            content[EXTRA_ROLES_KEY] = extras
         await self._account_data.put_global(
-            target_user_id,
-            ACCOUNT_DATA_TYPE,
-            {"role": new_role, "role_v2": view},
+            target_user_id, ACCOUNT_DATA_TYPE, content
         )
 
         # Broadcast async; failure must not block request - админ увидит 200,
@@ -159,7 +213,9 @@ class UserRoleHandler:
                 "broadcast_role_change failed for %s", target_user_id
             )
 
-        logger.info("Role updated: %s -> %s", target_user_id, new_role)
+        logger.info(
+            "Role updated: %s -> %s (extra=%s)", target_user_id, new_role, extras
+        )
         return 200, {
             "user_id": target_user_id,
             "role": view,
@@ -197,7 +253,10 @@ class UserRoleHandler:
                 data.get("role") if isinstance(data, Mapping) else None
             ) or DEFAULT_ROLE
             if v2:
-                roles[uid] = await self._catalog.enrich(role_code)
+                roles[uid] = with_extra_roles(
+                    await self._catalog.enrich(role_code),
+                    stored_extra_roles(data),
+                )
             else:
                 roles[uid] = role_code
 

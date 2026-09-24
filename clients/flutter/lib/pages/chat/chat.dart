@@ -37,6 +37,7 @@ import 'package:liza/utils/composer_prefill.dart';
 import 'package:liza/utils/miniapp_room.dart';
 import 'package:liza/utils/xl_credentials.dart';
 import 'package:liza/utils/copy_media_eligibility.dart';
+import 'package:liza/utils/direct_chat_draft.dart';
 import 'package:liza/utils/edit_prefill.dart';
 import 'package:liza/utils/formatting_text_controller.dart';
 import 'package:liza/utils/error_reporter.dart';
@@ -300,6 +301,14 @@ class ChatController extends State<ChatPageWithRoom>
 
   bool _scrolledUp = false;
 
+  /// Открытие ещё не решило, куда позиционироваться (LABA-2632). Лента уже
+  /// смонтирована ВНИЗУ, а `_scrolledUp == false`, поэтому любой реактивный
+  /// вызов (`updateView` от `requestHistory` при >30 непрочитанных, sync,
+  /// `resumed`, `markAtBottom`) слал бы ПОЛНУЮ квитанцию до прокрутки к
+  /// сепаратору. Пока флаг поднят, `_sendReadMarkerNow` молчит на всё — финал
+  /// `_tryLoadTimeline` досылает квитанцию сам.
+  bool _openPositioningPending = false;
+
   bool get showScrollDownButton =>
       _scrolledUp || timeline?.allowNewEvent == false;
 
@@ -419,6 +428,13 @@ class ChatController extends State<ChatPageWithRoom>
       throw Exception(
         'Try to recreate a room with is not a DM room. This should not be possible from the UI!',
       );
+    }
+    // Живой DM с тем же партнёром уже есть — открываем его, а не возвращаем
+    // собеседника в брошенную комнату вторым чатом (LABA-2633).
+    final live = findLiveDirectChat(room.client, userId, exclude: room);
+    if (live != null) {
+      context.go('/rooms/${live.id}');
+      return;
     }
     await showFutureLoadingDialog(
       context: context,
@@ -852,6 +868,8 @@ class ChatController extends State<ChatPageWithRoom>
 
   void _tryLoadTimeline() async {
     final initialEventId = widget.eventId;
+    // До _getTimeline: onUpdate возможен уже при загрузке ленты.
+    _openPositioningPending = true;
     loadTimelineFuture = _getTimeline();
     try {
       await loadTimelineFuture;
@@ -859,6 +877,9 @@ class ChatController extends State<ChatPageWithRoom>
       await _restoreReplyDraft();
       // We launched the chat with a given initial event ID:
       if (initialEventId != null) {
+        // Открытие по ссылке — прежнее поведение: финального вызова, который
+        // дослал бы квитанцию, в этой ветке нет.
+        _openPositioningPending = false;
         scrollToEventId(initialEventId);
         return;
       }
@@ -933,7 +954,12 @@ class ChatController extends State<ChatPageWithRoom>
           // isAutoScrolling молчит сам (ScrollEnd-дебаунс догонит).
           await WidgetsBinding.instance.endOfFrame;
           if (!mounted) return;
-          setReadMarker();
+          _openPositioningPending = false;
+          // Только ЯВНАЯ частичная: голый setReadMarker() при неудавшемся
+          // позиционировании (лента осталась внизу, _scrolledUp == false) дал
+          // бы полную. null — геометрии нет, догонит дебаунс ScrollEnd.
+          final visibleEventId = _newestVisibleEventId();
+          if (visibleEventId != null) setReadMarker(eventId: visibleEventId);
         }
         return;
       }
@@ -944,6 +970,7 @@ class ChatController extends State<ChatPageWithRoom>
       // Сбрасываем _scrolledUp: layout-фреймы между mount и загрузкой
       // timeline могли выставить его в true и заблокировать setReadMarker.
       _scrolledUp = false;
+      _openPositioningPending = false;
 
       // Гибрид «по открытию»: если мы внизу таймлайна и есть последнее
       // событие — принудительно отправляем маркер на него, минуя проверку
@@ -966,6 +993,10 @@ class ChatController extends State<ChatPageWithRoom>
     } catch (e, s) {
       ErrorReporter(context, 'Unable to load timeline').onErrorCallback(e, s);
       rethrow;
+    } finally {
+      // Backstop для исключения и ранних return: залипший флаг глушил бы
+      // квитанции навсегда (рецидив LABA-1894 — бейдж не гаснет).
+      _openPositioningPending = false;
     }
   }
 
@@ -1176,6 +1207,9 @@ class ChatController extends State<ChatPageWithRoom>
   /// `null` понимает, что ничего не «в полёте»).
   Future<void>? _sendReadMarkerNow({String? eventId, bool force = false}) {
     if (!mounted) return null;
+    // Первым, до force/readableForeground/recordOwnReadMarkerTs: до конца
+    // позиционирования при открытии «видимое» ещё не определено (LABA-2632).
+    if (_openPositioningPending) return null;
     // `_scrolledUp` залипает в true на переходных layout-фреймах и в маленьком
     // чате не сбрасывается → сверяемся с живыми scroll-метриками: если новейшее
     // сообщение реально на экране, квитанцию НЕ глушим (иначе аватарка

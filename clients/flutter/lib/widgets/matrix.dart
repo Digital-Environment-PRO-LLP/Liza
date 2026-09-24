@@ -400,7 +400,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
                   );
                   _loginClientCandidate = null;
                   setActiveClient(existing);
-                  LizaApp.router.go('/rooms');
+                  unawaited(_leaveAddAccountAsDuplicate());
                   return;
                 }
                 if (!widget.clients.contains(cand)) widget.clients.add(cand);
@@ -416,6 +416,43 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
               });
     if (widget.clients.isEmpty) widget.clients.add(candidate);
     return candidate;
+  }
+
+  /// Вход аккаунтом, который уже добавлен: без сообщения возврат в список
+  /// чатов читался как «выкинуло из приложения» (вход по номеру телефона
+  /// СВОЕГО аккаунта из «Добавить аккаунт»).
+  Future<void> _leaveAddAccountAsDuplicate() async {
+    await _collapseAddAccountStack();
+    if (!mounted) return;
+    final messengerContext =
+        LizaApp.router.routerDelegate.navigatorKey.currentContext ?? context;
+    LizaApp.router.go('/rooms');
+    ScaffoldMessenger.of(messengerContext).showSnackBar(
+      SnackBar(content: Text(L10n.of(messengerContext).accountAlreadyAdded)),
+    );
+  }
+
+  /// На addaccount-флоу go_router не схлопывает вложенный ShellRoute
+  /// /rooms/settings/addaccount при обычном go('/rooms'), и экран входа
+  /// остаётся видимым. Сворачиваем стек перед переходом.
+  Future<void> _collapseAddAccountStack() async {
+    final router = LizaApp.router;
+    final currentPath = router.routeInformationProvider.value.uri.path;
+    if (!currentPath.contains('/settings/addaccount')) return;
+    // go_router применяет pop к своей конфигурации только на следующем
+    // кадре: без ожидания canPop() в том же цикле снова видит ТОТ ЖЕ
+    // маршрут, второй pop по нему роняет «Future already completed», и
+    // до router.go дело не доходит — второй аккаунт добавлен, а экран
+    // входа остаётся на месте (поймано живым прогоном 2026-09-21).
+    // 8 — защитный потолок: обычно хватает 1–2 pop; без кадров (фон) каждый
+    // шаг ограничен 500 мс, поэтому хуже ~4 с, а не вечного ожидания.
+    for (var i = 0; i < 8 && router.canPop(); i++) {
+      router.pop();
+      await WidgetsBinding.instance.endOfFrame.timeout(
+        const Duration(milliseconds: 500),
+        onTimeout: () {},
+      );
+    }
   }
 
   Client? getClientByName(String name) =>
@@ -585,9 +622,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         if (state == LoginState.loggedIn && c.userID != null) {
           try {
             await userRoleService.fetchRoles([c.userID!], client: c);
-            newClientIsDeveloper =
-                userRoleService.getRole(c.userID!)?.code ==
-                UserRoleService.developerRole;
+            newClientIsDeveloper = userRoleService.isDeveloper(c.userID!);
           } catch (_) {
             // Falling back to default "user" role hides developer-only UI
             // and skips the bootstrap dialog.
@@ -600,28 +635,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
             ? (newClientIsDeveloper ? '/backup' : '/rooms')
             : '/home';
         final router = LizaApp.router;
-        // На addaccount-флоу go_router не схлопывает вложенный ShellRoute
-        // /rooms/settings/addaccount при обычном go('/rooms'), и HomeserverPicker
-        // остаётся видимым. Принудительно сворачиваем стек перед переходом.
-        if (state == LoginState.loggedIn) {
-          final currentPath = router.routeInformationProvider.value.uri.path;
-          if (currentPath.contains('/settings/addaccount')) {
-            // go_router применяет pop к своей конфигурации только на следующем
-            // кадре: без ожидания canPop() в том же цикле снова видит ТОТ ЖЕ
-            // маршрут, второй pop по нему роняет «Future already completed», и
-            // до router.go ниже дело не доходит — второй аккаунт добавлен, а
-            // экран входа остаётся на месте (поймано живым прогоном 2026-09-21).
-            // 8 — защитный потолок: обычно хватает 1–2 pop; без кадров (фон) каждый
-            // шаг ограничен 500 мс, поэтому хуже ~4 с, а не вечного ожидания.
-            for (var i = 0; i < 8 && router.canPop(); i++) {
-              router.pop();
-              await WidgetsBinding.instance.endOfFrame.timeout(
-                const Duration(milliseconds: 500),
-                onTimeout: () {},
-              );
-            }
-          }
-        }
+        if (state == LoginState.loggedIn) await _collapseAddAccountStack();
         if (!mounted) return;
         router.go(target);
       }

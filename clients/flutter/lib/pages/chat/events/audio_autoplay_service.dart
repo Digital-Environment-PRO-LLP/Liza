@@ -336,11 +336,15 @@ class MatrixFileAudioSource extends StreamAudioSource {
 /// отвечающее «почему») обязан идти ПЕРВЫМ, а `e2ee` (реже всего решает) —
 /// последним. [error] передают вызывающие стороны сбоя ПОЛУЧЕНИЯ вложения
 /// (скачать+расшифровать); для сбоев плеера его нет — там `kind` не пишем.
+/// При `kind=other` сразу за ним идёт `err` — тип исключения
+/// ([mediaFailureErrorType]), иначе класс `other` не отвечает на «почему».
 Map<String, String> audioIssueContext(Event event, {Object? error}) {
   final info = event.content.tryGetMap<String, dynamic>('info');
   final mime = info?.tryGet<String>('mimetype');
+  final kind = error == null ? null : mediaFailureKind(error);
   return {
-    if (error != null) 'kind': mediaFailureKind(error),
+    if (kind != null) 'kind': kind,
+    if (kind == 'other') 'err': mediaFailureErrorType(error!),
     if (mime != null) 'mime': mime,
     'size': audioSizeBucket(info?.tryGet<int>('size')),
     'e2ee': '${event.isAttachmentEncrypted}',

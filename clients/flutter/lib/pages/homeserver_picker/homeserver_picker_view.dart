@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:go_router/go_router.dart';
-
 import 'package:liza/config/app_config.dart';
 import 'package:liza/pages/homeserver_picker/auth_outcome_view.dart';
 import 'package:liza/pages/homeserver_picker/login_entry_actions.dart';
@@ -170,10 +168,7 @@ class HomeserverPickerView extends StatelessWidget {
                                   // На prod/dev используется phone/email OTP
                                   // через auth-proxy текущего окружения.
                                   onSubmitPhone: AppConfig.phoneAuthEnabled
-                                      ? (phone) => context.go(
-                                          '/auth/phone',
-                                          extra: phone,
-                                        )
+                                      ? controller.submitPhoneAction
                                       : null,
                                 ),
                                 // Локальная разработка (APP_ENV=local): вход паролем в

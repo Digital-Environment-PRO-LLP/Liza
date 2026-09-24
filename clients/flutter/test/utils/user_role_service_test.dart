@@ -109,6 +109,117 @@ void main() {
       }
     });
 
+    // Персональная доп. роль (extra_roles) открывает developer-пункты ТОЛЬКО
+    // её носителю: владелец — admin + developer; прочие admin — без изменений.
+    test('extra_roles: admin + developer видит developer-пункты, '
+        'обычный admin — нет [AC:RL-developer-gates-strict/7]', () async {
+      final loggedIn = await prepareTestClient(loggedIn: true);
+      final roleService = UserRoleService(() => loggedIn);
+      try {
+        final uid = loggedIn.userID!;
+        roleService.applyOwnAccountData(uid, {
+          'role': 'admin',
+          'extra_roles': ['developer'],
+          'role_v2': {
+            'code': 'admin',
+            'label': 'Администратор',
+            'color': null,
+            'extra_roles': ['developer'],
+          },
+        });
+        expect(roleService.isCurrentUserDeveloper, isTrue);
+        expect(roleService.isCurrentUserAdmin, isTrue);
+        expect(roleService.currentUserRole!.label, 'Администратор');
+
+        // legacy-запись без role_v2 — доп. роль берётся из верхнего поля
+        roleService.applyOwnAccountData(uid, {
+          'role': 'admin',
+          'extra_roles': ['developer'],
+        });
+        expect(roleService.isCurrentUserDeveloper, isTrue);
+
+        // тот же admin без extra_roles — прежнее строгое поведение
+        roleService.applyOwnAccountData(uid, {
+          'role': 'admin',
+          'role_v2': {'code': 'admin', 'label': 'Администратор'},
+        });
+        expect(roleService.isCurrentUserDeveloper, isFalse);
+        expect(roleService.isCurrentUserAdmin, isTrue);
+
+        // to-device от сервера несёт extra_roles во view
+        roleService.applyToDeviceEvent(uid, {
+          'code': 'admin',
+          'label': 'Администратор',
+          'extra_roles': ['developer'],
+        });
+        expect(roleService.isCurrentUserDeveloper, isTrue);
+        roleService.applyToDeviceEvent(uid, {
+          'code': 'admin',
+          'label': 'Администратор',
+        });
+        expect(roleService.isCurrentUserDeveloper, isFalse);
+      } finally {
+        roleService.dispose();
+        await loggedIn.dispose(closeDatabase: true);
+      }
+    });
+
+    test('вход новым аккаунтом: developer основной или доп. ролью ведёт на '
+        '/backup, admin без доп. роли — нет [AC:RL-developer-gates-strict/12]',
+        () {
+      const uid = '@new:srv';
+      final cases = <Map<String, dynamic>, bool>{
+        {'role': 'developer'}: true,
+        {'role': 'admin', 'extra_roles': ['developer']}: true,
+        {
+          'role': 'admin',
+          'extra_roles': ['developer'],
+          'role_v2': {'code': 'admin', 'label': 'Администратор'},
+        }: true,
+        {'role': 'admin'}: false,
+        {'role': 'user'}: false,
+      };
+      cases.forEach((content, expected) {
+        service.applyOwnAccountData(uid, content);
+        expect(service.isDeveloper(uid), expected, reason: '$content');
+      });
+      expect(service.isDeveloper('@unknown:srv'), isFalse);
+    });
+
+    test('developer без доп. ролей не получает admin-пункты '
+        '[AC:RL-developer-gates-strict/16]', () async {
+      final loggedIn = await prepareTestClient(loggedIn: true);
+      final roleService = UserRoleService(() => loggedIn);
+      try {
+        final uid = loggedIn.userID!;
+        roleService.applyOwnAccountData(uid, {
+          'role': 'developer',
+          'role_v2': {'code': 'developer', 'label': 'Разработчик'},
+        });
+        expect(roleService.isCurrentUserDeveloper, isTrue);
+        expect(roleService.isCurrentUserAdmin, isFalse);
+      } finally {
+        roleService.dispose();
+        await loggedIn.dispose(closeDatabase: true);
+      }
+    });
+
+    test('роль в lib/ сверяется только через hasRole — прямое сравнение кода '
+        'не видит extra_roles [AC:RL-developer-gates-strict/11]', () {
+      final direct = RegExp(
+        r'\.code\s*==\s*UserRoleService\.(developerRole|adminRole)',
+      );
+      final hits = Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.dart'))
+          .where((f) => !f.path.endsWith('user_role_service.dart'))
+          .where((f) => direct.hasMatch(f.readAsStringSync()))
+          .map((f) => f.path)
+          .toList();
+      expect(hits, isEmpty);
+    });
+
     // AC:RL-developer-gates-strict/5
     test('в клиенте нет расширенного предиката developer-доступа', () {
       final hits = Directory('lib')

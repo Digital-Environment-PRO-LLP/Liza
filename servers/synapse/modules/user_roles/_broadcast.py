@@ -10,7 +10,7 @@ import logging
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Iterable
 
-from ._roles import ACCOUNT_DATA_TYPE
+from ._roles import ACCOUNT_DATA_TYPE, stored_extra_roles, with_extra_roles
 
 if TYPE_CHECKING:
     from ._catalog import RoleCatalog
@@ -44,7 +44,9 @@ class RoleBroadcaster:
         # Note: _store returns immutabledict for account_data (frozen via
         # synapse.util.frozenutils.freeze), not plain dict - check Mapping.
         role_code = role_data.get("role") if isinstance(role_data, Mapping) else None
-        role_view = await self._catalog.enrich(role_code)
+        role_view = with_extra_roles(
+            await self._catalog.enrich(role_code), stored_extra_roles(role_data)
+        )
         content = {"user_id": user_id, "role": role_view}
 
         peers = await self._store.get_users_who_share_room_with_user(user_id)

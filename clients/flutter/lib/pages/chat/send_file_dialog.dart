@@ -81,6 +81,15 @@ class SendFileDialog extends StatefulWidget {
   /// с уже введённым текстом — см. `_addMore`).
   final String? initialCaption;
 
+  /// Открыть ленту превью у КОНЦА (плитка «+» видна) — ставит только
+  /// `_addMore`: пересоздание диалога иначе сбрасывало ленту в начало, и для
+  /// следующей вставки её приходилось листать заново (LABA-2631).
+  final bool scrollToEndOnOpen;
+
+  /// Источник буфера для «➕ Вставить ещё»; подменяется только в тестах.
+  @visibleForTesting
+  final PasteboardReader pasteboardReader;
+
   const SendFileDialog({
     required this.room,
     required this.files,
@@ -89,6 +98,8 @@ class SendFileDialog extends StatefulWidget {
     required this.threadRootEventId,
     this.compress = true,
     this.initialCaption,
+    this.scrollToEndOnOpen = false,
+    this.pasteboardReader = const SystemPasteboardReader(),
     super.key,
   });
 
@@ -208,7 +219,7 @@ class SendFileDialogState extends State<SendFileDialog> {
     final l10n = L10n.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(widget.outerContext);
     try {
-      final result = await collectPasteXFiles(const SystemPasteboardReader());
+      final result = await collectPasteXFiles(widget.pasteboardReader);
       if (!mounted) return;
       if (!result.handledAsMedia || result.files.isEmpty) {
         setState(() => _addingMore = false);
@@ -231,6 +242,8 @@ class SendFileDialogState extends State<SendFileDialog> {
           threadLastEventId: widget.threadLastEventId,
           compress: widget.compress,
           initialCaption: caption,
+          scrollToEndOnOpen: true,
+          pasteboardReader: widget.pasteboardReader,
         ),
       );
     } catch (e, s) {
@@ -274,6 +287,57 @@ class SendFileDialogState extends State<SendFileDialog> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Превью файла `index` в ленте (одинаково в прямом и обратном порядке ленты).
+  Widget _previewTile(ThemeData theme, int index, double height) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+        color: Colors.black,
+        clipBehavior: Clip.hardEdge,
+        child: FutureBuilder(
+          future: _previewBytesOf(index),
+          builder: (context, snapshot) {
+            final bytes = snapshot.data;
+            if (bytes == null) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+            if (snapshot.error != null) {
+              Logs().w(
+                'Unable to preview image',
+                snapshot.error,
+                snapshot.stackTrace,
+              );
+              return Center(
+                child: SizedBox(
+                  width: height,
+                  height: height,
+                  child: const Icon(Icons.broken_image_outlined, size: 64),
+                ),
+              );
+            }
+            return Image.memory(
+              bytes,
+              height: height,
+              width: widget.files.length == 1 ? height - 36 : null,
+              fit: BoxFit.contain,
+              errorBuilder: (context, e, s) {
+                Logs().w('Unable to preview image', e, s);
+                return Center(
+                  child: SizedBox(
+                    width: height,
+                    height: height,
+                    child: const Icon(Icons.broken_image_outlined, size: 64),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -826,73 +890,25 @@ class SendFileDialogState extends State<SendFileDialog> {
                             // плитка впереди сбивала бы чтение набора).
                             itemCount: widget.files.length + 1,
                             scrollDirection: Axis.horizontal,
+                            // После «+» лента строится от правого края: offset 0
+                            // = плитка, а догрузка ширин превью слева растит
+                            // только maxScrollExtent и вид не сдвигает. Прыжок
+                            // `jumpTo(maxScrollExtent)` промахивался бы — ширины
+                            // известны лишь после чтения байтов. Визуальный
+                            // порядок тот же за счёт `j` ниже.
+                            reverse: widget.scrollToEndOnOpen,
+                            // Индексы builder'а при reverse идут справа налево —
+                            // screen reader считал бы набор задом наперёд.
+                            addSemanticIndexes: false,
                             itemBuilder: (context, i) {
-                              if (i == widget.files.length) {
-                                return _addMoreTile(theme, previewHeight);
-                              }
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Material(
-                                  borderRadius: BorderRadius.circular(
-                                    AppConfig.borderRadius / 2,
-                                  ),
-                                  color: Colors.black,
-                                  clipBehavior: Clip.hardEdge,
-                                  child: FutureBuilder(
-                                    future: _previewBytesOf(i),
-                                    builder: (context, snapshot) {
-                                      final bytes = snapshot.data;
-                                      if (bytes == null) {
-                                        return const Center(
-                                          child:
-                                              CircularProgressIndicator.adaptive(),
-                                        );
-                                      }
-                                      if (snapshot.error != null) {
-                                        Logs().w(
-                                          'Unable to preview image',
-                                          snapshot.error,
-                                          snapshot.stackTrace,
-                                        );
-                                        return Center(
-                                          child: SizedBox(
-                                            width: previewHeight,
-                                            height: previewHeight,
-                                            child: const Icon(
-                                              Icons.broken_image_outlined,
-                                              size: 64,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                      return Image.memory(
-                                        bytes,
-                                        height: previewHeight,
-                                        width: widget.files.length == 1
-                                            ? previewHeight - 36
-                                            : null,
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (context, e, s) {
-                                          Logs().w(
-                                            'Unable to preview image',
-                                            e,
-                                            s,
-                                          );
-                                          return Center(
-                                            child: SizedBox(
-                                              width: previewHeight,
-                                              height: previewHeight,
-                                              child: const Icon(
-                                                Icons.broken_image_outlined,
-                                                size: 64,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
+                              final j = widget.scrollToEndOnOpen
+                                  ? widget.files.length - i
+                                  : i;
+                              return IndexedSemantics(
+                                index: j,
+                                child: j == widget.files.length
+                                    ? _addMoreTile(theme, previewHeight)
+                                    : _previewTile(theme, j, previewHeight),
                               );
                             },
                           ),

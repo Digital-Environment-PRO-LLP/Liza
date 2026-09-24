@@ -64,11 +64,19 @@ class DemoAuthFlow extends StatefulWidget {
   const DemoAuthFlow({
     super.key,
     required this.phone,
+    this.addMultiAccount = false,
     this.service,
     this.onAuthenticated,
   });
 
   final String phone;
+
+  /// Флоу открыт из «Добавить аккаунт» уже вошедшим пользователем. Выход из
+  /// флоу ведёт обратно на экран добавления: `/home` стоит под
+  /// `loggedInRedirect` и выкинул бы в список чатов. Навигацию после входа
+  /// ведёт `Matrix.handleLoginStateChange` — он сворачивает стек добавления
+  /// и выбирает `/rooms` или `/backup` по роли НОВОГО аккаунта.
+  final bool addMultiAccount;
 
   /// Переопределяется только интеграционным каркасом: в приложении сервис
   /// создаётся по умолчанию и ходит в auth-proxy.
@@ -83,6 +91,15 @@ class DemoAuthFlow extends StatefulWidget {
   @override
   State<DemoAuthFlow> createState() => DemoAuthFlowController();
 }
+
+/// Экран «Добавить аккаунт» — туда же возвращает выход из флоу входа по
+/// телефону в режиме мультиаккаунта.
+const addAccountPath = '/rooms/settings/addaccount';
+
+/// Куда уходит пользователь, покидая флоу входа (назад, истёкшая сессия,
+/// пустой номер после перезагрузки web).
+String demoAuthExitPath({required bool addMultiAccount}) =>
+    addMultiAccount ? addAccountPath : '/home';
 
 class DemoAuthFlowController extends State<DemoAuthFlow> {
   late final DemoAuthService _service;
@@ -190,6 +207,9 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _startPhone());
   }
 
+  String get _exitPath =>
+      demoAuthExitPath(addMultiAccount: widget.addMultiAccount);
+
   Future<void> _startPhone() async {
     final request = _requests.begin();
     if (!mounted) return;
@@ -197,7 +217,7 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
       // Прямой заход на /auth/phone (закладка, F5, ручной URL) —
       // extra пуст. Заказывать код нечем, сервер ответит invalid_phone
       // невнятной ошибкой на экране кода — вместо этого на первый экран.
-      context.go('/home');
+      context.go(_exitPath);
       return;
     }
     setState(() {
@@ -415,6 +435,10 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
         initialDeviceDisplayName: PlatformInfos.clientName,
       );
       if (!mounted || !_requests.isCurrent(request)) return;
+      // Второй аккаунт: свой go('/rooms') обогнал бы свёртку стека в
+      // handleLoginStateChange (она срабатывает, только пока путь содержит
+      // /settings/addaccount) — developer терял бы /backup.
+      if (widget.addMultiAccount) return;
       context.go('/rooms');
     } on DemoAuthException catch (err) {
       _fail(err, request: request);
@@ -426,17 +450,17 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
   void back() {
     switch (step) {
       case DemoAuthStep.starting:
-        context.go('/home');
+        context.go(_exitPath);
         return;
       case DemoAuthStep.sms:
-        context.go('/home');
+        context.go(_exitPath);
         return;
       case DemoAuthStep.emailCode:
         // Шага почты больше нет — возвращаться некуда.
-        context.go('/home');
+        context.go(_exitPath);
         return;
       case DemoAuthStep.selectServer:
-        context.go('/home');
+        context.go(_exitPath);
         return;
     }
   }
@@ -450,7 +474,7 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
     if (err.code == 'ticket_expired') {
       // Экрана повторного ввода телефона в этом флоу больше нет —
       // сессия истекла, начинать заново можно только с первого экрана.
-      context.go('/home');
+      context.go(_exitPath);
       return;
     }
     setState(() {

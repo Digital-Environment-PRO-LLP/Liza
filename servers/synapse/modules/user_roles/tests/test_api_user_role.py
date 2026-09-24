@@ -162,6 +162,154 @@ class UserRoleSetTestCase(unittest.TestCase):
         self.assertEqual(status, 400)
 
 
+# --- extra_roles: персональные доп. роли поверх основной ---------------------
+
+
+class UserRoleExtraRolesTestCase(unittest.TestCase):
+    """Владельцу — admin + developer, не задевая остальных admin/developer.
+    AC:RL-developer-gates-strict/8"""
+
+    def setUp(self):
+        self.catalog = _FakeCatalog()
+        self.catalog.rows["admin"] = {
+            "code": "admin", "label": "Администратор", "color": None,
+        }
+        self.adm = _FakeAccountDataManager()
+        self.broadcaster = _FakeBroadcaster()
+        self.handler = UserRoleHandler(
+            catalog=self.catalog,
+            account_data=self.adm,
+            broadcaster=self.broadcaster,
+            check_user_exists=_FakeUserExistence({"@owner:test", "@other:test"}),
+        )
+
+    def _stored(self, uid):
+        return self.adm._store[uid]["com.liza.user_role"]
+
+    def test_set_with_extra_roles_writes_top_level_and_view(self):
+        status, body = _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        self.assertEqual(status, 200)
+        self.assertEqual(body["role"]["code"], "admin")
+        self.assertEqual(body["role"]["label"], "Администратор")
+        self.assertEqual(body["role"]["extra_roles"], ["developer"])
+        stored = self._stored("@owner:test")
+        self.assertEqual(stored["role"], "admin")
+        self.assertEqual(stored["extra_roles"], ["developer"])
+        self.assertEqual(stored["role_v2"]["extra_roles"], ["developer"])
+
+    def test_set_same_role_without_key_preserves_extras(self):
+        """AC:RL-developer-gates-strict/15"""
+        _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        _run(self.handler.set("@owner:test", {"role": "admin"}))
+        self.assertEqual(self._stored("@owner:test")["extra_roles"], ["developer"])
+
+    def test_main_role_change_without_key_drops_extras(self):
+        """liza-roles/liza-bot-api шлют только {"role"}: понижение не должно
+        оставлять «висящий» developer. AC:RL-developer-gates-strict/15"""
+        _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        _run(self.handler.set("@owner:test", {"role": "user"}))
+        stored = self._stored("@owner:test")
+        self.assertEqual(stored, {"role": "user", "role_v2": self.catalog.rows["user"]})
+
+    def test_main_role_change_with_key_keeps_given_extras(self):
+        """AC:RL-developer-gates-strict/15"""
+        _run(self.handler.set(
+            "@owner:test", {"role": "ai", "extra_roles": ["developer"]}
+        ))
+        _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        self.assertEqual(self._stored("@owner:test")["extra_roles"], ["developer"])
+
+    def test_admin_as_extra_role_rejected(self):
+        """Серверные гейты читают только основную роль — admin доп. ролью дал бы
+        в клиенте кнопки с 403 на сервере. AC:RL-developer-gates-strict/15"""
+        self.catalog.rows["developer"] = {
+            "code": "developer", "label": "Разработчик", "color": None,
+        }
+        status, _ = _run(self.handler.set(
+            "@owner:test", {"role": "developer", "extra_roles": ["admin"]}
+        ))
+        self.assertEqual(status, 400)
+        self.assertNotIn("@owner:test", self.adm._store)
+
+    def test_users_without_extras_keep_exact_contract(self):
+        """Байт-в-байт прежние запись, PUT-ответ, GET v2 и batch v2 для
+        пользователей без доп. ролей. AC:RL-developer-gates-strict/14"""
+        self.catalog.rows["developer"] = {
+            "code": "developer", "label": "Разработчик", "color": None,
+        }
+        for role in ("user", "admin", "developer"):
+            uid = "@other:test"
+            status, body = _run(self.handler.set(uid, {"role": role}))
+            view = self.catalog.rows[role]
+            self.assertEqual(status, 200)
+            self.assertEqual(
+                body, {"user_id": uid, "role": view, "updated": True}, role
+            )
+            self.assertEqual(self._stored(uid), {"role": role, "role_v2": view})
+            _, got = _run(self.handler.get(uid, v2=True))
+            self.assertEqual(got, {"user_id": uid, "role": view}, role)
+            _, batch = _run(self.handler.batch([uid], v2=True))
+            self.assertEqual(batch, {"roles": {uid: view}}, role)
+        # legacy-запись без role_v2
+        self.adm._store["@other:test"] = {"com.liza.user_role": {"role": "admin"}}
+        _, got = _run(self.handler.get("@other:test", v2=True))
+        self.assertEqual(got["role"], self.catalog.rows["admin"])
+
+    def test_set_empty_list_clears_extras(self):
+        _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        _run(self.handler.set("@owner:test", {"role": "admin", "extra_roles": []}))
+        stored = self._stored("@owner:test")
+        self.assertNotIn("extra_roles", stored)
+        self.assertNotIn("extra_roles", stored["role_v2"])
+
+    def test_extra_equal_to_main_role_dropped(self):
+        _run(self.handler.set(
+            "@owner:test", {"role": "developer", "extra_roles": ["developer"]}
+        ))
+        self.assertNotIn("extra_roles", self._stored("@owner:test"))
+
+    def test_unknown_extra_role_rejected(self):
+        status, _ = _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["nope"]}
+        ))
+        self.assertEqual(status, 404)
+        self.assertNotIn("@owner:test", self.adm._store)
+
+    def test_invalid_extra_roles_rejected(self):
+        for bad in ("developer", [""], [1]):
+            status, _ = _run(self.handler.set(
+                "@owner:test", {"role": "admin", "extra_roles": bad}
+            ))
+            self.assertEqual(status, 400, bad)
+
+    def test_get_and_batch_expose_extras_only_for_owner(self):
+        _run(self.handler.set(
+            "@owner:test", {"role": "admin", "extra_roles": ["developer"]}
+        ))
+        _run(self.handler.set("@other:test", {"role": "admin"}))
+        _, got = _run(self.handler.get("@owner:test", v2=True))
+        self.assertEqual(got["role"]["extra_roles"], ["developer"])
+        _, batch = _run(self.handler.batch(["@owner:test", "@other:test"], v2=True))
+        self.assertEqual(batch["roles"]["@owner:test"]["extra_roles"], ["developer"])
+        # Другой admin — прежний контракт, без ключа.
+        self.assertEqual(
+            batch["roles"]["@other:test"],
+            {"code": "admin", "label": "Администратор", "color": None},
+        )
+        _, v1 = _run(self.handler.batch(["@owner:test"], v2=False))
+        self.assertEqual(v1["roles"]["@owner:test"], "admin")
+
+
 # --- UserRoleHandler.batch ---------------------------------------------------
 
 

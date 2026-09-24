@@ -462,6 +462,22 @@ abstract class AppRoutes {
                           ),
                           redirect: loggedOutRedirect,
                         ),
+                        // Вход вторым аккаунтом по телефону. Не /auth/phone:
+                        // тот под loggedInRedirect и уводил уже вошедшего
+                        // в список чатов, не заказав код.
+                        if (AppConfig.phoneAuthEnabled)
+                          GoRoute(
+                            path: 'phone',
+                            pageBuilder: (context, state) => defaultPageBuilder(
+                              context,
+                              state,
+                              DemoAuthFlow(
+                                phone: state.extra as String? ?? '',
+                                addMultiAccount: true,
+                              ),
+                            ),
+                            redirect: loggedOutRedirect,
+                          ),
                       ],
                     ),
                     GoRoute(

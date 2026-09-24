@@ -33,7 +33,12 @@ from synapse.federation.transport.server._base import (
 )
 from synapse.types import JsonDict
 
-from ._roles import ACCOUNT_DATA_TYPE, DEFAULT_ROLE
+from ._roles import (
+    ACCOUNT_DATA_TYPE,
+    DEFAULT_ROLE,
+    stored_extra_roles,
+    with_extra_roles,
+)
 
 if TYPE_CHECKING:
     from synapse.federation.transport.server._base import Authenticator
@@ -111,7 +116,9 @@ class UserRolesFederationServlet(BaseFederationServlet):
             role_code = (
                 data.get("role") if isinstance(data, Mapping) else None
             ) or DEFAULT_ROLE
-            roles[uid] = await catalog.enrich(role_code)
+            roles[uid] = with_extra_roles(
+                await catalog.enrich(role_code), stored_extra_roles(data)
+            )
 
         return 200, {"roles": roles}
 

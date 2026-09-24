@@ -394,6 +394,41 @@ class UserRolesFederationServletTestCase(unittest.TestCase):
         self.assertNotIn("@stranger:remote", roles)
         self.assertEqual(roles["@alice:our_host"]["code"], "ai")
 
+    def test_extra_roles_only_where_stored(self):
+        """Бот liza_news на своём HS получает роль владельца через этот servlet.
+        AC:RL-developer-gates-strict/13"""
+        from synapse_modules.user_roles import _federation_servlet as fs
+
+        servlet = self._make_servlet()
+        fs._servlet_deps["account_data"]._store["@owner:our_host"] = {
+            ACCOUNT_DATA_TYPE: {
+                "role": "ai",
+                "extra_roles": ("developer",),
+            }
+        }
+        status, body = _run(
+            servlet.on_GET(
+                origin="remote.example",
+                content=None,
+                query={b"user_ids": [b"@owner:our_host,@bob:our_host"]},
+            )
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            body["roles"]["@owner:our_host"],
+            {
+                "code": "ai",
+                "label": "ИИ",
+                "color": "#4CAF50",
+                "extra_roles": ["developer"],
+            },
+        )
+        # Без доп. ролей — ответ ровно прежний, без ключа.
+        self.assertEqual(
+            body["roles"]["@bob:our_host"],
+            {"code": "developer", "label": "Разработчик", "color": None},
+        )
+
     def test_missing_user_ids_returns_400(self):
         servlet = self._make_servlet()
         status, body = _run(
