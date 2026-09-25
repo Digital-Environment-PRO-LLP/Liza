@@ -288,6 +288,10 @@ public class MacApnsPushPlugin: NSObject, FlutterPlugin {
                 NSApplication.shared.dockTile.display()
                 result(true)
             }
+        case "clearingDone":
+            // Парная к iOS: там ответ отпускает фоновое окно clearing-пуша. macOS
+            // не будит приложение ради тихого пуша — держать нечего.
+            result(true)
         case "cancelDeliveredForRoom":
             let args = call.arguments as? [String: Any]
             guard let roomId = args?["roomId"] as? String, !roomId.isEmpty else {

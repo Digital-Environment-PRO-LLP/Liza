@@ -188,6 +188,12 @@ class SceneDelegate: FlutterSceneDelegate {
     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
   ) {
+    // Тихий «почисти шторку»: фоновое окно держим до ответа Dart (≤25 с).
+    if ApnsPushPlugin.isClearingPush(userInfo) {
+      ApnsPushPlugin.handleClearingPush(
+        userInfo: userInfo, completionHandler: completionHandler)
+      return
+    }
     ApnsPushPlugin.didReceiveRemoteNotification(userInfo: userInfo)
     completionHandler(.newData)
   }

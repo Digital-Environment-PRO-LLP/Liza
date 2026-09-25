@@ -22,35 +22,34 @@
 from synapse.api.constants import EventTypes, Membership
 from synapse.events import EventBase
 from synapse.push.presentable_names import calculate_room_name, name_from_member_event
+from synapse.push.room_read_logic import badge_from_unread
 from synapse.storage.controllers import StorageControllers
 from synapse.storage.databases.main import DataStore
 
 
-async def get_badge_count(store: DataStore, user_id: str, group_by_room: bool) -> int:
+async def get_unread_rooms(
+    store: DataStore, user_id: str
+) -> tuple[set[str], dict[str, int]]:
+    """Приглашения и чаты (где пользователь состоит) с ненулевым notify-счётчиком."""
     invites = await store.get_invited_rooms_for_local_user(user_id)
     joins = await store.get_rooms_for_user(user_id)
 
-    badge = len(invites)
-
     room_to_count = await store.get_unread_counts_by_room_for_user(user_id)
-    for room_id, notify_count in room_to_count.items():
-        # room_to_count may include rooms which the user has left,
-        # ignore those.
-        if room_id not in joins:
-            continue
+    # room_to_count may include rooms which the user has left,
+    # ignore those.
+    counts = {
+        room_id: notify_count
+        for room_id, notify_count in room_to_count.items()
+        if room_id in joins and notify_count != 0
+    }
+    return {room.room_id for room in invites}, counts
 
-        if notify_count == 0:
-            continue
 
-        if group_by_room:
-            # return one badge count per conversation
-            badge += 1
-        else:
-            # Increase badge by number of notifications in room
-            # NOTE: this includes threaded and unthreaded notifications.
-            badge += notify_count
-
-    return badge
+async def get_badge_count(store: DataStore, user_id: str, group_by_room: bool) -> int:
+    # NOTE: without group_by_room this includes threaded and unthreaded
+    # notifications.
+    invites, counts = await get_unread_rooms(store, user_id)
+    return badge_from_unread(invites, counts, group_by_room)
 
 
 async def get_context_for_event(

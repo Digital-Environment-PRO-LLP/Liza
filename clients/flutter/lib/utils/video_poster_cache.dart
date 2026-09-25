@@ -96,6 +96,11 @@ class VideoPosterCache {
   /// его сразу: `_bootstrap` спрашивает [getCached] ПЕРВЫМ шагом, ещё до гейта
   /// [isSupported], который отсекает sending-события.
   Future<File> storeBytesForId(String eventId, Uint8List bytes) async {
+    // Симметрично isSupported/getCached: на Web нет ни path_provider, ни
+    // файловой системы — без гарда здесь летел MissingPluginException.
+    if (kIsWeb) {
+      throw UnsupportedError('VideoPosterCache: на Web диска нет');
+    }
     final id = _safeId(eventId);
     final dir = await _ensureDir();
     final file = File('${dir.path}/$id.jpg');
@@ -103,6 +108,24 @@ class VideoPosterCache {
     await tmp.writeAsBytes(bytes, flush: true);
     await tmp.rename(file.path);
     return file;
+  }
+
+  /// [storeBytesForId] для пути ОТПРАВКИ: кэш постера — только оптимизация
+  /// пре-эмит-пузыря, поэтому его сбой (Web, полный диск, нет прав) не имеет
+  /// права срывать отправку видео. `false` — постер не сохранён.
+  /// LABA-2625: безусловная запись роняла отправку любого видео в Web.
+  Future<bool> storeBytesForIdBestEffort(
+    String eventId,
+    Uint8List bytes,
+  ) async {
+    if (kIsWeb) return false;
+    try {
+      await storeBytesForId(eventId, bytes);
+      return true;
+    } catch (e, s) {
+      Logs().w('Video poster cache: запись для $eventId не удалась', e, s);
+      return false;
+    }
   }
 
   /// Резервирует слот в semaphore. Caller должен вызвать `release()` на

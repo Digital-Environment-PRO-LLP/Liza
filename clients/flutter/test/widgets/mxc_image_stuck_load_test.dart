@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liza/utils/monitoring.dart';
@@ -87,6 +88,78 @@ void main() {
     });
   });
 
+  group('give-up несёт класс ошибки (issue #2059)', () {
+    // Серверы за окно сдачи не получили ни одного медиа-запроса — причина
+    // осталась только на устройстве. Без kind/err алёрт не отвечал на «почему»
+    // и врал «без ошибки».
+    MediaStuckAggregator fresh() =>
+        MediaStuckAggregator(now: () => DateTime(2026, 9, 23, 14));
+
+    test('AC-8: give-up → kind=<класс>, без приписки «без ошибки»', () {
+      // AC:RL-media-stuck-load-watchdog/8
+      final msg = fresh().onGiveUp(
+        'give-up',
+        'liza.cyber-agro.ru',
+        error: const SocketException('Connection failed'),
+      )!;
+      expect(
+        msg,
+        '[media-stuck] reason=give-up host=liza.cyber-agro kind=network',
+      );
+      expect(msg.contains('без ошибки'), isFalse);
+      expect(msg.contains('Connection failed'), isFalse); // текст ошибки не берём
+    });
+
+    test('AC-8: stuck-timeout сохраняет приписку «вечный спиннер без ошибки»',
+        () {
+      final msg = fresh().onGiveUp(
+        'stuck-timeout',
+        'liza.cyber-agro.ru',
+        error: TimeoutException('x'),
+      )!;
+      expect(msg, endsWith('(вечный спиннер без ошибки)'));
+      expect(msg.contains('kind='), isFalse);
+    });
+
+    test('AC-9: kind=other → err=<тип>, без текста ошибки', () {
+      // AC:RL-media-stuck-load-watchdog/9
+      final msg = fresh().onGiveUp(
+        'give-up',
+        'liza.cyber-agro.ru',
+        error: StateError('mxc://liza.cyber-agro.ru/secretMediaId'),
+      )!;
+      expect(msg, endsWith(' kind=other err=StateError'));
+      expect(msg.contains('mxc://'), isFalse);
+      expect(msg.contains('secretMediaId'), isFalse);
+    });
+
+    test('AC-9: длинный тип подрезается в бюджет title, голова цела', () {
+      final msg = fresh().onGiveUp(
+        'give-up',
+        'nadezhda.liza.ru',
+        error: _AVeryLongCustomExceptionTypeNameForBudget(),
+      )!;
+      expect(msg.length, lessThanOrEqualTo(Monitoring.maxAlertTitleLength));
+      expect(
+        msg,
+        startsWith(
+          '[media-stuck] reason=give-up host=nadezhda.liza kind=other err=_AVery',
+        ),
+      );
+    });
+
+    test('AC-9: хост из mxc на весь бюджет title — без RangeError', () {
+      final label = 'a' * 63;
+      final msg = fresh().onGiveUp(
+        'give-up',
+        '$label.$label.evil',
+        error: _AVeryLongCustomExceptionTypeNameForBudget(),
+      )!;
+      expect(msg, contains(' kind=other err='));
+      expect(msg, contains('host=$label.$label'));
+    });
+  });
+
   group('attachmentIdentityChanged — защита от γ (AC-7)', () {
     test('смена uri → identity изменилась (перезапуск загрузки)', () {
       // AC:RL-media-stuck-load-watchdog/7
@@ -108,3 +181,5 @@ void main() {
     });
   });
 }
+
+class _AVeryLongCustomExceptionTypeNameForBudget implements Exception {}

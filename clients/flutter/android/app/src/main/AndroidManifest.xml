@@ -227,6 +227,12 @@
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>
 
+        <!-- Sygnal шлёт гибридный пуш с android.notification без icon: системный
+             баннер при выгруженном приложении берёт иконку отсюда. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notifications_icon" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -234,7 +234,7 @@ abstract class AppConfig {
   /// FluffyChat и Synapse в той же организации — чистые копии апстрима без
   /// правок Liza, поэтому как исходник Liza их не показываем.
   static final Uri lizaSourceUrl = Uri.parse(
-    'https://github.com/Digital-Environment-PRO-LLP/Liza',
+    'https://github.com/Liza-App-Digital/Liza',
   );
 
   static const String mainIsolatePortName = 'main_isolate';

@@ -458,8 +458,9 @@ class ChatListItem extends StatelessWidget {
                                       snapshot.data ??
                                           L10n.of(context).noMessagesYet,
                                       room,
-                                      handles:
-                                          Matrix.of(context).userHandleService,
+                                      handles: Matrix.of(
+                                        context,
+                                      ).userHandleService,
                                     ),
                               softWrap: false,
                               maxLines: room.notificationCount >= 1 ? 2 : 1,
@@ -468,15 +469,6 @@ class ChatListItem extends StatelessWidget {
                                 color: unread || room.hasNewMessages
                                     ? theme.colorScheme.onSurface
                                     : theme.colorScheme.outline,
-                                // Зачёркивание должно смотреть на то же
-                                // событие, что и текст превью выше
-                                // (`lastEvent`, отфильтрованный для канала),
-                                // а не на сырой room.lastEvent — иначе для
-                                // канала с удалённым последним постом текст
-                                // пуст, а строка всё равно зачёркнута.
-                                decoration: lastEvent?.redacted == true
-                                    ? TextDecoration.lineThrough
-                                    : null,
                               ),
                             ),
                           ),

@@ -28,6 +28,11 @@ public class ApnsPushPlugin: NSObject, FlutterPlugin {
     static var activeRoomId: String?
     static var activeClientName: String?
     static var activeSingleClient = true
+    /// Завершения фоновых пробуждений по clearing-пушу, ждущие ответа Dart, —
+    /// по id пуша: ответ на пуш A не должен отпускать окно пуша B, чья
+    /// обработка ещё идёт (несколько чатов прочитаны подряд). Доступ ТОЛЬКО с
+    /// главной очереди (method channel, asyncAfter main) — синхронизации нет.
+    private static var pendingClearingCompletions: [String: () -> Void] = [:]
 
     /// Пуш пришёл в чат, открытый сейчас на экране (зеркало Dart
     /// `pushInActiveRoomFor`): тот же room_id у ДРУГОГО своего аккаунта не глушим;
@@ -115,6 +120,21 @@ public class ApnsPushPlugin: NSObject, FlutterPlugin {
             ApnsPushPlugin.activeRoomId = args?["roomId"] as? String
             ApnsPushPlugin.activeClientName = args?["clientName"] as? String
             ApnsPushPlugin.activeSingleClient = args?["singleClient"] as? Bool ?? true
+            result(true)
+        case "saveClientNames":
+            // Аккаунты устройства — для холодного пути clearing-пуша без Dart
+            // (`clearDeliveredIfAllRead`): баннер без client_name натив считает
+            // своим, только если аккаунт ровно один.
+            let args = call.arguments as? [String: Any]
+            let names = args?["names"] as? [String] ?? []
+            UserDefaults(suiteName: lizaAppGroup())?.set(names, forKey: "client_names")
+            result(true)
+        case "clearingDone":
+            let args = call.arguments as? [String: Any]
+            if let id = args?["id"] as? String,
+               let finish = ApnsPushPlugin.pendingClearingCompletions.removeValue(forKey: id) {
+                finish()
+            }
             result(true)
         case "saveBadgeCount":
             // Клиент-авторитетное число видимых непрочитанных → App Group, откуда
@@ -206,6 +226,74 @@ public class ApnsPushPlugin: NSObject, FlutterPlugin {
 
     public static func didReceiveRemoteNotification(userInfo: [AnyHashable: Any]) {
         channel?.invokeMethod("onMessage", arguments: userInfo)
+    }
+
+    // MARK: - Clearing-пуш «почисти шторку» (howItWoks/pushes.md §21)
+
+    static let clearingTimeout: TimeInterval = 25
+    static let clearingIdKey = "liza_clear_id"
+
+    static func isClearingPush(_ userInfo: [AnyHashable: Any]) -> Bool {
+        (userInfo["liza_clear"] as? NSNumber)?.intValue == 1
+    }
+
+    /// Тихий пуш: прочитано на другом устройстве. Сначала — то, что натив может
+    /// сам (приложение могло быть выгружено: под UIScene Flutter без окна не
+    /// поднимается, Dart недоступен), затем — Dart, если он жив: он знает
+    /// прочитанность по комнатам. `completionHandler` зовётся РОВНО один раз:
+    /// ответ Dart, таймаут или сразу, если Dart нет (повторный вызов — краш,
+    /// отсутствие вызова — iOS урезает фоновый бюджет).
+    public static func handleClearingPush(
+        userInfo: [AnyHashable: Any],
+        completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        var finished = false
+        let finish = {
+            guard !finished else { return }
+            finished = true
+            completionHandler(.newData)
+        }
+        clearDeliveredIfAllRead(userInfo) {
+            guard let ch = channel else { return finish() }
+            let id = UUID().uuidString
+            pendingClearingCompletions[id] = finish
+            var message = userInfo
+            message[clearingIdKey] = id
+            ch.invokeMethod("onMessage", arguments: message)
+            DispatchQueue.main.asyncAfter(deadline: .now() + clearingTimeout) {
+                pendingClearingCompletions.removeValue(forKey: id)
+                finish()
+            }
+        }
+    }
+
+    /// Непрочитанных нет (`counts.unread == 0`) — снять все показанные баннеры
+    /// этого аккаунта без Dart. Чужой аккаунт (другой client_name) не трогаем;
+    /// баннер без client_name — только при одном аккаунте на устройстве.
+    /// `unread > 0` натив не разберёт по комнатам — это делает Dart или resume.
+    static func clearDeliveredIfAllRead(
+        _ userInfo: [AnyHashable: Any],
+        then done: @escaping () -> Void
+    ) {
+        let counts = userInfo["counts"] as? [String: Any]
+        guard (counts?["unread"] as? NSNumber)?.intValue == 0 else { return done() }
+        let pushClient = userInfo["client_name"] as? String ?? ""
+        let names = UserDefaults(suiteName: lizaAppGroup())?
+            .stringArray(forKey: "client_names") ?? []
+        let center = UNUserNotificationCenter.current()
+        center.getDeliveredNotifications { delivered in
+            let ids = delivered
+                .filter { n in
+                    let owner = n.request.content.userInfo["client_name"] as? String ?? ""
+                    if owner.isEmpty { return names.count == 1 }
+                    return owner == pushClient
+                }
+                .map { $0.request.identifier }
+            if !ids.isEmpty {
+                center.removeDeliveredNotifications(withIdentifiers: ids)
+            }
+            DispatchQueue.main.async(execute: done)
+        }
     }
 
     /// Called from AppDelegate when user taps a remote notification (from NSE).

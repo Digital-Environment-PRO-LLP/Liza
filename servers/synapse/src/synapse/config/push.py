@@ -73,3 +73,11 @@ class PushConfig(Config):
         read_grace = push_config.get("read_grace_ms", None)
         if read_grace:
             self.push_read_grace_ms = self.parse_duration(read_grace)
+
+        # Liza: counts-only пуш не только при смене ЧИСЛА непрочитанных чатов,
+        # но и когда чат стал прочитанным (число могло не измениться — в тот же
+        # момент пришло в другой). По нему клиент чистит шторку на других
+        # устройствах (howItWoks/pushes.md §21). Default off.
+        self.push_clearing_on_room_read = bool(
+            push_config.get("clearing_on_room_read", False)
+        )

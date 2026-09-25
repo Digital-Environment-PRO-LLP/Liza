@@ -1089,7 +1089,7 @@
     "type": "String",
     "placeholders": {}
   },
-  "hideRedactedEvents": "Скрыть отредактированные события",
+  "hideRedactedEvents": "Скрыть удалённые события",
   "@hideRedactedEvents": {
     "type": "String",
     "placeholders": {}
@@ -2903,7 +2903,7 @@
   "@messagesStyle": {},
   "shareInviteLink": "Поделиться ссылкой",
   "@shareInviteLink": {},
-  "redactedBy": "{username} отредактировал это событие",
+  "redactedBy": "{username} удалил сообщение",
   "@redactedBy": {
     "type": "String",
     "placeholders": {
@@ -2918,7 +2918,7 @@
   "@profileNotFound": {},
   "setTheme": "Тема:",
   "@setTheme": {},
-  "redactedByBecause": "{username} отредактировал это событие. Причина: \"{reason}\"",
+  "redactedByBecause": "{username} удалил сообщение. Причина: \"{reason}\"",
   "@redactedByBecause": {
     "type": "String",
     "placeholders": {
@@ -3315,11 +3315,11 @@
   "@calls": {},
   "customEmojisAndStickers": "Пользовательские эмодзи и стикеры",
   "@customEmojisAndStickers": {},
-  "hideRedactedMessages": "Скрыть редактированные сообщения",
+  "hideRedactedMessages": "Скрыть удалённые сообщения",
   "@hideRedactedMessages": {},
   "hideInvalidOrUnknownMessageFormats": "Скрыть неправильные или неизвестные форматы сообщения",
   "@hideInvalidOrUnknownMessageFormats": {},
-  "hideRedactedMessagesBody": "Если кто-то редактирует сообщение, оно будет скрыто в чате.",
+  "hideRedactedMessagesBody": "Если кто-то удалит сообщение, оно больше не будет видно в чате.",
   "@hideRedactedMessagesBody": {},
   "hideMemberChangesInPublicChats": "Скрыть изменения участников в публичных чатах",
   "@hideMemberChangesInPublicChats": {},
@@ -5063,7 +5063,7 @@
     "type": "String",
     "placeholders": {}
   },
-  "aboutLicenseNotice": "FluffyChat, Synapse и Sygnal, на которых основана Liza, распространяются по лицензии GNU AGPL v3.",
+  "aboutLicenseNotice": "FluffyChat, Matrix, Synapse и Sygnal, на которых основана Liza, распространяются по лицензии GNU AGPL v3",
   "@aboutLicenseNotice": {
     "type": "String",
     "placeholders": {}

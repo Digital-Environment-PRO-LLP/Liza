@@ -469,8 +469,15 @@ class BackgroundPush {
     Future<int?> Function(String eventId)? retract,
     Future<void> Function(Map<String, dynamic> raw)? deliver,
     void Function(String reason, Map<String, String> tags)? report,
+    Future<void> Function(Map<String, dynamic> raw)? clearing,
   }) async {
     final raw = Map<String, dynamic>.from(message['data'] ?? message);
+    // Тихий «почисти шторку» — не уведомление: мимо pushHelper (там counts-only
+    // при одном аккаунте = cancelAll плагина), мимо гейта баннера и дедупа.
+    if (isClearingPush(raw)) {
+      await (clearing ?? handleClearingPush)(raw);
+      return const ApnsMessageOutcome(ApnsBannerDecision.noEvent);
+    }
     final eventId = raw['event_id'] as String? ?? '';
     final deliverFn = deliver ??
         (Map<String, dynamic> r) => pushHelper(
@@ -562,14 +569,125 @@ class BackgroundPush {
             .then<void>((_) {}, onError: (_) {}),
       ),
     );
-    final delivered = await apns?.deliveredRoomIds() ?? const <String>[];
-    for (final roomId in delivered.toSet()) {
+    await cancelDeliveredOfReadRooms();
+  }
+
+  /// Ядро чистки: снять нативные баннеры комнат, которые клиент уже не
+  /// считает непрочитанными. Общее для resume и clearing-пуша — одно
+  /// определение «прочитано» (`isUnreadOrInvited`), без новых копий предиката.
+  /// Возвращает снятые комнаты.
+  Future<List<String>> cancelDeliveredOfReadRooms({
+    Future<List<String>> Function()? delivered,
+    Future<void> Function(String roomId)? cancel,
+  }) async {
+    final rooms = await (delivered ?? _deliveredRoomIds)();
+    final dropped = <String>[];
+    for (final roomId in rooms.toSet()) {
       final room = clients
           .map((c) => c.getRoomById(roomId))
           .whereType<Room>()
           .firstOrNull;
       if (room == null || room.isUnreadOrInvited) continue;
-      Logs().v('[Push] Resume: dropping banner of already read room', roomId);
+      Logs().v('[Push] Dropping banner of already read room', roomId);
+      await (cancel ?? _cancelDelivered)(roomId);
+      dropped.add(roomId);
+    }
+    return dropped;
+  }
+
+  Future<List<String>> _deliveredRoomIds() async =>
+      await apns?.deliveredRoomIds() ?? const <String>[];
+
+  Future<void> _cancelDelivered(String roomId) async =>
+      apns?.cancelDeliveredForRoom(roomId);
+
+  static const clearingSyncTimeout = Duration(seconds: 8);
+
+  /// Тихий пуш «почисти шторку» (Sygnal шлёт его на свою квитанцию с другого
+  /// устройства, howItWoks/pushes.md §21): догнать квитанции sync'ом → снять
+  /// прочитанное → отпустить нативный `completionHandler` (iOS держит фоновое
+  /// окно до этого ответа, не дольше 25 с). Ответ уходит при ЛЮБОМ исходе.
+  Future<List<String>> handleClearingPush(
+    Map<String, dynamic> raw, {
+    Future<void> Function(Client client)? sync,
+    Future<List<String>> Function()? delivered,
+    Future<void> Function(String roomId)? cancel,
+    Future<void> Function(String? clearingId)? done,
+    Duration syncTimeout = clearingSyncTimeout,
+  }) async {
+    var dropped = const <String>[];
+    try {
+      final clientName = pushClientNameFromRaw(raw);
+      final own = clients.where((c) => c.clientName == clientName).toList();
+      await Future.wait(
+        (own.isEmpty ? clients : own).map(
+          (c) => (sync ?? _clearingSync)(c)
+              .timeout(syncTimeout)
+              .then<void>((_) {}, onError: (_) {}),
+        ),
+      );
+      dropped = await cancelDeliveredOfReadRooms(
+        delivered: delivered,
+        cancel: cancel,
+      );
+      Logs().v('[Push] Clearing push: dropped ${dropped.length} room(s)');
+    } catch (e, s) {
+      Logs().w('[Push] Clearing push failed', e, s);
+    } finally {
+      await (done ?? _clearingDone)(raw[pushClearIdKey] as String?);
+    }
+    return dropped;
+  }
+
+  static Future<void> _clearingSync(Client client) async {
+    await client.roomsLoading;
+    await client.oneShotSync();
+  }
+
+  Future<void> _clearingDone(String? id) async => apns?.clearingDone(id);
+
+  /// Комнаты, непрочитанные на прошлом sync, — по аккаунтам.
+  final _unreadOnLastSync = <String, Set<String>>{};
+
+  /// Живой клиент: квитанция с ДРУГОГО устройства приходит sync'ом — снять
+  /// уведомления комнат, которые с прошлого sync перестали быть непрочитанными
+  /// (нативные баннеры iOS/macOS и уведомления плагина этого аккаунта). Без
+  /// этого баннер на работающем Маке висел до активации окна. Сравниваем
+  /// СОСТОЯНИЕ, а не события: пропущенный rate-limit'ом sync не теряет переход.
+  Future<List<String>> clearNotificationsOfRoomsReadSinceLastSync(
+    Client client, {
+    Future<void> Function(Client client, String roomId)? cancel,
+  }) async {
+    final unread = {
+      for (final room in client.rooms)
+        if (room.isUnreadOrInvited) room.id,
+    };
+    final previous = _unreadOnLastSync[client.clientName];
+    _unreadOnLastSync[client.clientName] = unread;
+    if (previous == null) return const [];
+    final read = previous.difference(unread).toList();
+    for (final roomId in read) {
+      try {
+        await (cancel ?? _cancelRoomNotifications)(client, roomId);
+      } catch (e, s) {
+        Logs().w('[Push] Dropping notifications of read room failed', e, s);
+      }
+    }
+    return read;
+  }
+
+  /// Аккаунт вышел: снимок его непрочитанного живёт по жизни клиента, иначе
+  /// повторный вход под тем же clientName сравнивался бы со старой сессией.
+  void forgetReadSnapshot(String clientName) =>
+      _unreadOnLastSync.remove(clientName);
+
+  Future<void> _cancelRoomNotifications(Client client, String roomId) async {
+    Logs().v('[Push] Room read elsewhere, dropping its notifications', roomId);
+    await _flutterLocalNotificationsPlugin.cancel(
+      pushNotificationId(client.clientName, roomId),
+    );
+    await _flutterLocalNotificationsPlugin.cancel(roomId.hashCode);
+    if (Platform.isIOS || Platform.isMacOS) {
       await apns?.cancelDeliveredForRoom(roomId);
     }
   }
@@ -847,6 +965,9 @@ class BackgroundPush {
         "default_payload": {
           pushClientNameKey: clientName,
           if (platform != null) "platform": platform,
+          // Умеем тихий clearing-пуш «почисти шторку» (howItWoks/pushes.md §21):
+          // без этого ключа Sygnal его не шлёт — старые сборки зря не будятся.
+          if (apple) pushClearCapabilityKey: 1,
           if (apple)
             "aps": {
               "mutable-content": 1,
@@ -1036,6 +1157,9 @@ class BackgroundPush {
 
     // Share credentials with the NSE so it can download avatars (iOS only).
     if (Platform.isIOS) {
+      // Натив снимает баннеры по clearing-пушу без Dart (приложение выгружено):
+      // баннер без client_name он считает своим, только если аккаунт один.
+      apns?.saveClientNames(clients.map((c) => c.clientName).toList());
       apns?.saveCredentials(
         homeserverUrl: client.homeserver.toString(),
         accessToken: client.accessToken ?? '',

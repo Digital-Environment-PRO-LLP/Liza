@@ -5018,7 +5018,7 @@
     "type": "String",
     "placeholders": {}
   },
-  "aboutLicenseNotice": "FluffyChat, Synapse and Sygnal, on which Liza is based, are distributed under the GNU AGPL v3 licence.",
+  "aboutLicenseNotice": "FluffyChat, Matrix, Synapse and Sygnal, on which Liza is based, are distributed under the GNU AGPL v3 licence",
   "@aboutLicenseNotice": {
     "type": "String",
     "placeholders": {}

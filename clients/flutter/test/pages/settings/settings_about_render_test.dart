@@ -73,7 +73,7 @@ class _FakeUrlLauncher extends UrlLauncherPlatform
   }
 }
 
-const _lizaSource = 'https://github.com/Digital-Environment-PRO-LLP/Liza';
+const _lizaSource = 'https://github.com/Liza-App-Digital/Liza';
 
 /// Тапает каждый кликабельный пункт экрана и возвращает, куда он увёл.
 Future<List<String>> _tapAllLinks(
@@ -193,21 +193,22 @@ void main() {
     });
 
     // AC:RL-about-screen-legal/5
-    testWidgets('AC-5: текст лицензии — AGPL для FluffyChat, Synapse, Sygnal', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(_StubController('2.4.0', '3762'), const Locale('ru')),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'AC-5: текст лицензии — AGPL для FluffyChat, Matrix, Synapse, Sygnal',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(_StubController('2.4.0', '3762'), const Locale('ru')),
+        );
+        await tester.pumpAndSettle();
 
-      final notice = find.textContaining('AGPL');
-      expect(notice, findsOneWidget);
-      final text = tester.widget<Text>(notice).data!;
-      for (final component in ['FluffyChat', 'Synapse', 'Sygnal']) {
-        expect(text, contains(component));
-      }
-    });
+        final notice = find.textContaining('AGPL');
+        expect(notice, findsOneWidget);
+        final text = tester.widget<Text>(notice).data!;
+        for (final component in ['FluffyChat', 'Matrix', 'Synapse', 'Sygnal']) {
+          expect(text, contains(component));
+        }
+      },
+    );
 
     // AC:RL-about-screen-legal/13
     testWidgets('AC-13: каждый уводящий в браузер пункт помечен open_in_new', (

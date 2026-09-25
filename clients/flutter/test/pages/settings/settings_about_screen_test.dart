@@ -107,25 +107,24 @@ void main() {
   test('AC-4/AC-12: исходники — только монорепо Liza, без голых форков', () {
     final appConfigSrc = File('lib/config/app_config.dart').readAsStringSync();
     expect(
-      appConfigSrc.contains(
-        "'https://github.com/Digital-Environment-PRO-LLP/Liza'",
-      ),
+      appConfigSrc.contains("'https://github.com/Liza-App-Digital/Liza'"),
       isTrue,
     );
     expect(aboutViewSrc.contains('AppConfig.lizaSourceUrl'), isTrue);
     for (final fork in [
-      'Digital-Environment-PRO-LLP/fluffychat',
-      'Digital-Environment-PRO-LLP/synapse',
+      'Liza-App-Digital/fluffychat',
+      'Liza-App-Digital/synapse',
     ]) {
       expect(appConfigSrc.contains(fork), isFalse, reason: 'форк $fork');
       expect(aboutViewSrc.contains(fork), isFalse, reason: 'форк $fork');
     }
   });
 
-  // AC-5: лицензия AGPL v3 названа и привязана к ТРЁМ форкнутым компонентам —
-  // в обеих локализациях (квантор ∀ по {ru, en}).
-  // AC:RL-about-screen-legal/5
-  test('AC-5: AGPL v3 относится к FluffyChat, Synapse и Sygnal', () {
+  // AC-5: лицензия AGPL v3 названа и привязана к FluffyChat, Matrix, Synapse,
+  // Sygnal — в обеих локализациях (квантор ∀ по {ru, en}). AC-14: без точки
+  // в конце (требование 2026-09-25, «не наш стиль»).
+  // AC:RL-about-screen-legal/5 AC:RL-about-screen-legal/14
+  test('AC-5: AGPL v3 относится к FluffyChat, Matrix, Synapse и Sygnal', () {
     expect(aboutViewSrc.contains('l10n.aboutLicenseNotice'), isTrue);
     for (final entry in {'en': enArb, 'ru': ruArb}.entries) {
       final notice = entry.value['aboutLicenseNotice'] as String;
@@ -134,13 +133,18 @@ void main() {
         isTrue,
         reason: '${entry.key}: лицензия должна называться AGPL (не APGL)',
       );
-      for (final component in ['FluffyChat', 'Synapse', 'Sygnal']) {
+      for (final component in ['FluffyChat', 'Matrix', 'Synapse', 'Sygnal']) {
         expect(
           notice.contains(component),
           isTrue,
           reason: '${entry.key}: лицензия относится к $component',
         );
       }
+      expect(
+        notice.trimRight().endsWith('.'),
+        isFalse,
+        reason: '${entry.key}: текст лицензии без точки в конце',
+      );
     }
   });
 
@@ -173,7 +177,11 @@ void main() {
   // AC:RL-about-screen-legal/7
   test('AC-7: у всех уводящих в браузер пунктов есть Icons.open_in_new', () {
     final launchCount = RegExp(r'launchUrl\(').allMatches(aboutViewSrc).length;
-    expect(launchCount, greaterThan(0), reason: 'на экране есть внешние ссылки');
+    expect(
+      launchCount,
+      greaterThan(0),
+      reason: 'на экране есть внешние ссылки',
+    );
     expect(
       aboutViewSrc.contains('Icons.open_in_new'),
       isTrue,
@@ -200,13 +208,19 @@ void main() {
       );
     }
     // Ключи двух форков удалены вместе со ссылками (2026-09-23).
-    for (final gone in ['aboutSourceCodeFluffyChat', 'aboutSourceCodeSynapse']) {
+    for (final gone in [
+      'aboutSourceCodeFluffyChat',
+      'aboutSourceCodeSynapse',
+    ]) {
       expect(enArb.containsKey(gone), isFalse, reason: 'intl_en.arb: $gone');
       expect(ruArb.containsKey(gone), isFalse, reason: 'intl_ru.arb: $gone');
     }
     final code = aboutViewSrc
         .split('\n')
-        .where((l) => !l.trimLeft().startsWith('//') && !l.trimLeft().startsWith('///'))
+        .where(
+          (l) =>
+              !l.trimLeft().startsWith('//') && !l.trimLeft().startsWith('///'),
+        )
         .join('\n');
     expect(
       RegExp('[А-Яа-яЁё]').hasMatch(code),
@@ -223,70 +237,75 @@ void main() {
 
   // AC-11: версия + номер сборки, один источник на все пять платформ.
   // AC:RL-about-screen-legal/11
-  test('AC-11: экран показывает номер сборки из pubspec на всех платформах', () {
-    // Номер приходит из PackageInfo.buildNumber — единственного источника,
-    // который на web/ios/macos/android/windows наполняется из
-    // `version: X.Y.Z+NNNN` в pubspec.yaml силами самого Flutter.
-    final platformInfosSrc = File(
-      'lib/utils/platform_infos.dart',
-    ).readAsStringSync();
-    expect(
-      RegExp(r'getBuildNumber\(\)\s*async').hasMatch(platformInfosSrc),
-      isTrue,
-      reason: 'номер сборки берём централизованно из PlatformInfos',
-    );
-    expect(
-      platformInfosSrc.contains('PackageInfo.fromPlatform()).buildNumber'),
-      isTrue,
-      reason: 'источник номера — PackageInfo, одинаковый на всех платформах',
-    );
-    // Платформо-специфичных веток быть не должно: они и есть способ потерять
-    // номер на одной из пяти платформ.
-    final getBuildNumberBody = platformInfosSrc.substring(
-      platformInfosSrc.indexOf('getBuildNumber'),
-    );
-    for (final branch in ['isWeb', 'isWindows', 'isAndroid', 'isIOS']) {
+  test(
+    'AC-11: экран показывает номер сборки из pubspec на всех платформах',
+    () {
+      // Номер приходит из PackageInfo.buildNumber — единственного источника,
+      // который на web/ios/macos/android/windows наполняется из
+      // `version: X.Y.Z+NNNN` в pubspec.yaml силами самого Flutter.
+      final platformInfosSrc = File(
+        'lib/utils/platform_infos.dart',
+      ).readAsStringSync();
       expect(
-        getBuildNumberBody.split('}').first.contains(branch),
-        isFalse,
-        reason: 'getBuildNumber не должен ветвиться по платформе ($branch)',
-      );
-    }
-
-    expect(aboutCtrlSrc.contains('PlatformInfos.getBuildNumber()'), isTrue);
-    expect(
-      aboutViewSrc.contains('l10n.versionWithBuildNumber('),
-      isTrue,
-      reason: 'экран обязан показывать номер сборки рядом с версией',
-    );
-    // Деградация: пустой номер → одна версия, а не «Версия: 2.4.0 ()».
-    expect(
-      aboutViewSrc.contains('controller.buildNumber.isEmpty'),
-      isTrue,
-      reason: 'при недоступном номере показываем версию без пустых скобок',
-    );
-
-    for (final arb in {'en': enArb, 'ru': ruArb}.entries) {
-      final value = arb.value['versionWithBuildNumber'] as String?;
-      expect(
-        value,
-        isNotNull,
-        reason: '${arb.key}: нет ключа versionWithBuildNumber',
-      );
-      expect(
-        value!.contains('{version}') && value.contains('{buildNumber}'),
+        RegExp(r'getBuildNumber\(\)\s*async').hasMatch(platformInfosSrc),
         isTrue,
-        reason: '${arb.key}: строка обязана нести обе подстановки',
+        reason: 'номер сборки берём централизованно из PlatformInfos',
       );
-    }
+      expect(
+        platformInfosSrc.contains('PackageInfo.fromPlatform()).buildNumber'),
+        isTrue,
+        reason: 'источник номера — PackageInfo, одинаковый на всех платформах',
+      );
+      // Платформо-специфичных веток быть не должно: они и есть способ потерять
+      // номер на одной из пяти платформ.
+      final getBuildNumberBody = platformInfosSrc.substring(
+        platformInfosSrc.indexOf('getBuildNumber'),
+      );
+      for (final branch in ['isWeb', 'isWindows', 'isAndroid', 'isIOS']) {
+        expect(
+          getBuildNumberBody.split('}').first.contains(branch),
+          isFalse,
+          reason: 'getBuildNumber не должен ветвиться по платформе ($branch)',
+        );
+      }
 
-    // Номер в pubspec задан — иначе показывать нечего ни на одной платформе.
-    final pubspec = File('pubspec.yaml').readAsStringSync();
-    expect(
-      RegExp(r'^version:\s*\d+\.\d+\.\d+\+\d+', multiLine: true)
-          .hasMatch(pubspec),
-      isTrue,
-      reason: 'pubspec.yaml должен нести version: X.Y.Z+NNNN',
-    );
-  });
+      expect(aboutCtrlSrc.contains('PlatformInfos.getBuildNumber()'), isTrue);
+      expect(
+        aboutViewSrc.contains('l10n.versionWithBuildNumber('),
+        isTrue,
+        reason: 'экран обязан показывать номер сборки рядом с версией',
+      );
+      // Деградация: пустой номер → одна версия, а не «Версия: 2.4.0 ()».
+      expect(
+        aboutViewSrc.contains('controller.buildNumber.isEmpty'),
+        isTrue,
+        reason: 'при недоступном номере показываем версию без пустых скобок',
+      );
+
+      for (final arb in {'en': enArb, 'ru': ruArb}.entries) {
+        final value = arb.value['versionWithBuildNumber'] as String?;
+        expect(
+          value,
+          isNotNull,
+          reason: '${arb.key}: нет ключа versionWithBuildNumber',
+        );
+        expect(
+          value!.contains('{version}') && value.contains('{buildNumber}'),
+          isTrue,
+          reason: '${arb.key}: строка обязана нести обе подстановки',
+        );
+      }
+
+      // Номер в pubspec задан — иначе показывать нечего ни на одной платформе.
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      expect(
+        RegExp(
+          r'^version:\s*\d+\.\d+\.\d+\+\d+',
+          multiLine: true,
+        ).hasMatch(pubspec),
+        isTrue,
+        reason: 'pubspec.yaml должен нести version: X.Y.Z+NNNN',
+      );
+    },
+  );
 }

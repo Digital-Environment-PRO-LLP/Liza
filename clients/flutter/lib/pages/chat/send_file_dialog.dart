@@ -664,9 +664,10 @@ class SendFileDialogState extends State<SendFileDialog> {
         // спрашивает `VideoPosterCache.getCached` ПЕРВЫМ шагом, ДО гейта
         // `isSupported` (который отсекает sending-события), поэтому наш
         // пре-эмитнутый пузырь покажет настоящий кадр без сети и без правки
-        // гейтов — как в Liza.
+        // гейтов — как в Liza. Best-effort: не сохранили (Web, диск) —
+        // пузырь покажет BlurHash, а постер всё равно уйдёт в thumbnail_url.
         if (isVideo && thumbnail != null) {
-          await VideoPosterCache.instance.storeBytesForId(
+          await VideoPosterCache.instance.storeBytesForIdBestEffort(
             txid,
             thumbnail.bytes,
           );

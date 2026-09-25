@@ -141,11 +141,7 @@ class NewGroupController extends State<NewGroup> {
       // Приглашать может только модератор+ (invite:50). Иначе приватная группа
       // наследует preset invite:0 и любой участник приглашает посторонних.
       powerLevelContentOverride: groupPowerLevelOverride(),
-      // trim для паритета с _createChannel/_createSpace: имя из одних пробелов
-      // не должно уезжать на сервер вместо честного «безымянная группа».
-      groupName: nameController.text.trim().isNotEmpty
-          ? nameController.text.trim()
-          : null,
+      groupName: nameController.text.trim(),
       initialState: [
         if (avatar != null)
           sdk.StateEvent(
@@ -237,15 +233,15 @@ class NewGroupController extends State<NewGroup> {
     final client = Matrix.of(context).client;
 
     try {
-      // Компания и канал: пустое имя недопустимо. У публичного канала alias
+      // Пустое имя недопустимо ни для одного типа. У публичного канала alias
       // выводится из имени (_createChannel), а Synapse пустой localpart НЕ
       // отвергает (handlers/room.py) — первый такой канал МОЛЧА получает
       // мусорный alias «#:<домен>» в директории, второй падает с M_ROOM_IN_USE
       // «Room alias already taken» сырой английской строкой.
-      // ГРУППА исключена намеренно: безымянная группа легальна — _createGroup
-      // шлёт groupName: null, и SDK считает имя по участникам.
-      if (nameController.text.trim().isEmpty &&
-          createGroupType != CreateGroupType.group) {
+      // Группа (LABA-2630): _createGroup создаёт комнату БЕЗ invite — участники
+      // добавляются позже на /invite, — поэтому без имени heroes пусты и SDK
+      // называет её «Пустой чат».
+      if (nameController.text.trim().isEmpty) {
         setState(() => error = L10n.of(context).pleaseEnterAName);
         return;
       }

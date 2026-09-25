@@ -37,6 +37,23 @@ const notificationAvatarDimension = 128;
 /// этот ключ теряет, поэтому читаем его из сырой карты ДО парсинга).
 const pushClientNameKey = 'client_name';
 
+/// Ключ capability в `default_payload` pusher-а: клиент умеет тихий
+/// clearing-пуш «почисти шторку» (howItWoks/pushes.md §21).
+const pushClearCapabilityKey = 'liza_clear_v';
+
+/// Маркер clearing-пуша в payload (ставит Sygnal).
+const pushClearMarkerKey = 'liza_clear';
+
+/// Метка конкретного clearing-пуша (ставит iOS-натив): по ней `clearingDone`
+/// отпускает фоновое окно именно этого пуша.
+const pushClearIdKey = 'liza_clear_id';
+
+/// Тихий пуш «почисти шторку» — не уведомление о событии.
+bool isClearingPush(Map<dynamic, dynamic> raw) {
+  final marker = raw[pushClearMarkerKey];
+  return marker == 1 || marker == '1' || marker == true;
+}
+
 String? pushClientNameFromRaw(Map<dynamic, dynamic>? raw) {
   final v = raw?[pushClientNameKey];
   return v is String && v.isNotEmpty ? v : null;

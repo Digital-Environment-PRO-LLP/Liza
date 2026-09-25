@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import 'package:liza/config/app_config.dart';
 import 'package:liza/config/routes.dart';
 import 'package:liza/config/themes.dart';
 import 'package:liza/l10n/l10n.dart';
@@ -145,10 +143,7 @@ class SettingsView extends StatelessWidget {
                                         theme.colorScheme.secondary,
                                     iconColor: theme.colorScheme.secondary,
                                   ),
-                                  label: Text(
-                                    identifier,
-                                    softWrap: true,
-                                  ),
+                                  label: Text(identifier, softWrap: true),
                                 ),
                               ],
                             ),
@@ -261,8 +256,7 @@ class SettingsView extends StatelessWidget {
                                   'homeserver',
                             ),
                           ),
-                          onTap: () =>
-                              context.go('/rooms/settings/homeserver'),
+                          onTap: () => context.go('/rooms/settings/homeserver'),
                           tileColor:
                               activeRoute.startsWith(
                                 '/rooms/settings/homeserver',
@@ -272,14 +266,6 @@ class SettingsView extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  // Юридический документ во внешнем браузере: иконка
-                  // open_in_new предупреждает, что пункт уводит из приложения.
-                  ListTile(
-                    leading: const Icon(Icons.privacy_tip_outlined),
-                    title: Text(L10n.of(context).privacyPolicy),
-                    trailing: const Icon(Icons.open_in_new_outlined),
-                    onTap: () => launchUrl(AppConfig.privacyUrl),
                   ),
                   // «О проекте» доступен всем (снят IfDeveloper) и ведёт на
                   // собственный экран, а не в системный showAboutDialog: тот

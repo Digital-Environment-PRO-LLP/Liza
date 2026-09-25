@@ -38,6 +38,7 @@ from synapse.types import JsonDict, JsonMapping
 
 from . import push_tools
 from .read_grace_logic import is_read_within_grace, read_grace_deadline_ms
+from .room_read_logic import badge_from_unread, should_send_badge, unread_room_ids
 
 if TYPE_CHECKING:
     from synapse.server import HomeServer
@@ -137,6 +138,7 @@ class HttpPusher(Pusher):
 
         self.push_jitter_delay_ms = hs.config.push.push_jitter_delay_ms
         self.push_read_grace_ms = hs.config.push.push_read_grace_ms
+        self._clearing_on_room_read = hs.config.push.push_clearing_on_room_read
 
         self.data = pusher_config.data
         if self.data is None:
@@ -174,6 +176,7 @@ class HttpPusher(Pusher):
         self.data_minus_url.update(self.data)
         del self.data_minus_url["url"]
         self.badge_count_last_call: int | None = None
+        self.unread_rooms_last_call: frozenset[str] | None = None
 
     def on_started(self, should_check_for_notifs: bool) -> None:
         """Called when this pusher has been started.
@@ -198,12 +201,20 @@ class HttpPusher(Pusher):
     async def _update_badge(self) -> None:
         # XXX as per https://github.com/matrix-org/matrix-doc/issues/2627, this seems
         # to be largely redundant. perhaps we can remove it.
-        badge = await push_tools.get_badge_count(
-            self.hs.get_datastores().main,
-            self.user_id,
-            group_by_room=self._group_unread_count_by_room,
+        invites, counts = await push_tools.get_unread_rooms(
+            self.hs.get_datastores().main, self.user_id
         )
-        if self.badge_count_last_call is None or self.badge_count_last_call != badge:
+        badge = badge_from_unread(invites, counts, self._group_unread_count_by_room)
+        rooms = unread_room_ids(invites, counts)
+        send = should_send_badge(
+            self.badge_count_last_call,
+            badge,
+            self.unread_rooms_last_call,
+            rooms,
+            self._clearing_on_room_read,
+        )
+        self.unread_rooms_last_call = rooms
+        if send:
             self.badge_count_last_call = badge
             await self._send_badge(badge)
 

@@ -198,8 +198,12 @@ class MatrixLocals extends MatrixLocalizations {
 
   @override
   String removedBy(Event redactedEvent) {
-    return l10n.redactedBy(
-      redactedEvent.senderFromMemoryOrFallback.calcDisplayname(),
+    // Имя того, кто удалил (отправитель редакции), а не автора сообщения:
+    // при удалении модератором иначе выходит ложное «автор удалил».
+    return l10n.removedBy(
+      redactedEvent.redactedBecause?.senderFromMemoryOrFallback
+              .calcDisplayname() ??
+          l10n.user,
     );
   }
 

@@ -1,14 +1,14 @@
 // ledger:RL-settings-privacy-security-labels
-// AC:RL-settings-privacy-security-labels/1 AC:RL-settings-privacy-security-labels/2
+// AC:RL-settings-privacy-security-labels/1
 // AC:RL-settings-privacy-security-labels/3 AC:RL-settings-privacy-security-labels/4
 // AC:RL-settings-privacy-security-labels/5 AC:RL-settings-privacy-security-labels/6
 //
-// Страж подписей пунктов настроек (LABA-2548): пункт, уводящий на внешний
-// liza.ru/legal, называется «Политика конфиденциальности» и помечен иконкой
-// open_in_new; пункт и экран внутренних настроек — «Приватность и безопасность».
+// Страж подписей пунктов настроек (LABA-2548): экран внутренних настроек —
+// «Приватность и безопасность»; внешней ссылки на политику конфиденциальности
+// в меню нет (с 2026-09-25 она только в «О приложении»).
 // guard.render: source/l10n-ассерты — полный рендер SettingsView требует
 // SettingsController + Matrix + GoRouter (тот же компромисс, что и в
-// settings_invite_friends_test.dart); визуальный AC-7 — manual-остаток, см. RL.
+// settings_invite_friends_test.dart).
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -28,43 +28,20 @@ void main() {
     ruArb = File('lib/l10n/intl_ru.arb').readAsStringSync();
   });
 
-  /// Тело ListTile, внутри которого встречается [marker].
-  String tileContaining(String src, String marker) {
-    final markerIdx = src.indexOf(marker);
-    expect(markerIdx, isNot(-1), reason: 'в исходнике нет «$marker»');
-    final start = src.lastIndexOf('ListTile(', markerIdx);
-    expect(start, isNot(-1), reason: '«$marker» не внутри ListTile');
-    final end = src.indexOf('),\n', markerIdx);
-    return src.substring(start, end == -1 ? src.length : end);
-  }
-
-  // AC-1: внешняя ссылка на liza.ru/legal подписана privacyPolicy, не privacy.
-  // Ловит возврат к подписи «Приватность» на юридическом документе.
+  // AC-1 (переформулирован 2026-09-25): пункт «Политика конфиденциальности»
+  // убран из меню «Настройки» — документ доступен в «О приложении» (там его
+  // держит AC-3 RL-about-screen-legal). Прежняя редакция AC-1/AC-2 требовала
+  // наличия пункта с подписью privacyPolicy и иконкой open_in_new.
   // AC:RL-settings-privacy-security-labels/1
-  test('AC-1: пункт launchUrl(privacyUrl) использует ключ privacyPolicy', () {
-    final tile = tileContaining(settingsSrc, 'launchUrl(AppConfig.privacyUrl)');
+  test('AC-1: в меню настроек нет пункта launchUrl(privacyUrl)', () {
     expect(
-      tile.contains('L10n.of(context).privacyPolicy'),
-      isTrue,
-      reason: 'внешняя ссылка должна называться «Политика конфиденциальности» '
-          '(ключ privacyPolicy), а не generic «Приватность»',
-    );
-    expect(
-      tile.contains('L10n.of(context).privacy)'),
+      settingsSrc.contains('AppConfig.privacyUrl'),
       isFalse,
-      reason: 'старый ключ privacy на внешней ссылке = регресс LABA-2548',
+      reason:
+          'политика конфиденциальности — только в «О приложении», '
+          'дубль в меню настроек убран',
     );
-  });
-
-  // AC-2: у внешней ссылки иконка open_in_new — предупреждение «уйдёшь в браузер».
-  // AC:RL-settings-privacy-security-labels/2
-  test('AC-2: у пункта privacyPolicy есть trailing Icons.open_in_new*', () {
-    final tile = tileContaining(settingsSrc, 'launchUrl(AppConfig.privacyUrl)');
-    expect(
-      tile.contains('trailing') && tile.contains('Icons.open_in_new'),
-      isTrue,
-      reason: 'пункт уводит из приложения — нужна trailing-иконка open_in_new',
-    );
+    expect(settingsSrc.contains('.privacyPolicy'), isFalse);
   });
 
   // AC-3: вход в «Приватность и безопасность» скрыт из меню настроек
@@ -108,7 +85,8 @@ void main() {
     expect(
       ruArb.contains('"privacyAndSecurity": "Приватность и безопасность"'),
       isTrue,
-      reason: 'без русского значения UI покажет английский Privacy and security',
+      reason:
+          'без русского значения UI покажет английский Privacy and security',
     );
   });
 
@@ -119,7 +97,8 @@ void main() {
     expect(
       securitySrc.contains('L10n.of(context).privacy,'),
       isTrue,
-      reason: 'секция «Приватность» внутри экрана должна остаться '
+      reason:
+          'секция «Приватность» внутри экрана должна остаться '
           '(в неё едет profileVisibility из feat/types)',
     );
   });

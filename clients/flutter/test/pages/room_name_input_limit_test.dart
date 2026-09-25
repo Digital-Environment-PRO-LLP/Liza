@@ -11,6 +11,8 @@
 
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -543,28 +545,68 @@ void main() {
       },
     );
 
-    // Анти-оверфикс: безымянная группа — поддерживаемое состояние продукта
-    // (_createGroup шлёт groupName: null, SDK считает имя по участникам).
-    // Красный этот тест станет на кандидате «валидатор во всех точках».
+    // LABA-2630: безымянная группа создавалась «Пустым чатом» — createGroupChat
+    // уходит без invite, heroes пусты. Меряем ФАКТ запроса, а не только текст:
+    // прежний пин AC-14 на одном тексте был зелёным и до, и после бага.
+    List<Object?> createRoomCalls() =>
+        FakeMatrixApi.calledEndpoints['/client/v3/createRoom'] ?? const [];
+
     for (final input in ['', '   ']) {
-      testWidgets('создание group: имя «$input» гейтом НЕ блокируется '
-          '— AC:RL-room-name-input-limit/14', (tester) async {
+      testWidgets('создание group: имя «$input» не проходит, createRoom не '
+          'уходит — AC:RL-room-name-input-limit/26', (tester) async {
         await pumpNewGroup(tester, CreateGroupType.group);
+        FakeMatrixApi.calledEndpoints.clear();
         if (input.isNotEmpty) {
           await tester.enterText(_field.first, input);
           await tester.pump();
         }
         await tapCreate(tester);
+        await tester.pump(const Duration(seconds: 1));
 
         expect(
           find.text(_emptyNameError),
-          findsNothing,
-          reason: 'у безымянной группы отобрали право на пустое имя',
+          findsOneWidget,
+          reason: 'пустое имя группы не отбито',
         );
-        tester.takeException();
+        expect(
+          createRoomCalls(),
+          isEmpty,
+          reason: 'группа с пустым именем ушла на сервер («Пустой чат»)',
+        );
         await teardownScreen(tester);
       });
     }
+
+    testWidgets('создание group: «  Отдел  » уходит как «Отдел» '
+        '— AC:RL-room-name-input-limit/27', (tester) async {
+      await pumpNewGroup(tester, CreateGroupType.group);
+      FakeMatrixApi.calledEndpoints.clear();
+      await tester.enterText(_field.first, '  Отдел  ');
+      await tester.pump();
+      await tapCreate(tester);
+      await tester.pump(const Duration(seconds: 1));
+
+      final body = jsonDecode(createRoomCalls().single as String) as Map;
+      expect(body['name'], 'Отдел');
+      // Переход на /invite без GoRouter в обёртке бросает — не предмет теста.
+      tester.takeException();
+      await teardownScreen(tester);
+    });
+
+    testWidgets(
+      'ошибка группы стоит НАД кнопкой создания '
+      '— AC:RL-room-name-input-limit/28',
+      (tester) async {
+        await pumpNewGroup(tester, CreateGroupType.group);
+        await tapCreate(tester);
+        await tester.pumpAndSettle();
+
+        final errorDy = tester.getTopLeft(find.text(_emptyNameError)).dy;
+        final buttonDy = tester.getTopLeft(find.byType(ElevatedButton)).dy;
+        expect(errorDy, lessThan(buttonDy));
+        await teardownScreen(tester);
+      },
+    );
   });
 
   group('тултип компании в nav-rail — ledger:RL-room-name-input-limit', () {

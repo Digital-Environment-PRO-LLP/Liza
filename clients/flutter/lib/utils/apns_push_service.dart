@@ -171,6 +171,29 @@ class ApnsPushService {
     }
   }
 
+  /// Clearing-пуш обработан: натив отпускает `completionHandler` фонового
+  /// пробуждения (iOS держит окно до этого ответа, не дольше 25 с).
+  /// [id] — метка пуша от натива (`liza_clear_id`): отпускается окно именно
+  /// этого пуша, а не всех ждущих.
+  Future<void> clearingDone(String? id) async {
+    if (id == null) return;
+    try {
+      await _channel.invokeMethod('clearingDone', {'id': id});
+    } catch (e) {
+      Logs().w('[APNs] clearingDone failed', e);
+    }
+  }
+
+  /// Аккаунты этого устройства → App Group: по clearing-пушу при выгруженном
+  /// приложении натив снимает баннер без client_name, только если аккаунт один.
+  Future<void> saveClientNames(List<String> names) async {
+    try {
+      await _channel.invokeMethod('saveClientNames', {'names': names});
+    } catch (e) {
+      Logs().w('[APNs] saveClientNames failed', e);
+    }
+  }
+
   /// Снять опоздавший APNs-баннер конкретного события после того, как его
   /// показала система (macOS, приложение не активно — `willPresent` там не
   /// зовётся). Натив опрашивает доставленные уведомления до ~10 с и матчит по

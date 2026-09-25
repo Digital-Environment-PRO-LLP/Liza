@@ -524,3 +524,103 @@ class ApnsTestCase(testutils.TestCase):
         }
         self._request(notif)
         self.assertEqual(0, method.call_count)
+
+    # ------------------------------------------------------------------
+    # RL-push-clearing-silent — counts-only (своя квитанция) → тихий
+    # background-пуш «почисти шторку», только клиентам с liza_clear_v.
+    # howItWoks/pushes.md §21.
+    # ------------------------------------------------------------------
+
+    def _clearing_device(self, **extra: Any) -> Dict[str, Any]:
+        default_payload: Dict[str, Any] = {
+            "client_name": "Liza ios",
+            "platform": "ios",
+            "liza_clear_v": 1,
+            "aps": {"mutable-content": 1, "sound": "liza_ding.aiff"},
+        }
+        default_payload.update(extra)
+        return {
+            "app_id": "com.example.apns",
+            "pushkey": "spqr",
+            "pushkey_ts": 42,
+            "data": {"default_payload": default_payload},
+        }
+
+    def _dispatch_clearing(self, device: Dict[str, Any], unread: int = 0) -> Any:
+        method = self.apns_pushkin_snotif
+        method.side_effect = testutils.make_async_magic_mock(
+            NotificationResult("notID", "200")
+        )
+        notif = self._make_dummy_notification_badge_only([device])
+        notif["notification"]["counts"] = {"unread": unread}
+        resp = self._request(notif)
+        self.assertEqual({"rejected": []}, resp)
+        return method
+
+    def test_clearing_push_is_silent_background(self) -> None:
+        """ledger:RL-push-clearing-silent
+        AC:RL-push-clearing-silent/1 — counts-only + liza_clear_v → ровно одна
+        отправка: push_type=background, priority 5, aps только content-available
+        (без alert/sound/badge/mutable-content из default_payload), TTL задан."""
+        method = self._dispatch_clearing(self._clearing_device())
+        self.assertEqual(1, method.call_count)
+        ((req,), _kwargs) = method.call_args
+        self.assertEqual(PushType.BACKGROUND, req.push_type)
+        self.assertEqual(5, req.priority)
+        self.assertEqual({"content-available": 1}, req.message["aps"])
+        self.assertEqual(ApnsPushkin.CLEARING_PUSH_TTL_SECONDS, req.time_to_live)
+
+    def test_clearing_push_payload_carries_counts_and_client_name(self) -> None:
+        """AC:RL-push-clearing-silent/2 — payload: counts.unread (форма, которую
+        читает PushNotification.fromJson), client_name/platform из default_payload
+        (маршрут мультиаккаунта), маркер liza_clear."""
+        method = self._dispatch_clearing(self._clearing_device(), unread=3)
+        ((req,), _kwargs) = method.call_args
+        self.assertEqual({"unread": 3}, req.message["counts"])
+        self.assertEqual("Liza ios", req.message["client_name"])
+        self.assertEqual("ios", req.message["platform"])
+        self.assertEqual(1, req.message["liza_clear"])
+
+    def test_clearing_push_on_push_type_pushkin_is_still_background(self) -> None:
+        """AC:RL-push-clearing-silent/1 — push_type per-request: даже pushkin с
+        push_type=alert в конфиге шлёт clearing как background."""
+        device = self._clearing_device()
+        device["app_id"] = PUSHKIN_ID_WITH_PUSH_TYPE
+        method = self._dispatch_clearing(device)
+        ((req,), _kwargs) = method.call_args
+        self.assertEqual(PushType.BACKGROUND, req.push_type)
+
+    def test_clearing_push_not_sent_without_capability(self) -> None:
+        """AC:RL-push-clearing-silent/3 — клиент без liza_clear_v (старая сборка,
+        старый бандл) → 0 отправок, как раньше (RL-apns-alert-priority AC-6).
+        send_badge_counts:false — как в боевом sygnal.yaml."""
+        self.get_test_pushkin(PUSHKIN_ID).cfg["send_badge_counts"] = False
+        method = self._dispatch_clearing(DEVICE_EXAMPLE_WITH_SOUND_DEFAULT_PAYLOAD)
+        self.assertEqual(0, method.call_count)
+
+    def test_clearing_push_kill_switch(self) -> None:
+        """AC:RL-push-clearing-silent/3 — аварийный выключатель clearing_push:false
+        → 0 отправок даже при liza_clear_v."""
+        pushkin = self.get_test_pushkin(PUSHKIN_ID)
+        pushkin.cfg["clearing_push"] = False
+        pushkin.cfg["send_badge_counts"] = False
+        method = self._dispatch_clearing(self._clearing_device())
+        self.assertEqual(0, method.call_count)
+
+    def test_event_push_unchanged_for_clearing_capable_device(self) -> None:
+        """AC:RL-push-clearing-silent/4 — пуш С событием клиенту с liza_clear_v
+        остаётся видимым: push_type pushkin'а, priority 10, aps.sound на месте."""
+        for push_type_pushkin in (False, True):
+            self.apns_pushkin_snotif.reset_mock()
+            device = self._clearing_device()
+            if push_type_pushkin:
+                device["app_id"] = PUSHKIN_ID_WITH_PUSH_TYPE
+            notif = self._make_dummy_notification_event_id_only([device])
+            notif["notification"]["prio"] = "low"
+            self.assertEqual(10, self._priority_of(notif))
+            ((req,), _kwargs) = self.apns_pushkin_snotif.call_args
+            self.assertEqual(
+                PushType.ALERT if push_type_pushkin else None, req.push_type
+            )
+            self.assertEqual("liza_ding.aiff", req.message["aps"]["sound"])
+            self.assertNotIn("liza_clear", req.message)

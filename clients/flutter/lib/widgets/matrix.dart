@@ -766,6 +766,12 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
           .rateLimit(const Duration(seconds: 2))
           .listen((_) {
             backgroundPush?.updateBadgeCount();
+            // Прочитано на другом устройстве → снять уведомления этого чата
+            // здесь, не дожидаясь активации окна (howItWoks/pushes.md §21).
+            final push = backgroundPush;
+            if (push != null) {
+              unawaited(push.clearNotificationsOfRoomsReadSinceLastSync(c));
+            }
           });
     }
   }
@@ -781,6 +787,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     onNotification.remove(name);
     onSyncBadgeUpdate[name]?.cancel();
     onSyncBadgeUpdate.remove(name);
+    backgroundPush?.forgetReadSnapshot(name);
     onAccountDataSub[name]?.cancel();
     onAccountDataSub.remove(name);
     onRoleToDeviceSub[name]?.cancel();

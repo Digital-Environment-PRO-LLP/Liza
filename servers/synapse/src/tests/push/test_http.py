@@ -1406,3 +1406,65 @@ class LizaReadGraceTests(HomeserverTestCase):
             self.assertEqual(len(attempts), 1, event_id)
             attempts[0][0].callback({})
             self.pump()
+
+
+class LizaClearingOnRoomReadTests(HomeserverTestCase):
+    """Liza-форк: `push.clearing_on_room_read` — counts-only пуш уходит, когда
+    чат стал прочитанным, даже если ЧИСЛО непрочитанных не изменилось (в тот же
+    момент пришло в другой чат). По нему клиент чистит шторку на других
+    устройствах (howItWoks/pushes.md §21).
+    ledger:RL-push-clearing-silent
+    """
+
+    servlets = LizaReadGraceTests.servlets
+    user_id = True
+    hijack_auth = False
+
+    make_homeserver = LizaReadGraceTests.make_homeserver
+    _event_push_attempts = LizaReadGraceTests._event_push_attempts
+    _send_receipt = LizaReadGraceTests._send_receipt
+
+    def _badge_push_attempts(self) -> list:
+        return [a for a in self.push_attempts if not a[2]["notification"].get("event_id")]
+
+    def _race(self) -> None:
+        """X частично прочитан (снимок {X}), в Y пришло (пуш держит grace),
+        X дочитан: непрочитанных по-прежнему 1 (Y вместо X)."""
+        user_id, tok, room_x, other_tok = LizaReadGraceTests._setup_room_with_pusher(
+            self  # type: ignore[arg-type]
+        )
+        room_y = self.helper.create_room_as("@other_user:test", tok=other_tok)
+        self.helper.join(room=room_y, user=user_id, tok=tok)
+
+        x1 = self.helper.send(room_x, body="x1", tok=other_tok)["event_id"]
+        x2 = self.helper.send(room_x, body="x2", tok=other_tok)["event_id"]
+        self.reactor.advance(4)
+        for attempt in list(self.push_attempts):
+            attempt[0].callback({})
+        self.pump()
+        # Частичное прочтение: X всё ещё непрочитан → снимок {X}, пуша нет.
+        self._send_receipt(tok, room_x, x1, "m.read.private")
+        self.pump()
+        self.push_attempts.clear()
+
+        self.helper.send(room_y, body="y1", tok=other_tok)
+        self.reactor.advance(0.5)
+        self._send_receipt(tok, room_x, x2, "m.read.private")
+        self.pump()
+
+    @override_config(
+        {"push": {"read_grace_ms": "3s", "clearing_on_room_read": True}}
+    )
+    def test_room_read_same_count_sends_badge_push(self) -> None:
+        """AC:RL-push-clearing-silent/5 — с флагом: ровно один counts-only пуш."""
+        self._race()
+        badge = self._badge_push_attempts()
+        self.assertEqual(len(badge), 1, badge)
+        self.assertEqual(badge[0][2]["notification"]["counts"]["unread"], 1)
+
+    @override_config({"push": {"read_grace_ms": "3s"}})
+    def test_default_off_keeps_upstream(self) -> None:
+        """Без флага — апстрим: число то же → counts-only пуша нет."""
+        self.assertFalse(self.hs.config.push.push_clearing_on_room_read)
+        self._race()
+        self.assertEqual(self._badge_push_attempts(), [])

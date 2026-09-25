@@ -10,6 +10,7 @@ import 'package:matrix/matrix.dart';
 import 'package:liza/config/themes.dart';
 import 'package:liza/utils/client_download_content_extension.dart';
 import 'package:liza/utils/heic_converter.dart';
+import 'package:liza/utils/matrix_sdk_extensions/event_extension.dart';
 import 'package:liza/utils/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:liza/utils/monitoring.dart';
 import 'package:liza/widgets/matrix.dart';
@@ -157,7 +158,9 @@ class MediaStuckAggregator {
   DateTime? _windowStart;
 
   /// Возвращает сообщение для эмита (leading-edge) либо `null` (дедуп в окне).
-  String? onGiveUp(String reason, String? host) {
+  /// [error] — последнее исключение ретраев: для `give-up` из него берётся класс
+  /// (`kind=`) и, при `other`, имя типа (`err=`) — без текста ошибки.
+  String? onGiveUp(String reason, String? host, {Object? error}) {
     final now = _now();
     final start = _windowStart;
     if (start == null || now.difference(start) > window) {
@@ -173,7 +176,23 @@ class MediaStuckAggregator {
     final hostPart = (host != null && host.isNotEmpty)
         ? ' host=${Monitoring.shortHost(host)}'
         : '';
-    return '$prefix reason=$reason$hostPart (вечный спиннер без ошибки)';
+    final head = '$prefix reason=$reason$hostPart';
+    // «Без ошибки» правда только для stuck-timeout. give-up — это ретраи,
+    // исчерпанные на НАСТОЯЩИХ исключениях, и пользователь видит tap-to-retry,
+    // а не спиннер. Issue GlitchTip #2059 (2026-09-23, macOS 3766) пришёл с этой
+    // ложной припиской и без типа ошибки: сервер медиа-запроса не получил, и
+    // зацепки не осталось ни у кого.
+    if (reason != 'give-up' || error == null) {
+      return '$head (вечный спиннер без ошибки)';
+    }
+    final kind = mediaFailureKind(error);
+    if (kind != 'other') return '$head kind=$kind';
+    final withKind = '$head kind=other err=';
+    // host приходит из mxc:// — его задаёт чужой сервер федерации: два его
+    // DNS-лейбла могут съесть весь бюджет, тогда тип не влезает вовсе.
+    final room = (Monitoring.maxAlertTitleLength - withKind.length).clamp(0, 99);
+    final type = mediaFailureErrorType(error);
+    return '$withKind${type.length > room ? type.substring(0, room) : type}';
   }
 }
 
@@ -187,8 +206,8 @@ class _MxcImageState extends State<MxcImage> {
 
   // [reason] — из ЗАКРЫТОГО перечня (см. [mediaStuckReasonFor]); [host] — только
   // server_name из mxc/uri, БЕЗ media_id (PII, пин RL-mediadiag-no-secret).
-  static void _recordGiveUp(String reason, String? host) {
-    final message = _stuckAggregator.onGiveUp(reason, host);
+  static void _recordGiveUp(String reason, String? host, Object error) {
+    final message = _stuckAggregator.onGiveUp(reason, host, error: error);
     if (message != null) Monitoring.captureMessage(message);
   }
 
@@ -456,7 +475,7 @@ class _MxcImageState extends State<MxcImage> {
         // медиа сам, пока смонтирован. Показываем tap-to-retry вместо
         // неотличимого от «грузится» спиннера/блюра.
         setState(() => _failed = true);
-        _recordGiveUp(mediaStuckReasonFor(e), _attachmentHost());
+        _recordGiveUp(mediaStuckReasonFor(e), _attachmentHost(), e);
         return;
       }
       // Exp backoff: 2s, 4s, 8s, 16s, 30s (capped)

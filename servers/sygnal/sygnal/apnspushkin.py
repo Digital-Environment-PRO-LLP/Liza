@@ -116,7 +116,12 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
         "push_type",
         "convert_device_token_to_hex",
         "send_badge_counts",
+        "clearing_push",
     } | ConcurrencyLimitedPushkin.UNDERSTOOD_CONFIG_FIELDS
+
+    # Clearing-пуш живёт в очереди APNs недолго: через час чистить шторку уже
+    # поздно — это сделает сам клиент на resume.
+    CLEARING_PUSH_TTL_SECONDS = 3600
 
     APNS_PUSH_TYPES = {
         "alert": PushType.ALERT,
@@ -238,9 +243,14 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
         shaved_payload: Dict[str, Any],
         prio: int,
         notif_id: str,
+        push_type: Optional[PushType] = None,
+        time_to_live: Optional[int] = None,
     ) -> List[str]:
         """
         Actually attempts to dispatch the notification once.
+
+        push_type — на запрос, а не на pushkin: clearing-пуш уходит background,
+        обычные — с типом из конфига. None → тип pushkin'а.
         """
         span.set_tag("apns_id", notif_id)
 
@@ -256,7 +266,8 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
             message=shaved_payload,
             priority=prio,
             notification_id=notif_id,
-            push_type=self.push_type,
+            time_to_live=time_to_live,
+            push_type=push_type or self.push_type,
         )
 
         try:
@@ -325,8 +336,16 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
 
             send_badge_counts = self.get_config("send_badge_counts", bool, True)
 
-            if n.event_id and not n.type:
-                payload: Optional[Dict[str, Any]] = self._get_payload_event_id_only(
+            push_type: Optional[PushType] = None
+            time_to_live: Optional[int] = None
+            if self._is_clearing_push(n, default_payload):
+                payload: Optional[Dict[str, Any]] = self._get_payload_clearing(
+                    n, default_payload
+                )
+                push_type = PushType.BACKGROUND
+                time_to_live = self.CLEARING_PUSH_TTL_SECONDS
+            elif n.event_id and not n.type:
+                payload = self._get_payload_event_id_only(
                     n,
                     default_payload,
                     send_badge_counts,
@@ -391,16 +410,24 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
                         # XXX: shouldn't we use the same notif_id for each retry?
 
                         log.info(
-                            "Sending (attempt %i) => %s APNs-ID:%s room:%s, event:%s",
+                            "Sending (attempt %i) => %s APNs-ID:%s room:%s, event:%s%s",
                             retry_number,
                             notif_id,
                             device.pushkey,
                             n.room_id,
                             n.event_id,
+                            " (clearing)" if push_type is PushType.BACKGROUND else "",
                         )
 
                         return await self._dispatch_request(
-                            log, span, device, shaved_payload, prio, notif_id
+                            log,
+                            span,
+                            device,
+                            shaved_payload,
+                            prio,
+                            notif_id,
+                            push_type=push_type,
+                            time_to_live=time_to_live,
                         )
                 except TemporaryNotificationDispatchException as exc:
                     retry_delay = self.RETRY_DELAY_BASE * (2**retry_number)
@@ -422,6 +449,35 @@ class ApnsPushkin(ConcurrencyLimitedPushkin):
                         )
 
             raise NotificationDispatchException("Retried too many times.")
+
+    def _is_clearing_push(
+        self, n: Notification, default_payload: Dict[str, Any]
+    ) -> bool:
+        """Counts-only пуш (Synapse шлёт его на СВОЮ квитанцию) превращаем в
+        тихий background-пуш «почисти шторку» — только для клиентов, объявивших
+        поддержку (`liza_clear_v` в default_payload, сборки ≥3768). Старые сборки
+        и чужие бандлы получают прежнее «ничего», иначе проснутся зря.
+        См. howItWoks/pushes.md §21."""
+        if n.event_id or n.type:
+            return False
+        if not self.get_config("clearing_push", bool, True):
+            return False
+        return default_payload.get("liza_clear_v") == 1
+
+    def _get_payload_clearing(
+        self, n: Notification, default_payload: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """aps из default_payload НЕ подмешиваем: там sound/mutable-content, а
+        с ними пуш станет видимым, получит prio 10 и Apple отвергнет его как
+        background. aps.badge не ставим — бейджем владеет клиент."""
+        payload: Dict[str, Any] = {
+            k: v for k, v in default_payload.items() if k != "aps"
+        }
+        payload["aps"] = {"content-available": 1}
+        payload["liza_clear"] = 1
+        if n.counts.unread is not None:
+            payload["counts"] = {"unread": n.counts.unread}
+        return payload
 
     def _get_payload_event_id_only(
         self,

@@ -376,9 +376,14 @@ class Message extends StatelessWidget {
     // пузыря (её держит общий `IntrinsicWidth`: intrinsic Row = сумма детей,
     // короткое сообщение не раздувается). Вертикальное выравнивание по центру —
     // время правки и время отправки на одном уровне.
+    // `spacing` — минимальный зазор: у короткого текста ширину пузыря задаёт сам
+    // футер (сумма меток), и spaceBetween делит 0 px → «✎ 10:3410:34» (баг
+    // 2026-09-24). Только при правке: без неё слева `SizedBox.shrink`, и зазор
+    // лишь раздул бы короткое «ок».
     Widget textCornerFooterWidget() => Padding(
       padding: const EdgeInsets.only(left: 16, right: 12, top: 2, bottom: 6),
       child: Row(
+        spacing: isEdited ? 8 : 0,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
