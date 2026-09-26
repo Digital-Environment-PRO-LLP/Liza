@@ -112,7 +112,7 @@
       }
     }
   },
-  "autoplayImages": "Автоматически воспроизводить анимированные стикеры и эмодзи",
+  "autoplayImages": "Автоматически воспроизводить анимированные стикеры, эмодзи и GIF",
   "@autoplayImages": {
     "type": "String",
     "placeholder": {}
@@ -3454,6 +3454,40 @@
   "@uploadPhasePreparing": {},
   "uploadPhaseCompressing": "Сжатие",
   "@uploadPhaseCompressing": {},
+  "uploadWaitingForNetwork": "Ожидание сети",
+  "@uploadWaitingForNetwork": {},
+  "albumNotSentCount": "{count, plural, one{Не отправлен {count} файл из {total}.} few{Не отправлены {count} файла из {total}.} many{Не отправлено {count} файлов из {total}.} other{Не отправлено {count} файла из {total}.}}",
+  "@albumNotSentCount": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "albumNotSentRetryHint": "Нажмите «!» у сообщения, чтобы повторить.",
+  "@albumNotSentRetryHint": {},
+  "resendUnsentMedia": "Повторить неотправленные ({count})",
+  "@resendUnsentMedia": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteUnsentMedia": "Удалить неотправленные ({count})",
+  "@deleteUnsentMedia": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "uploadPhaseUploading": "Отправка",
   "@uploadPhaseUploading": {},
   "compressVideo": "Сжатие видео...",
@@ -4141,6 +4175,8 @@
   "@revokeInviteLink": {},
   "newVersionAvailable": "Доступна новая версия Liza",
   "@newVersionAvailable": {},
+  "webUpdateReload": "Обновить",
+  "@webUpdateReload": {},
   "installAppBanner": "Установить приложение Liza",
   "openingLink": "Открываем…",
   "openingLinkFailed": "Не удалось открыть ссылку",
@@ -4928,6 +4964,24 @@
   "@demoAuthInvalidPhone": {},
   "demoAuthInvalidCode": "Неверный код",
   "@demoAuthInvalidCode": {},
+  "demoAuthPasswordTitle": "Введите пароль",
+  "@demoAuthPasswordTitle": {
+    "description": "Title of the sign-in step for reserved App Store review numbers: a password instead of an SMS code"
+  },
+  "demoAuthPasswordHint": "Введите пароль для номера {phone}.",
+  "@demoAuthPasswordHint": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthPasswordLabel": "Пароль",
+  "@demoAuthPasswordLabel": {},
+  "demoAuthHidePassword": "Скрыть пароль",
+  "@demoAuthHidePassword": {},
+  "demoAuthWrongPassword": "Неверный пароль",
+  "@demoAuthWrongPassword": {},
   "demoAuthCodeExpired": "Срок действия кода истёк",
   "@demoAuthCodeExpired": {},
   "demoAuthAttemptsExhausted": "Попытки исчерпаны, запросите код заново",
@@ -5083,5 +5137,15 @@
   "newsPollResultsFailed": "Не удалось загрузить результаты",
   "newsPollRefresh": "Обновить",
   "newsPollTotalVoters": "Проголосовали: {count}",
-  "newsPollOptionVotes": "Голосов: {count}"
+  "newsPollOptionVotes": "Голосов: {count}",
+  "newsPollClosedTap": "Опрос закрыт — голосовать уже нельзя",
+  "newsPollAudience": "Опрос для: {platforms}",
+  "gifBadge": "GIF",
+  "@gifBadge": {
+    "description": "Бейдж на статичном превью GIF в ленте и альбоме"
+  },
+  "voiceRecordingFailed": "Голосовое не записалось. Проверьте доступ к микрофону и попробуйте ещё раз.",
+  "@voiceRecordingFailed": {
+    "description": "Запись голосового завершилась без файла (напр. браузер не дал микрофон)"
+  }
 }

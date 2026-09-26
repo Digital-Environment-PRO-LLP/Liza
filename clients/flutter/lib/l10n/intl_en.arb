@@ -197,7 +197,7 @@
       }
     }
   },
-  "autoplayImages": "Automatically play animated stickers and emotes",
+  "autoplayImages": "Automatically play animated stickers, emotes and GIFs",
   "@autoplayImages": {
     "type": "String",
     "placeholder": {}
@@ -3535,6 +3535,40 @@
   "@uploadPhasePreparing": {},
   "uploadPhaseCompressing": "Compressing",
   "@uploadPhaseCompressing": {},
+  "uploadWaitingForNetwork": "Waiting for network",
+  "@uploadWaitingForNetwork": {},
+  "albumNotSentCount": "{count, plural, =1{1 of {total} files was not sent.} other{{count} of {total} files were not sent.}}",
+  "@albumNotSentCount": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "albumNotSentRetryHint": "Tap «!» next to the message to retry.",
+  "@albumNotSentRetryHint": {},
+  "resendUnsentMedia": "Retry unsent ({count})",
+  "@resendUnsentMedia": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteUnsentMedia": "Delete unsent ({count})",
+  "@deleteUnsentMedia": {
+    "type": "String",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "uploadPhaseUploading": "Sending",
   "@uploadPhaseUploading": {},
   "compressVideo": "Compressing video...",
@@ -4208,6 +4242,8 @@
   "@revokeInviteLink": {},
   "newVersionAvailable": "A new version of Liza is available",
   "@newVersionAvailable": {},
+  "webUpdateReload": "Update",
+  "@webUpdateReload": {},
   "installAppBanner": "Install the Liza app",
   "@installAppBanner": {
     "description": "Top banner in the web client offering to install the native app"
@@ -4883,6 +4919,24 @@
   "@demoAuthInvalidPhone": {},
   "demoAuthInvalidCode": "Wrong code",
   "@demoAuthInvalidCode": {},
+  "demoAuthPasswordTitle": "Enter password",
+  "@demoAuthPasswordTitle": {
+    "description": "Title of the sign-in step for reserved App Store review numbers: a password instead of an SMS code"
+  },
+  "demoAuthPasswordHint": "Enter the password for {phone}.",
+  "@demoAuthPasswordHint": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "demoAuthPasswordLabel": "Password",
+  "@demoAuthPasswordLabel": {},
+  "demoAuthHidePassword": "Hide password",
+  "@demoAuthHidePassword": {},
+  "demoAuthWrongPassword": "Wrong password",
+  "@demoAuthWrongPassword": {},
   "demoAuthCodeExpired": "The code has expired",
   "@demoAuthCodeExpired": {},
   "demoAuthAttemptsExhausted": "No attempts left, request a new code",
@@ -5110,5 +5164,23 @@
         "type": "int"
       }
     }
+  },
+  "newsPollClosedTap": "The poll is closed — voting is no longer possible",
+  "newsPollAudience": "Poll for: {platforms}",
+  "@newsPollAudience": {
+    "type": "String",
+    "placeholders": {
+      "platforms": {
+        "type": "String"
+      }
+    }
+  },
+  "gifBadge": "GIF",
+  "@gifBadge": {
+    "description": "Бейдж на статичном превью GIF в ленте и альбоме"
+  },
+  "voiceRecordingFailed": "The voice message was not recorded. Check microphone access and try again.",
+  "@voiceRecordingFailed": {
+    "description": "Запись голосового завершилась без файла (напр. браузер не дал микрофон)"
   }
 }

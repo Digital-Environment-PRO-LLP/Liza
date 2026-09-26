@@ -657,8 +657,7 @@ class SelectableTextOverlay extends StatelessWidget {
     final hasReply = event.inReplyToEventId(includingFallback: false) != null;
 
     return SelectionArea(
-      // Единственный канал выделения, работающий и на web: собственный тулбар
-      // там подавлен браузером (`SelectableRegion._webContextMenuEnabled`).
+      // Основной канал выделения — пункт «Скопировать выделенное» поповера.
       // Запоминаем только НЕПУСТОЕ значение и никогда не затираем его на null:
       // нажатие пункта меню уводит фокус из SelectableRegion, тот чистит
       // выделение — и обнулённый держатель отдал бы в буфер всё сообщение.

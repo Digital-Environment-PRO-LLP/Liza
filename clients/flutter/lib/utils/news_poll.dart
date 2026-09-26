@@ -182,7 +182,32 @@ class NewsPollResults {
   final bool closed;
   final int totalVoters;
   final List<NewsPollOption> options;
-  const NewsPollResults(this.closed, this.totalVoters, this.options);
+
+  /// Платформы аудитории опроса (`ios`/`macos`/`android`); null — для всех.
+  /// Старый бот поле не шлёт.
+  final List<String>? audience;
+  const NewsPollResults(
+    this.closed,
+    this.totalVoters,
+    this.options, {
+    this.audience,
+  });
+}
+
+/// Подписи платформ аудитории — как у бота (`core.PLATFORM_LABELS`), в его порядке.
+const Map<String, String> newsAudiencePlatformLabels = {
+  'ios': 'iPhone',
+  'macos': 'Mac',
+  'android': 'Android',
+};
+
+String? newsAudienceLabel(List<String>? platforms) {
+  if (platforms == null || platforms.isEmpty) return null;
+  final labels = [
+    for (final e in newsAudiencePlatformLabels.entries)
+      if (platforms.contains(e.key)) e.value,
+  ];
+  return labels.isEmpty ? null : labels.join(', ');
 }
 
 /// Бот отказал в итогах (роль ≠ developer или нет в списке редакции).
@@ -500,6 +525,7 @@ NewsPollResults parseResults(Map<String, Object?> content) {
     content.tryGet<bool>('closed') ?? false,
     content.tryGet<int>('total_voters') ?? 0,
     options,
+    audience: content.tryGetList<String>('audience'),
   );
 }
 

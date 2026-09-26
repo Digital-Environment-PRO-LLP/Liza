@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:matrix/matrix.dart';
 
 import 'package:liza/utils/file_description.dart';
+import 'package:liza/utils/resend_failed_media.dart';
 import 'package:liza/utils/upload_error_classifier.dart';
 import 'package:liza/utils/upload_progress_tracker.dart';
 
@@ -32,7 +33,8 @@ class FailedSendRetryService {
     Duration debounce = const Duration(seconds: 3),
   })  : _syncStatus = syncStatus,
         _failedMediaEvents = failedMediaEvents,
-        _resend = resend ?? ((event) => event.sendAgain()),
+        _resend = resend ??
+            ((event) => FailedMediaResender.resendAndWait(event)),
         _isForeground = isForeground,
         _debounce = debounce;
 
@@ -137,10 +139,18 @@ class FailedSendRetryService {
 /// - причина НЕ `terminal` — 403/413/диск возврат связи не лечит
 ///   (`RL-upload-terminal-error-no-retry`); отсутствие записи kind (сетевой
 ///   обрыв ДО ответа сервера — самый частый кейс) трактуем как transient
-///   (ретраим).
+///   (ретраим);
+/// - txid НЕ во владении идущей серии отправки альбома — её упавших членов
+///   досылает сама серия (`AlbumSendSeries`), второй параллельный `sendAgain`
+///   дал бы вторую заливку того же файла.
 bool canAutoResend(Event event) {
   if (!event.status.isError) return false;
   if (event.isUnresendableMissingMedia) return false;
+  if (UploadProgressTracker.instance.isOwnedBySeries(event.eventId)) {
+    return false;
+  }
+  // Ручной ↻ по этому событию уже идёт — второй параллельный повтор не нужен.
+  if (FailedMediaResender.isInFlight(event.eventId)) return false;
   final kind = UploadProgressTracker.instance.errorKindFor(event.eventId);
   return kind != UploadErrorKind.terminal;
 }

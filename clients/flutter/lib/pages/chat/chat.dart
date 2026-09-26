@@ -44,6 +44,7 @@ import 'package:liza/utils/error_reporter.dart';
 import 'package:liza/utils/file_description.dart';
 import 'package:liza/utils/file_selector.dart';
 import 'package:liza/utils/upload_error_classifier.dart';
+import 'package:liza/utils/resend_failed_media.dart';
 import 'package:liza/utils/upload_progress_tracker.dart';
 import 'package:liza/utils/unseen_messages.dart';
 import 'package:liza/pages/chat/events/audio_autoplay_service.dart';
@@ -61,6 +62,7 @@ import 'package:liza/utils/reply_draft_store.dart';
 import 'package:liza/utils/stories/story_media_picker.dart';
 import 'package:liza/utils/typed_mention_resolver.dart';
 import 'package:liza/utils/video_prefetch_manager.dart';
+import 'package:liza/utils/voice_recording_codec.dart';
 import 'package:liza/utils/show_scaffold_dialog.dart';
 import 'package:liza/widgets/adaptive_dialogs/show_modal_action_popup.dart';
 import 'package:liza/widgets/adaptive_dialogs/show_ok_cancel_alert_dialog.dart';
@@ -1446,9 +1448,14 @@ class ChatController extends State<ChatPageWithRoom>
     prefs.remove('draft_$roomId');
     prefs.remove('draftfmt_$roomId');
     _replyDraftStore.clear(roomId);
-    var parseCommands = true;
+    // Ведущий пробел — способ отправить «/слово» текстом: команду SDK распознаёт
+    // по `startsWith('/')`, и без этого обрезка ниже превратила бы «  /leave» в
+    // исполняемую команду (LABA-2623).
+    final rawText = sendController.text;
+    final startsWithWhitespace = rawText.trimLeft().length != rawText.length;
+    var parseCommands = !startsWithWhitespace;
 
-    final commandMatch = composerCommandPattern.firstMatch(sendController.text);
+    final commandMatch = composerCommandPattern.firstMatch(rawText);
     if (commandMatch != null &&
         !sendingClient.commands.keys.contains(commandMatch[1]!.toLowerCase())) {
       if (isBotComposerCommand(commandMatch[1]!)) {
@@ -1469,11 +1476,13 @@ class ChatController extends State<ChatPageWithRoom>
       }
     }
 
+    final outgoing = trimOutgoing(rawText, sendController.spans);
+
     // ignore: unawaited_futures
     if (editEvent != null &&
         editEvent!.getDisplayEvent(timeline!).isMediaEvent) {
       final displayEvent = editEvent!.getDisplayEvent(timeline!);
-      final newBody = sendController.text;
+      final newBody = outgoing.text;
       final content = <String, dynamic>{
         ...displayEvent.content,
         'body': newBody,
@@ -1493,20 +1502,20 @@ class ChatController extends State<ChatPageWithRoom>
       // положил адресата в m.mentions и у него подсветился чат красным (тег), а
       // не синим. Команды (`/...`) не трогаем — там @токен обрабатывает хэндлер.
       final controller = sendController;
-      final rawText = controller.text;
-      final isCommand = rawText.trimLeft().startsWith('/');
+      final text = outgoing.text;
+      final isCommand = !startsWithWhitespace && text.startsWith('/');
       final resolvedText = isCommand
-          ? rawText
-          : TypedMentionResolver.resolveForRoom(rawText, room);
+          ? text
+          : TypedMentionResolver.resolveForRoom(text, room);
 
       // Явное форматирование (кандидат A брейншторма 2026-08-28): пользователь
       // применил формат к выделению → шлём formatted_body (HTML из спанов)
       // напрямую через sendEvent, сохраняя m.mentions вручную (INV-2).
       // parseMarkdown НЕ трогаем — набранные вручную `* _ ~` остаются буквальными.
-      // formatted_body строим из СЫРОГО rawText (спаны индексированы по нему),
-      // а body — из resolvedText (пилюли упоминаний + сырой текст для превью).
+      // formatted_body строим из обрезанного text (спаны пересчитаны под него
+      // в trimOutgoing), а body — из resolvedText (пилюли упоминаний + текст).
       final formattedHtml = (!isCommand && controller.hasFormatting)
-          ? spansToFormattedHtml(rawText, controller.spans)
+          ? spansToFormattedHtml(text, outgoing.spans)
           : null;
 
       if (formattedHtml != null) {
@@ -1794,9 +1803,11 @@ class ChatController extends State<ChatPageWithRoom>
     final bytes = bytesResult.result;
     if (bytes == null) return;
 
+    final name = fileName ?? audioFile.path;
     final file = MatrixAudioFile(
       bytes: bytes,
-      name: fileName ?? audioFile.path,
+      name: name,
+      mimeType: voiceMimeForFileName(name, isWeb: PlatformInfos.isWeb),
     );
 
     // Захватываем reply ДО обнуления — иначе inReplyTo уходил null и голосовое
@@ -2024,7 +2035,7 @@ class ChatController extends State<ChatPageWithRoom>
           )
         : null;
     if (reasonInput == null) return false;
-    final reason = reasonInput.isEmpty ? null : reasonInput;
+    final reason = normalizeRedactionReason(reasonInput);
     await showFutureLoadingDialog(
       context: context,
       futureWithProgress: (onProgress) async {
@@ -2148,10 +2159,9 @@ class ChatController extends State<ChatPageWithRoom>
         setState(() => selectedEvents.clear());
         return;
       }
-      // Ручной повтор снимает устаревший класс ошибки, иначе прошлый terminal
-      // навсегда заблокировал бы авто-ретрай этого события (D-3).
-      UploadProgressTracker.instance.clearErrorKind(event.eventId);
-      event.sendAgain();
+      // Общая точка повтора: сброс устаревшего класса ошибки (D-3),
+      // анти-дабл-тап и владение серии отправки альбома.
+      FailedMediaResender.resend(event);
     }
     final allEditEvents = event
         .aggregatedEvents(timeline!, RelationshipTypes.edit)
@@ -2555,10 +2565,7 @@ class ChatController extends State<ChatPageWithRoom>
 
   void resendEvent(Event event) {
     if (_warnIfUnresendableMissingMedia(event)) return;
-    if (event.status.isError) {
-      UploadProgressTracker.instance.clearErrorKind(event.eventId);
-      event.sendAgain();
-    }
+    if (event.status.isError) FailedMediaResender.resend(event);
     final timeline = this.timeline;
     if (timeline == null) return;
     for (final editEvent

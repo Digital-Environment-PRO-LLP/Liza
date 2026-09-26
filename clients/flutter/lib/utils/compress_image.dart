@@ -7,6 +7,8 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:matrix/matrix.dart';
 import 'package:mime/mime.dart';
 
+import 'package:liza/utils/animated_gif.dart';
+
 /// Сжатие изображений перед отправкой — уровень по стандартам Liza/WhatsApp.
 ///
 /// Liza/WhatsApp при отправке фото «как изображение» ужимают самую
@@ -137,8 +139,20 @@ Future<XFile> compressImageForSending(XFile file) async {
 }
 
 /// Сжимает изображения из списка, остальные файлы пропускает без изменений.
-Future<List<XFile>> compressImagesForSending(List<XFile> files) =>
-    Future.wait(files.map(compressImageForSending));
+/// GIF не трогаем: JPEG-перекодировка убивает анимацию безвозвратно
+/// (заявка №43). Обход — здесь, а не в [compressImageForSending]: её же
+/// зовут сторис, где GIF публикуется статичным кадром.
+Future<List<XFile>> compressImagesForSending(
+  List<XFile> files, {
+  @visibleForTesting
+  Future<XFile> Function(XFile) compress = compressImageForSending,
+}) => Future.wait(
+  files.map(
+    (f) => isGifXFile(f)
+        ? Future.value(f)
+        : compress(f),
+  ),
+);
 
 String _toJpegName(String name) {
   final dot = name.lastIndexOf('.');

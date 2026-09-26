@@ -9,17 +9,16 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 import 'package:liza/config/app_config.dart';
-import 'package:liza/l10n/l10n.dart';
 import 'package:liza/utils/chat_topology.dart';
 import 'package:liza/utils/matrix_sdk_extensions/event_extension.dart';
 import 'package:liza/utils/monitoring.dart';
 import 'package:liza/utils/mpv_property.dart';
 import 'package:liza/utils/platform_infos.dart';
-import 'package:liza/utils/upload_progress_tracker.dart';
 import 'package:liza/utils/video_poster_cache.dart';
 import 'package:liza/widgets/blur_hash.dart';
 import 'package:liza/widgets/mxc_image.dart';
 import '../../image_viewer/image_viewer.dart';
+import 'upload_overlays.dart';
 
 /// Inline-превью видео в ленте без серверного thumbnail-а
 /// (`info.thumbnail_url` отсутствует — типично для отправок с desktop/Web,
@@ -397,10 +396,6 @@ class EventVideoPlayer extends StatelessWidget {
         ? null
         : Duration(milliseconds: durationInt);
 
-    // Если для этого события идёт upload (txid == event.eventId до того,
-    // как сервер вернул real eventId) — показываем overlay прогресса.
-    final uploadNotifier = UploadProgressTracker.instance.byId(event.eventId);
-
     return Material(
       color: Colors.black,
       borderRadius: BorderRadius.circular(AppConfig.borderRadius),
@@ -449,18 +444,18 @@ class EventVideoPlayer extends StatelessWidget {
                     height: height,
                     blurHash: blurHash,
                   ),
-                if (event.status.isError)
-                  _UploadRetryOverlay(event: event)
-                else if (uploadNotifier != null)
-                  _UploadOverlay(notifier: uploadNotifier, event: event)
-                else
-                  Center(
-                    child: CircleAvatar(
-                      child: supportsVideoPlayer
-                          ? const Icon(Icons.play_arrow_outlined)
-                          : const Icon(Icons.file_download_outlined),
+                Positioned.fill(
+                  child: UploadStatusOverlay(
+                    event: event,
+                    fallback: Center(
+                      child: CircleAvatar(
+                        child: supportsVideoPlayer
+                            ? const Icon(Icons.play_arrow_outlined)
+                            : const Icon(Icons.file_download_outlined),
+                      ),
                     ),
                   ),
+                ),
                 if (duration != null)
                   Positioned(
                     bottom: 8,
@@ -475,206 +470,6 @@ class EventVideoPlayer extends StatelessWidget {
                   ),
                 if (timeOverlay != null)
                   Positioned(bottom: 8, right: 8, child: timeOverlay!),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Полупрозрачный overlay поверх превью видео: кольцо прогресса вокруг
-/// тёмного круга с крестиком (Liza-style). Тап по крестику отменяет
-/// загрузку этого видео. Подписывается на [ValueNotifier] из
-/// [UploadProgressTracker] и перерисовывает только индикатор — окружающий
-/// Stack не пересоздаётся.
-class _UploadOverlay extends StatelessWidget {
-  final ValueNotifier<double> notifier;
-  final Event event;
-
-  const _UploadOverlay({required this.notifier, required this.event});
-
-  /// Отмена: ставим флаг (его на ближайшем чанке тела читает
-  /// `UploadProgressHttpClient` и обрывает отдачу) и сразу убираем
-  /// pending-событие из ленты. `cancelSend` может бросить, если событие уже
-  /// удалено/отправлено — гасим.
-  void _cancel() {
-    UploadProgressTracker.instance.requestCancel(event.eventId);
-    // ignore: discarded_futures
-    event.cancelSend().catchError((_) {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cancelLabel = L10n.of(context).cancel;
-    return Positioned.fill(
-      child: ColoredBox(
-        color: Colors.black54,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 64,
-                height: 64,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ValueListenableBuilder<double>(
-                      valueListenable: notifier,
-                      builder: (context, value, _) => SizedBox(
-                        width: 64,
-                        height: 64,
-                        child: CircularProgressIndicator(
-                          value: value <= 0 ? null : value,
-                          strokeWidth: 4,
-                          backgroundColor: Colors.white24,
-                          valueColor: const AlwaysStoppedAnimation(
-                            Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Semantics(
-                      button: true,
-                      label: cancelLabel,
-                      child: Tooltip(
-                        message: cancelLabel,
-                        child: Material(
-                          type: MaterialType.circle,
-                          color: Colors.black54,
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: _cancel,
-                            child: const SizedBox(
-                              width: 44,
-                              height: 44,
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              _UploadPhaseLabel(event: event, notifier: notifier),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Подпись этапа отправки под кольцом прогресса.
-///
-/// Этап обязателен, а не украшение: шкала НЕ сквозная (у сжатия и у отдачи
-/// свои 0..100), и без подписи переход «100%» → «3%» читается как «зависло и
-/// откатилось». С подписью это «Сжатие 100%» → «Отправка 3%» — очевидная смена
-/// этапа.
-class _UploadPhaseLabel extends StatelessWidget {
-  final Event event;
-  final ValueNotifier<double> notifier;
-
-  const _UploadPhaseLabel({required this.event, required this.notifier});
-
-  static const _style = TextStyle(
-    color: Colors.white,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = L10n.of(context);
-    final phaseNotifier = UploadProgressTracker.instance.phaseFor(
-      event.eventId,
-    );
-
-    Widget labelFor(UploadPhase phase) => ValueListenableBuilder<double>(
-      valueListenable: notifier,
-      builder: (context, value, _) {
-        final name = switch (phase) {
-          UploadPhase.preparing => l10n.uploadPhasePreparing,
-          UploadPhase.compressing => l10n.uploadPhaseCompressing,
-          UploadPhase.uploading => l10n.uploadPhaseUploading,
-        };
-        // В «Подготовке» мерить нечего (чтение файла, HEIC, постер) — кольцо
-        // крутится неопределённым, процент не выдумываем.
-        if (phase == UploadPhase.preparing || value <= 0) {
-          return Text(name, style: _style);
-        }
-        return Text('$name ~${(value * 100).round()}%', style: _style);
-      },
-    );
-
-    if (phaseNotifier == null) return labelFor(UploadPhase.uploading);
-    return ValueListenableBuilder<UploadPhase>(
-      valueListenable: phaseNotifier,
-      builder: (context, phase, _) => labelFor(phase),
-    );
-  }
-}
-
-/// Overlay поверх превью видео, когда отправка провалилась
-/// (`EventStatus.error`). Авто-ретрая нет — пользователь сам тапает по
-/// значку повтора, и `Event.sendAgain()` перезапускает отправку
-/// (matrix-dart-sdk перезаливает сохранённый файл целиком — докачки в
-/// Matrix Media API нет).
-class _UploadRetryOverlay extends StatelessWidget {
-  final Event event;
-
-  const _UploadRetryOverlay({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    final reason = UploadProgressTracker.instance.errorFor(event.eventId);
-    return Positioned.fill(
-      child: Material(
-        color: Colors.black54,
-        child: InkWell(
-          onTap: () {
-            // Ручной повтор снимает устаревший класс ошибки (D-3), иначе
-            // прошлый terminal навсегда блокировал бы авто-ретрай события.
-            UploadProgressTracker.instance.clearErrorKind(event.eventId);
-            event.sendAgain();
-          },
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.white24,
-                  child: Icon(Icons.refresh, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  L10n.of(context).tryToSendAgain,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (reason != null) ...[
-                  const SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      reason,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white70, fontSize: 11),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

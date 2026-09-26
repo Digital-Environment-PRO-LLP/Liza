@@ -204,12 +204,18 @@ class DemoAuthStartResult {
   final String ticket;
   final String maskedDestination;
 
-  /// Куда ушёл код: `phone` (СМС) или `email` (письмо). Сервер выбирает
+  /// Куда ушёл код: `phone` (СМС), `email` (письмо) или `password` (кода
+  /// нет, см. [isPasswordChannel]). Сервер выбирает
   /// письмо, когда у номера есть аккаунт с настоящей почтой — оно дешевле
   /// СМС. От канала зависит текст экрана и маска адресата.
   final String channel;
 
   bool get isEmailChannel => channel == 'email';
+
+  /// Номер из списка App Store review на сервере: кода не будет, вход по
+  /// заранее выданному паролю через тот же `/phone/verify`. Ни номера, ни
+  /// пароля клиент не знает — канал сообщает только сервер.
+  bool get isPasswordChannel => channel == 'password';
 
   /// Причина несостоявшейся доставки: `otp_rate_limited` (лимит частоты,
   /// надо подождать) либо `otp_send_failed` (сбой провайдера).

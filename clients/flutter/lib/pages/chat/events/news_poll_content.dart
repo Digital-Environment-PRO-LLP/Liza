@@ -82,6 +82,16 @@ class _NewsPollContentState extends State<NewsPollContent> {
     _service.vote(widget.event.senderId, poll, answers);
   }
 
+  // Тап по закрытому опросу раньше молча игнорировался (onTap: null), и казалось,
+  // что выбор «не выбирается» (разбор 2026-09-25) — теперь объясняем.
+  void _onTapClosed() {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(L10n.of(context).newsPollClosedTap)),
+      );
+  }
+
   void _onTapAnswer(NewsPollData poll, NewsPollVoteState state, String id) {
     if (!poll.multiple) {
       if (state.shown.length == 1 && state.shown.first == id) return;
@@ -110,7 +120,7 @@ class _NewsPollContentState extends State<NewsPollContent> {
     final muted = widget.textColor.withValues(alpha: 0.7);
 
     final status = closed
-        ? l10n.newsPollClosed
+        ? null
         : switch (state.status) {
             NewsPollVoteStatus.sending => l10n.newsPollSending,
             NewsPollVoteStatus.voted => l10n.newsPollVoteCounted,
@@ -160,9 +170,12 @@ class _NewsPollContentState extends State<NewsPollContent> {
                 text: answer.text,
                 multiple: poll.multiple,
                 selected: selected.contains(answer.id),
+                dimmed: closed,
                 textColor: widget.textColor,
                 accent: widget.linkColor,
-                onTap: interactive
+                onTap: closed
+                    ? _onTapClosed
+                    : interactive
                     ? () => _onTapAnswer(poll, state, answer.id)
                     : null,
               ),
@@ -174,14 +187,44 @@ class _NewsPollContentState extends State<NewsPollContent> {
                   child: Text(l10n.newsPollVote),
                 ),
               ),
-            if (status != null)
+            if (closed)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Container(
+                  key: const ValueKey('news-poll-status'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: widget.textColor.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.lock_outline, size: 14, color: muted),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.newsPollClosed,
+                        style: TextStyle(
+                          color: widget.textColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (status != null)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
                   status,
                   key: const ValueKey('news-poll-status'),
                   style: TextStyle(
-                    color: state.status == NewsPollVoteStatus.failed && !closed
+                    color: state.status == NewsPollVoteStatus.failed
                         ? Theme.of(context).colorScheme.error
                         : muted,
                     fontSize: 12,
@@ -226,6 +269,7 @@ class _AnswerRow extends StatelessWidget {
   final String text;
   final bool multiple;
   final bool selected;
+  final bool dimmed;
   final Color textColor;
   final Color accent;
   final VoidCallback? onTap;
@@ -234,6 +278,7 @@ class _AnswerRow extends StatelessWidget {
     required this.text,
     required this.multiple,
     required this.selected,
+    required this.dimmed,
     required this.textColor,
     required this.accent,
     required this.onTap,
@@ -250,23 +295,26 @@ class _AnswerRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: 22,
-              color: selected ? accent : textColor.withValues(alpha: 0.6),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(color: textColor, fontSize: 14.5),
+      child: Opacity(
+        opacity: dimmed ? 0.45 : 1,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 22,
+                color: selected ? accent : textColor.withValues(alpha: 0.6),
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(color: textColor, fontSize: 14.5),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

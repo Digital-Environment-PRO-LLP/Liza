@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,9 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:liza/config/setting_keys.dart';
 import 'package:liza/l10n/l10n.dart';
+import 'package:liza/utils/object_url.dart';
 import 'package:liza/utils/platform_infos.dart';
+import 'package:liza/utils/voice_recording_codec.dart';
 import 'package:liza/utils/voice_recording_guard.dart';
 import 'package:liza/widgets/adaptive_dialogs/show_ok_cancel_alert_dialog.dart';
 import 'events/audio_player.dart';
@@ -22,7 +23,14 @@ import 'events/audio_player.dart';
 class RecordingViewModel extends StatefulWidget {
   final Widget Function(BuildContext, RecordingViewModelState) builder;
 
-  const RecordingViewModel({required this.builder, super.key});
+  /// Подмена рекордера в тестах.
+  final AudioRecorder Function()? createRecorder;
+
+  const RecordingViewModel({
+    required this.builder,
+    this.createRecorder,
+    super.key,
+  });
 
   @override
   RecordingViewModelState createState() => RecordingViewModelState();
@@ -74,10 +82,17 @@ class RecordingViewModelState extends State<RecordingViewModel> {
       }
     }
 
-    final audioRecorder = _audioRecorder ??= AudioRecorder();
+    final audioRecorder = _audioRecorder ??=
+        (widget.createRecorder ?? AudioRecorder.new)();
 
     final hasPermission = await audioRecorder.hasPermission();
+    // Системный диалог разрешения может висеть секундами — за это время
+    // пользователь успевает уйти из чата, и State уже размонтирован.
+    if (!mounted) return;
     if (hasPermission != true) {
+      // isRecording = «рекордер есть»: без сброса композер при следующей
+      // перерисовке показал бы панель записи, которая ничего не пишет.
+      setState(_reset);
       showOkAlertDialog(
         context: context,
         title: L10n.of(context).oopsSomethingWentWrong,
@@ -90,13 +105,18 @@ class RecordingViewModelState extends State<RecordingViewModel> {
 
     try {
       // Параллельно определяем кодек и путь для записи
-      final codecFuture = _resolveCodec(audioRecorder);
+      final codecFuture = resolveVoiceCodec(
+        isWeb: kIsWeb,
+        isIOS: PlatformInfos.isIOS,
+        supports: audioRecorder.isEncoderSupported,
+      );
       final pathFuture = kIsWeb
           ? Future.value(null)
           : getTemporaryDirectory().then((dir) => dir.path);
 
       final results = await Future.wait([codecFuture, pathFuture]);
-      final codec = results[0] as AudioEncoder;
+      final voiceCodec = results[0] as VoiceCodec;
+      final codec = voiceCodec.encoder;
       final tempDirPath = results[1] as String?;
 
       fileName =
@@ -112,7 +132,9 @@ class RecordingViewModelState extends State<RecordingViewModel> {
       await audioRecorder.start(
         RecordConfig(
           bitRate: AppSettings.audioRecordingBitRate.value,
-          sampleRate: AppSettings.audioRecordingSamplingRate.value,
+          sampleRate:
+              voiceCodec.sampleRate ??
+              AppSettings.audioRecordingSamplingRate.value,
           numChannels: AppSettings.audioRecordingNumChannels.value,
           autoGain: AppSettings.audioRecordingAutoGain.value,
           echoCancel: AppSettings.audioRecordingEchoCancel.value,
@@ -127,6 +149,7 @@ class RecordingViewModelState extends State<RecordingViewModel> {
       VoiceRecordingGuard.register(_guard!);
     } catch (e, s) {
       Logs().w('Unable to start voice message recording', e, s);
+      if (!mounted) return;
       showOkAlertDialog(
         context: context,
         title: L10n.of(context).oopsSomethingWentWrong,
@@ -134,15 +157,6 @@ class RecordingViewModelState extends State<RecordingViewModel> {
       );
       setState(_reset);
     }
-  }
-
-  Future<AudioEncoder> _resolveCodec(AudioRecorder recorder) async {
-    if (kIsWeb) return AudioEncoder.wav;
-    if (PlatformInfos.isIOS) return AudioEncoder.aacLc;
-    if (await recorder.isEncoderSupported(AudioEncoder.opus)) {
-      return AudioEncoder.opus;
-    }
-    return AudioEncoder.aacLc;
   }
 
   @override
@@ -179,8 +193,16 @@ class RecordingViewModelState extends State<RecordingViewModel> {
     _unregisterGuard();
     WakelockPlus.disable();
     _recorderSubscription?.cancel();
-    _audioRecorder?.stop();
+    // dispose сам останавливает запись; без него рекордер (на Web — ещё и
+    // MediaRecorder/AudioContext вкладки) жил до конца процесса. На Web
+    // сначала cancel: он освобождает blob URL прерванной записи.
+    final recorder = _audioRecorder;
     _audioRecorder = null;
+    if (recorder != null) {
+      (kIsWeb ? recorder.cancel() : Future<void>.value()).whenComplete(
+        recorder.dispose,
+      );
+    }
     isSending = false;
     fileName = null;
     duration = Duration.zero;
@@ -230,8 +252,18 @@ class RecordingViewModelState extends State<RecordingViewModel> {
   ) async {
     _recorderSubscription?.cancel();
     final path = await _audioRecorder?.stop();
+    if (!mounted) return;
 
-    if (path == null) throw ('Recording failed!');
+    if (path == null) {
+      // На Web MediaRecorder глотает ошибку старта (record_web), и провал
+      // всплывает только здесь. Раньше тут был throw — панель записи зависала.
+      Logs().w('Voice message recording produced no file');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(L10n.of(context).voiceRecordingFailed)),
+      );
+      cancel();
+      return;
+    }
     const waveCount = AudioPlayerWidget.wavesCount;
     final step = amplitudeTimeline.length < waveCount
         ? 1
@@ -251,11 +283,15 @@ class RecordingViewModelState extends State<RecordingViewModel> {
       await onSend(path, duration.inMilliseconds, waveform, fileName);
     } catch (e, s) {
       Logs().e('Unable to send voice message', e, s);
+      if (!mounted) return;
       setState(() {
         isSending = false;
       });
       return;
+    } finally {
+      if (kIsWeb) revokeObjectUrl(path);
     }
+    if (!mounted) return;
 
     cancel();
   }

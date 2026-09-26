@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:liza/config/setting_keys.dart';
 import 'package:liza/l10n/l10n.dart';
+import 'package:liza/utils/voice_recording_codec.dart';
 
 abstract class PlatformInfos {
   static bool get isWeb => kIsWeb;
@@ -30,8 +31,8 @@ abstract class PlatformInfos {
   static bool get supportsVideoPlayer =>
       !PlatformInfos.isWindows && !PlatformInfos.isLinux;
 
-  /// Web could also record in theory but currently only wav which is too large
-  static bool get platformCanRecord => (isMobile || isMacOS);
+  static bool get platformCanRecord =>
+      canRecordVoice(isWeb: isWeb, isMobile: isMobile, isMacOS: isMacOS);
 
   static String get clientName =>
       '${AppSettings.applicationName.value} ${isWeb ? 'web' : Platform.operatingSystem}${kReleaseMode ? '' : 'Debug'}';

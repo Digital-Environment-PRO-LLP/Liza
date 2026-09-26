@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,6 +21,7 @@ import 'package:liza/utils/monitoring.dart';
 import 'package:liza/utils/notification_background_handler.dart';
 import 'package:liza/utils/platform_infos.dart';
 import 'package:liza/utils/app_restart.dart';
+import 'package:liza/utils/browser_context_menu.dart';
 import 'package:liza/utils/secure_storage.dart';
 import 'config/setting_keys.dart';
 import 'utils/background_push.dart';
@@ -45,6 +47,11 @@ void main() async {
     // widget bindings are initialized already.
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('[BOOT] WidgetsBinding initialized');
+
+    configureBrowserContextMenu(
+      isWeb: kIsWeb,
+      disable: BrowserContextMenu.disableContextMenu,
+    );
 
     // Инициализируем libmpv-бэкенд для media_kit (видео-плеер в чате)
     // и регистрируем его же как backend для just_audio на Windows/Linux.

@@ -42,6 +42,7 @@ import 'package:liza/utils/transcription_service.dart';
 import 'package:liza/utils/user_handle_service.dart';
 import 'package:liza/utils/user_role_service.dart';
 import 'package:liza/utils/version_gate_service.dart';
+import 'package:liza/utils/web_update_checker.dart';
 import 'package:liza/utils/video_prefetch_manager.dart';
 import 'package:liza/utils/voip/voip_handle.dart';
 import 'package:liza/utils/voip/voip_loader.dart';
@@ -111,6 +112,9 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   final ValueNotifier<VersionGateResult> versionGateResult = ValueNotifier(
     VersionGateResult.none,
   );
+
+  /// Web-вкладка открыта до последнего деплоя — см. [WebUpdateChecker].
+  final WebUpdateChecker webUpdateChecker = WebUpdateChecker();
 
   /// Бампается, когда `/sync` любого клиента принёс изменение пакетов аккаунтов
   /// (`im.fluffychat.account_bundles`), см. [onAccountDataSub].
@@ -532,6 +536,9 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       _syncActiveRoomToNative,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => checkClientVersion());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => webUpdateChecker.start(),
+    );
     // Старт сразу в чате (восстановление/диплинк) не меняет маршрут после
     // подписки — сообщаем нативу стартовое состояние.
     WidgetsBinding.instance.addPostFrameCallback(
@@ -981,6 +988,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     // Refresh HTTP clients and badge count when returning to the app.
     if (state == AppLifecycleState.resumed) {
       checkClientVersion();
+      unawaited(webUpdateChecker.onResumed());
       for (final c in widget.clients) {
         if (c.isLogged()) {
           unawaited(_reportDeviceCapability(c));
@@ -1170,6 +1178,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
     linuxNotifications?.close();
     versionGateResult.dispose();
+    webUpdateChecker.dispose();
     accountBundlesVersion.dispose();
 
     super.dispose();

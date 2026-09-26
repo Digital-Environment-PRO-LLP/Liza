@@ -20,6 +20,7 @@ import 'package:liza/pages/chat_list/search_users_horizontal_list.dart';
 import 'package:liza/pages/chat_list/space_view.dart';
 import '../stories/stories_bar.dart';
 import 'package:liza/pages/chat_list/update_banner.dart';
+import 'package:liza/pages/chat_list/web_update_banner.dart';
 import 'package:liza/utils/chat_topology.dart';
 import 'package:liza/utils/direct_chat_draft.dart';
 import 'package:liza/utils/miniapp_room.dart';
@@ -154,6 +155,12 @@ class ChatListViewBody extends StatelessWidget {
               controller: controller.scrollController,
               slivers: [
                 const SliverToBoxAdapter(child: UpdateBanner()),
+                SliverToBoxAdapter(
+                  child: WebUpdateBanner(
+                    updateAvailable:
+                        Matrix.of(context).webUpdateChecker.updateAvailable,
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: ValueListenableBuilder<VersionGateResult>(
                     valueListenable: Matrix.of(context).versionGateResult,

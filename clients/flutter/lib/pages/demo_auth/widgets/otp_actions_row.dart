@@ -77,11 +77,13 @@ class OtpActionsRow extends StatelessWidget {
       switch (channel) {
         DemoAuthChannel.phone => l10n.demoAuthChannelPhone,
         DemoAuthChannel.email => l10n.demoAuthChannelEmail,
+        DemoAuthChannel.password => l10n.demoAuthPasswordLabel,
       };
 
   static IconData _iconOf(DemoAuthChannel channel) => switch (channel) {
         DemoAuthChannel.phone => Icons.sms_outlined,
         DemoAuthChannel.email => Icons.mail_outline,
+        DemoAuthChannel.password => Icons.lock_outline,
       };
 
   @override

@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_vodozemac/flutter_vodozemac.dart' as vod;
 import 'package:go_router/go_router.dart';
@@ -135,7 +136,7 @@ Future<void> notificationTap(
     roomId: payload.roomId,
   );
   onClientResolved?.call(client);
-  switch (notificationResponse.notificationResponseType) {
+  switch (effectiveNotificationResponseType(notificationResponse)) {
     case NotificationResponseType.selectedNotification:
       final roomId = payload.roomId;
       if (roomId == null) return;
@@ -188,7 +189,8 @@ Future<void> notificationTap(
             public: AppSettings.sendPublicReadReceipts.value,
           );
         case LizaNotificationActions.reply:
-          final input = notificationResponse.input;
+          // Пробелы по краям обрезаем, пробельный ответ не шлём (LABA-2623).
+          final input = notificationResponse.input?.trim();
           if (input == null || input.isEmpty) {
             throw Exception(
               'Selected notification with reply action but without input',
@@ -287,3 +289,24 @@ Future<void> notificationTap(
 }
 
 enum LizaNotificationActions { markAsRead, reply }
+
+/// Тип ответа с поправкой на Windows-плагин.
+///
+/// `flutter_local_notifications_windows` 1.0.3 (`plugin.cpp` → `Activate`)
+/// объявляет «действием» ЛЮБУЮ активацию с непустыми аргументами, а аргументы
+/// тоста — это его `launch`, то есть наш payload. Клик по телу уведомления
+/// приходил как `selectedNotificationAction` с `actionId = payload`, падал на
+/// «action but no action ID» и чат не открывался (GlitchTip #2069, 2026-09-25,
+/// сборка 3764). Кнопок действий на Windows мы не показываем вовсе, поэтому
+/// «действие», которого нет среди наших, — это тап по уведомлению.
+@visibleForTesting
+NotificationResponseType effectiveNotificationResponseType(
+  NotificationResponse response,
+) {
+  final type = response.notificationResponseType;
+  if (type != NotificationResponseType.selectedNotificationAction) return type;
+  final known = LizaNotificationActions.values.any(
+    (action) => action.name == response.actionId,
+  );
+  return known ? type : NotificationResponseType.selectedNotification;
+}

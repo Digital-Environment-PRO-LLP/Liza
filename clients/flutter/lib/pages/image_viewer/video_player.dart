@@ -16,12 +16,14 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:liza/l10n/l10n.dart';
 import 'package:liza/utils/bandwidth_estimator.dart';
 import 'package:liza/utils/e2ee_media_proxy.dart';
+import 'package:liza/utils/foreground_witness.dart';
 import 'package:liza/utils/idle_timeout_stream.dart';
 import 'package:liza/utils/mp4_faststart.dart';
 import 'package:liza/utils/monitoring.dart';
 import 'package:liza/utils/video_prefetch_cache.dart';
 import 'package:liza/utils/matrix_sdk_extensions/event_extension.dart';
 import 'package:liza/utils/mpv_property.dart';
+import 'package:liza/utils/platform_infos.dart';
 import 'package:liza/utils/video_poster_cache.dart';
 import 'package:liza/widgets/blur_hash.dart';
 import '../../widgets/mxc_image.dart';
@@ -632,7 +634,7 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
       if (!event.isAttachmentEncrypted && !kIsWeb) {
         // fire-and-forget безопасен: `_swapToLocal` не выпускает исключений
         // наружу — провал он сам переводит в терминальный error-overlay.
-        unawaited(_swapToLocal());
+        unawaited(_swapToLocal(trigger: 'watchdog-no-progress'));
       } else {
         // E2EE/Web watchdog: свапать некуда → _handlePlaybackError сам шлёт
         // терминальный `[video-fail]` с reason=watchdog-no-progress (единый
@@ -743,13 +745,19 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
   /// не-MMR origin (`cyber-agro`/`nadezhda`/федеративное `user.liza.ru`) свап —
   /// штатное полное скачивание by design (`seekable=0`), это не инцидент. Гейт по
   /// origin медиа, не по хоумсерверу читателя. Один сигнал на сессию.
-  void _reportVideoSwap() {
+  ///
+  /// [trigger] — ЧТО сорвало стрим (`stalled-reconnect`/`watchdog-no-progress`/
+  /// фатальный reason libmpv), в title вместо прежнего константного
+  /// `swap-to-local`: префикс `[video-swap]` и так говорит «свап». Без триггера
+  /// #2063 (2026-09-24) не разбирался: при живой, но медленной отдаче (Traefik:
+  /// 206 по ~5 МБ за ~10 с) нельзя было понять, какой детектор решил свапать.
+  void _reportVideoSwap(String trigger) {
     if (_swapReported) return;
     if (!isMmrBackedHost(_mediaOriginHost)) return;
     _swapReported = true;
     Monitoring.reportVideoIssue(
       prefix: Monitoring.videoSwapPrefix,
-      reason: 'swap-to-local',
+      reason: trigger,
       host: _alertHost,
       context: _videoContext(),
     );
@@ -1261,8 +1269,12 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
     // Отдельный клиент живёт пока download не закончится.
     final downloadClient = http.Client();
     final token = event.room.client.accessToken;
+    // Время загрузки считается по ОТКРЫТОМУ приложению (см. ForegroundWitness):
+    // сон процесса в фоне — не мёртвый канал (#2064). На desktop свёрнутое
+    // окно не замораживается — свидетель не нужен.
+    final witness = PlatformInfos.isMobile ? ForegroundWitness.attach() : null;
     try {
-      final videoFile = await event.downloadAndDecryptAttachmentHealed(
+      Future<MatrixFile> download() => event.downloadAndDecryptAttachmentHealed(
         downloadCallback: (url) async {
           final request = http.Request('GET', url);
           if (token != null) {
@@ -1283,9 +1295,26 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
           return readBytesWithIdleTimeout(
             response.stream,
             idleTimeout: _downloadIdleTimeout,
+            witness: witness,
             onChunk: (received) =>
                 _maybeUpdateDownloadProgress(received, fileSize),
           );
+        },
+      );
+      // Сокет, переживший заморозку, рвётся сразу после возврата (или сервер
+      // закрыл его, пока процесс спал) — это не сбой канала: один тихий повтор,
+      // когда пользователь снова смотрит, без алёрта и error-overlay.
+      final videoFile = await retryOnceAfterSuspension(
+        download,
+        witness,
+        abandoned: () => _disposed,
+        onRetry: (e) {
+          Logs().i(
+            'Video download interrupted by app suspension[${event.eventId}]: '
+            '${mediaFailureErrorType(e)} — retry on foreground',
+          );
+          if (mounted) setState(() => _downloadProgress = 0);
+          _downloadStopwatch = Stopwatch()..start();
         },
       );
       _downloadStopwatch!.stop();
@@ -1387,6 +1416,7 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
         setState(() => _downloadProgress = null);
       }
     } finally {
+      witness?.dispose();
       downloadClient.close();
     }
   }
@@ -1411,13 +1441,13 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
   /// На время swap-а скрываем `Video`-виджет и показываем тот же thumbnail+
   /// progress, что и при первом открытии — иначе пользователь видит
   /// замороженный последний кадр без признаков жизни.
-  Future<void> _swapToLocal({Duration? seekTo}) async {
+  Future<void> _swapToLocal({required String trigger, Duration? seekTo}) async {
     if (_swappingToLocal || _useLocalFile) return;
     // Телеметрия «стриминг не пошёл» — до setState, единственная точка входа в
     // свап (сюда сходятся watchdog и _handlePlaybackError). Гейт по MMR-хосту
     // внутри: на не-MMR свап штатный, не сигналим.
-    _reportVideoSwap();
-    Logs().i('Video swap to local file, seekTo=$seekTo');
+    _reportVideoSwap(trigger);
+    Logs().i('Video swap to local file ($trigger), seekTo=$seekTo');
     if (mounted) {
       setState(() {
         _swappingToLocal = true;
@@ -1686,7 +1716,7 @@ class EventVideoPlayerState extends State<EventVideoPlayer> {
       // `swap-failed` и ставит error-overlay), поэтому дублирующего catch тут
       // больше нет: две версии одной логики расходятся — так и родился
       // исходный дефект LABA-2557.
-      await _swapToLocal(seekTo: pos);
+      await _swapToLocal(trigger: reason, seekTo: pos);
       return;
     } else {
       // E2EE/Web: свапать некуда — это терминальный провал.

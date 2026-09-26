@@ -426,6 +426,38 @@ String? spansToFormattedHtml(String text, List<FormatSpan> spans) {
   return html;
 }
 
+/// Обрезать пробельные символы по краям исходящего текста и пересчитать спаны
+/// под обрезанную строку (LABA-2623). Работает на КОПИЯХ: контроллер не трогаем —
+/// отправку может прервать Cancel диалога `commandInvalid`, и черновик должен
+/// остаться как был. `_shiftSpansForTextChange` тут не годится: при срезе обоих
+/// краёв у строк нет общего префикса/суффикса, и все спаны схлопнулись бы.
+({String text, List<FormatSpan> spans}) trimOutgoing(
+  String text,
+  List<FormatSpan> spans,
+) {
+  final leftTrimmed = text.trimLeft();
+  final lead = text.length - leftTrimmed.length;
+  final trimmed = leftTrimmed.trimRight();
+  final shifted = [
+    for (final s in spans)
+      FormatSpan(
+        (s.start - lead).clamp(0, trimmed.length),
+        (s.end - lead).clamp(0, trimmed.length),
+        s.format,
+      ),
+  ];
+  return (text: trimmed, spans: mergeFormatSpans(shifted));
+}
+
+/// Причина удаления для отправки и показа (LABA-2623): без пробелов по краям,
+/// внутренние переносы и серии пробелов — одним пробелом (подпись удалённого
+/// сообщения однострочная), пробельная причина = причины нет.
+String? normalizeRedactionReason(String? reason) {
+  if (reason == null) return null;
+  final normalized = reason.trim().replaceAll(RegExp(r'\s+'), ' ');
+  return normalized.isEmpty ? null : normalized;
+}
+
 /// Канонический порядок тегов (детерминизм вложенности — INV nested/AC-2).
 const List<MessageFormat> _tagOrder = [
   MessageFormat.bold,

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:matrix/matrix.dart';
 
 import 'package:liza/config/app_config.dart';
+import 'package:liza/config/setting_keys.dart';
+import 'package:liza/l10n/l10n.dart';
 import 'package:liza/pages/image_viewer/image_viewer.dart';
+import 'package:liza/utils/animated_gif.dart';
 import 'package:liza/widgets/mxc_image.dart';
 import '../../../widgets/blur_hash.dart';
 
@@ -80,6 +83,29 @@ class ImageBubble extends StatelessWidget {
     final borderRadius =
         this.borderRadius ?? BorderRadius.circular(AppConfig.borderRadius);
 
+    // GIF играет в ленте сам (заявка №43): грузим оригинал, а превью первого
+    // кадра держим в placeholder, пока оригинал качается. Вне лимитов или при
+    // выключенном автоплее — статичное превью с бейджем, тап → вьювер.
+    final isGif = isGifImageEvent(event);
+    final animateGif =
+        thumbnailOnly &&
+        shouldAnimateGifInline(
+          event,
+          autoplay: AppSettings.autoplayImages.value,
+        );
+    final placeholder = animateGif
+        ? (BuildContext context) => MxcImage(
+            event: event,
+            width: width,
+            height: height,
+            fit: fit,
+            isThumbnail: true,
+            placeholder: _buildPlaceholder,
+          )
+        : event.messageType == MessageTypes.Sticker
+        ? null
+        : _buildPlaceholder;
+
     return Material(
       color: Colors.transparent,
       clipBehavior: Clip.hardEdge,
@@ -104,12 +130,17 @@ class ImageBubble extends StatelessWidget {
                 height: height,
                 fit: fit,
                 animated: animated,
-                isThumbnail: thumbnailOnly,
-                placeholder: event.messageType == MessageTypes.Sticker
-                    ? null
-                    : _buildPlaceholder,
+                // Анимацию GIF даёт оригинал: `animated` в event-пути MxcImage
+                // не участвует, превью статично.
+                isThumbnail: thumbnailOnly && !animateGif,
+                cacheWidth: animateGif
+                    ? (width * MediaQuery.devicePixelRatioOf(context)).round()
+                    : null,
+                placeholder: placeholder,
               ),
             ),
+            if (isGif && !animateGif)
+              const Positioned(top: 6, left: 6, child: GifBadge()),
             if (timeOverlay != null)
               Positioned(bottom: 6, right: 6, child: timeOverlay!),
           ],
@@ -117,4 +148,27 @@ class ImageBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Бейдж «GIF» на статичном превью GIF (лента вне лимитов / автоплей
+/// выключен, плитка альбома).
+class GifBadge extends StatelessWidget {
+  const GifBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: Colors.black54,
+      borderRadius: BorderRadius.circular(6),
+    ),
+    child: Text(
+      L10n.of(context).gifBadge,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }

@@ -23,6 +23,10 @@ class MxcImage extends StatefulWidget {
   final BoxFit? fit;
   final bool isThumbnail;
   final bool animated;
+
+  /// Ширина декода в физических пикселях. Для полноразмерного GIF в ленте:
+  /// каждый кадр декодируется под пузырь, а не в исходном разрешении.
+  final int? cacheWidth;
   final Duration retryDuration;
   final Duration animationDuration;
   final Curve animationCurve;
@@ -41,6 +45,7 @@ class MxcImage extends StatefulWidget {
     this.placeholder,
     this.isThumbnail = true,
     this.animated = false,
+    this.cacheWidth,
     this.animationDuration = LizaThemes.animationDuration,
     this.retryDuration = const Duration(seconds: 2),
     this.animationCurve = LizaThemes.animationCurve,
@@ -122,6 +127,23 @@ class MxcImage extends StatefulWidget {
   // залипает БЕЗ сетевой проблемы (класс γ), и watchdog ложно счёл бы это
   // «media-stuck».
   @visibleForTesting
+  /// Превью отправляемого видео. SDK для `status.isSending` отдаёт из
+  /// `downloadAndDecryptAttachment` байты `sendingFilePlaceholders`
+  /// БЕЗУСЛОВНО, игнорируя `getThumbnail` (matrix-4.1.0 `event.dart:743`), —
+  /// для m.video это сырой MP4. Декодер падал «Invalid image data», и плитка
+  /// альбома навсегда оставалась BlurHash-ом (лог жалобы 2026-09-25, по
+  /// строке на каждый член альбома в момент отправки). Такое превью берём из
+  /// `sendingFileThumbnails`, а без него — placeholder, байты видео в декодер
+  /// не отдаём. Гард — только на `isSending`: у упавшего (`error`) видео
+  /// ветка SDK с плейсхолдером не срабатывает, а оба вызывающих его и так не
+  /// монтируют (плитка альбома — `PendingVideoPoster`, пузырь видео — только
+  /// при `hasThumbnail`, которого у незалитого нет).
+  static bool isSendingVideoThumbnail({
+    required bool isSending,
+    required bool isThumbnail,
+    required String msgtype,
+  }) => isSending && isThumbnail && msgtype == MessageTypes.Video;
+
   static bool attachmentIdentityChanged(MxcImage oldW, MxcImage newW) =>
       oldW.uri != newW.uri ||
       oldW.event?.eventId != newW.event?.eventId ||
@@ -302,6 +324,20 @@ class _MxcImageState extends State<MxcImage> {
       setState(() {
         _imageData = transcoded;
       });
+    }
+
+    if (event != null &&
+        MxcImage.isSendingVideoThumbnail(
+          isSending: event.status.isSending,
+          isThumbnail: widget.isThumbnail,
+          msgtype: event.messageType,
+        )) {
+      final thumbnail = event.room.sendingFileThumbnails[event.eventId];
+      if (thumbnail == null || !mounted) return;
+      setState(() {
+        _imageData = thumbnail.bytes;
+      });
+      return;
     }
 
     if (event != null) {
@@ -599,6 +635,7 @@ class _MxcImageState extends State<MxcImage> {
                 data,
                 width: widget.width,
                 height: widget.height,
+                cacheWidth: widget.cacheWidth,
                 fit: widget.fit,
                 filterQuality: widget.isThumbnail
                     ? FilterQuality.low

@@ -9,6 +9,7 @@ import 'package:liza/config/setting_keys.dart';
 import 'package:liza/l10n/l10n.dart';
 import 'package:liza/pages/chat/events/poll.dart';
 import 'package:liza/pages/chat/events/video_player.dart';
+import 'package:liza/utils/formatting_text_controller.dart';
 import 'package:liza/utils/adaptive_bottom_sheet.dart';
 import 'package:liza/utils/date_time_extension.dart';
 import 'package:liza/utils/matrix_sdk_extensions/matrix_locals.dart';
@@ -536,7 +537,12 @@ class RedactionWidget extends StatelessWidget {
     return FutureBuilder<User?>(
       future: event.redactedBecause?.fetchSenderUser(),
       builder: (context, snapshot) {
-        final reason = event.redactedBecause?.content.tryGet<String>('reason');
+        // Причину нормализуем и при показе: уже записанные на сервере (и от
+        // чужих клиентов) бывают с хвостом переносов — пузырь растягивался на
+        // весь экран (LABA-2623).
+        final reason = normalizeRedactionReason(
+          event.redactedBecause?.content.tryGet<String>('reason'),
+        );
         final redactedBy =
             snapshot.data?.calcDisplayname() ??
             event.redactedBecause?.senderId.localpart ??
@@ -549,6 +555,7 @@ class RedactionWidget extends StatelessWidget {
           textColor: buttonTextColor.withAlpha(128),
           onPressed: () => onInfoTab!(event),
           fontSize: fontSize,
+          maxLines: 2,
         );
       },
     );
@@ -561,6 +568,7 @@ class _ButtonContent extends StatelessWidget {
   final String icon;
   final Color? textColor;
   final double fontSize;
+  final int? maxLines;
 
   const _ButtonContent({
     required this.label,
@@ -568,6 +576,7 @@ class _ButtonContent extends StatelessWidget {
     required this.textColor,
     required this.onPressed,
     required this.fontSize,
+    this.maxLines,
   });
 
   @override
@@ -578,6 +587,8 @@ class _ButtonContent extends StatelessWidget {
         onTap: onPressed,
         child: Text(
           '$icon  $label',
+          maxLines: maxLines,
+          overflow: maxLines == null ? null : TextOverflow.ellipsis,
           style: TextStyle(color: textColor, fontSize: fontSize),
         ),
       ),

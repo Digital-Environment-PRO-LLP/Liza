@@ -1,10 +1,22 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:matrix/matrix.dart';
 
 import 'package:liza/config/app_config.dart';
+import 'package:liza/l10n/l10n.dart';
+import 'package:liza/pages/chat/events/image_bubble.dart';
+import 'package:liza/pages/chat/events/upload_overlays.dart';
 import 'package:liza/pages/image_viewer/image_viewer.dart';
+import 'package:liza/utils/animated_gif.dart';
+import 'package:liza/utils/file_description.dart';
 import 'package:liza/utils/forwarded_content_builder.dart';
+import 'package:liza/utils/resend_failed_media.dart';
+import 'package:liza/utils/upload_progress_tracker.dart';
+import 'package:liza/utils/video_poster_cache.dart';
+import 'package:liza/widgets/adaptive_dialogs/show_modal_action_popup.dart';
 import 'package:liza/widgets/mxc_image.dart';
 import '../../../widgets/blur_hash.dart';
 
@@ -191,6 +203,140 @@ extension GalleryEvent on Event {
   String? get galleryCaption => galleryCaptionFromContent(content);
 }
 
+/// Сводное состояние отправки СВОЕГО альбома.
+enum GallerySendState { sent, sending, error }
+
+/// Чистая сводка статуса альбома по его членам (страж
+/// `RL-album-send-partial-failure`). Время и галочки альбома раньше брались
+/// от якоря i=0 — «✓✓», пока остальные ещё грузились или упали (жалоба
+/// 2026-09-25: «непонятно, всё загружено или процесс ещё идёт»).
+///
+/// - хоть один член упал и серия его уже НЕ досылает → `error` (приоритет);
+/// - хоть один отправляется ИЛИ упал, но им владеет идущая серия (дошлёт
+///   сама) → `sending`;
+/// - иначе → `sent`.
+GallerySendState aggregateGallerySendState(
+  Iterable<({bool isError, bool isSending, bool ownedBySeries})> members,
+) {
+  var sending = false;
+  for (final m in members) {
+    if (m.isError && !m.ownedBySeries) return GallerySendState.error;
+    if (m.isSending || m.isError) sending = true;
+  }
+  return sending ? GallerySendState.sending : GallerySendState.sent;
+}
+
+/// Члены альбома [galleryId] в ленте — ВСЕ, включая неотправленные (в
+/// отличие от [galleryMembersInTimeline], который берёт только отправленные
+/// для пересылки).
+List<Event> galleryAllMembersInTimeline(Timeline timeline, String galleryId) {
+  final seen = <String>{};
+  final members = timeline.events
+      .where(
+        (e) =>
+            (e.messageType == MessageTypes.Image ||
+                e.messageType == MessageTypes.Video) &&
+            !e.redacted &&
+            e.galleryId == galleryId &&
+            seen.add(e.eventId),
+      )
+      .toList();
+  members.sort((a, b) => a.galleryIndex.compareTo(b.galleryIndex));
+  return members;
+}
+
+/// Сводка отправки своего альбома: состояние + упавшие члены, которые
+/// пользователь может повторить или удалить.
+class GallerySendSummary {
+  final GallerySendState state;
+  final int total;
+  final List<Event> failed;
+
+  const GallerySendSummary({
+    required this.state,
+    required this.total,
+    required this.failed,
+  });
+
+  factory GallerySendSummary.of(Timeline timeline, String galleryId) {
+    final tracker = UploadProgressTracker.instance;
+    final members = galleryAllMembersInTimeline(timeline, galleryId);
+    final flags = [
+      for (final m in members)
+        (
+          isError: m.status.isError,
+          isSending: m.status.isSending,
+          ownedBySeries: tracker.isOwnedBySeries(m.eventId),
+        ),
+    ];
+    return GallerySendSummary(
+      state: aggregateGallerySendState(flags),
+      total: galleryCountFromContent(
+            members.isEmpty ? const {} : members.first.content,
+          ) ??
+          members.length,
+      failed: [
+        for (final m in members)
+          if (m.status.isError && !tracker.isOwnedBySeries(m.eventId)) m,
+      ],
+    );
+  }
+}
+
+enum _AlbumUnsentAction { resend, delete }
+
+/// Меню по тапу на «!» альбома: повторить или удалить неотправленные члены.
+/// Как в Telegram — у упавшего альбома действие доступно с самого значка
+/// ошибки, а не только из скрытого long-press. Повтор строго ПО ОЧЕРЕДИ:
+/// параллельные заливки держали бы в памяти все файлы разом.
+Future<void> showAlbumUnsentMenu(
+  BuildContext context,
+  GallerySendSummary album,
+) async {
+  final l10n = L10n.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final count = album.failed.length;
+  if (count == 0) return;
+  final action = await showModalActionPopup<_AlbumUnsentAction>(
+    context: context,
+    title: l10n.albumNotSentCount(count, album.total),
+    cancelLabel: l10n.cancel,
+    actions: [
+      AdaptiveModalAction(
+        label: l10n.resendUnsentMedia(count),
+        value: _AlbumUnsentAction.resend,
+        icon: const Icon(Icons.refresh),
+        isDefaultAction: true,
+      ),
+      AdaptiveModalAction(
+        label: l10n.deleteUnsentMedia(count),
+        value: _AlbumUnsentAction.delete,
+        icon: const Icon(Icons.delete_outline),
+        isDestructive: true,
+      ),
+    ],
+  );
+  switch (action) {
+    case _AlbumUnsentAction.resend:
+      final missing = album.failed.where((e) => e.isUnresendableMissingMedia);
+      if (missing.length == count) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.fileNoLongerAvailableToResend)),
+        );
+        return;
+      }
+      await FailedMediaResender.resendSequentially(album.failed);
+    case _AlbumUnsentAction.delete:
+      for (final event in album.failed) {
+        try {
+          await event.cancelSend();
+        } catch (_) {}
+      }
+    case null:
+      return;
+  }
+}
+
 /// Сетка-альбом для группы медиа-событий (`m.image` / `m.video`) с общим
 /// `com.liza.gallery.id`.
 ///
@@ -227,6 +373,8 @@ class GalleryBubble extends StatelessWidget {
   /// Общая ширина сетки альбома в ленте.
   static const double _gridWidth = 268.0;
   static const double _spacing = 2.0;
+
+  bool _isOwn(Event e) => e.senderId == e.room.client.userID;
 
   List<Event> _members() {
     final gid = event.galleryId;
@@ -372,6 +520,17 @@ class GalleryBubble extends StatelessWidget {
                   isThumbnail: true,
                   placeholder: (context) => placeholder,
                 );
+                // Плитка альбома GIF не анимируется (как в Telegram) —
+                // только бейдж; тап открывает вьювер, где GIF играет.
+                if (isGifImageEvent(member)) {
+                  tile = Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      tile,
+                      const Positioned(top: 4, left: 4, child: GifBadge()),
+                    ],
+                  );
+                }
                 if (isVideo) {
                   final durationMs = member.content
                       .tryGetMap<String, Object?>('info')
@@ -382,19 +541,27 @@ class GalleryBubble extends StatelessWidget {
                   tile = Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Если у видео есть серверный thumbnail — MxcImage
-                      // его покажет; иначе — BlurHash из placeholder.
-                      if (member.hasThumbnail)
+                      // Отправка идёт/упала — кадр локальный (память SDK или
+                      // дисковый кэш постера по txid): серверного ещё нет, а
+                      // превью sending-видео через MxcImage давало байты MP4.
+                      // Отправлено — серверный thumbnail, иначе BlurHash.
+                      if (!member.status.isSent)
+                        PendingVideoPoster(
+                          event: member,
+                          placeholder: placeholder,
+                        )
+                      else if (member.hasThumbnail)
                         tile
                       else
                         placeholder,
-                      const Center(
-                        child: Icon(
-                          Icons.play_circle_outline,
-                          color: Colors.white70,
-                          size: 32,
+                      if (member.status.isSent)
+                        const Center(
+                          child: Icon(
+                            Icons.play_circle_outline,
+                            color: Colors.white70,
+                            size: 32,
+                          ),
                         ),
-                      ),
                       if (dur != null)
                         Positioned(
                           bottom: 4,
@@ -446,6 +613,20 @@ class GalleryBubble extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         tile,
+                        // Статус отправки ЭТОГО члена: прогресс / «Ожидание
+                        // сети» / ↻. Раньше плитка статуса не несла вовсе —
+                        // упавшее видео выглядело отправленным (2026-09-25).
+                        if (_isOwn(member))
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              ignoring: longPressSelect,
+                              child: UploadStatusOverlay(
+                                event: member,
+                                compact: true,
+                                fallback: const SizedBox.shrink(),
+                              ),
+                            ),
+                          ),
                         if (longPressSelect)
                           Positioned(
                             top: 4,
@@ -495,6 +676,67 @@ class GalleryBubble extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+/// Кадр видео-члена альбома, пока отправка идёт или упала: серверного
+/// thumbnail ещё нет. Сначала — постер в памяти SDK
+/// (`sendingFileThumbnails`, есть с момента `sendFileEvent` и живёт у
+/// упавшего), затем — дисковый кэш постера по txid (`VideoPosterCache`,
+/// пишется на подготовке, до передачи SDK), иначе [placeholder].
+class PendingVideoPoster extends StatefulWidget {
+  final Event event;
+  final Widget placeholder;
+
+  const PendingVideoPoster({
+    required this.event,
+    required this.placeholder,
+    super.key,
+  });
+
+  @override
+  State<PendingVideoPoster> createState() => _PendingVideoPosterState();
+}
+
+class _PendingVideoPosterState extends State<PendingVideoPoster> {
+  Future<File?>? _cached;
+  String? _cachedFor;
+
+  Future<File?> _diskPoster() {
+    final id = widget.event.eventId;
+    if (_cachedFor != id) {
+      _cachedFor = id;
+      _cached = VideoPosterCache.instance.getCached(widget.event);
+    }
+    return _cached!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final event = widget.event;
+    final inMemory = event.room.sendingFileThumbnails[event.eventId];
+    if (inMemory != null) {
+      return Image.memory(
+        inMemory.bytes,
+        fit: BoxFit.cover,
+        gaplessPlayback: true,
+        errorBuilder: (context, _, _) => widget.placeholder,
+      );
+    }
+    if (kIsWeb) return widget.placeholder;
+    return FutureBuilder<File?>(
+      future: _diskPoster(),
+      builder: (context, snapshot) {
+        final file = snapshot.data;
+        if (file == null) return widget.placeholder;
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          errorBuilder: (context, _, _) => widget.placeholder,
+        );
+      },
     );
   }
 }

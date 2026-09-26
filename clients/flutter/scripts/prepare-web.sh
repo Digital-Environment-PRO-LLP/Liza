@@ -24,7 +24,23 @@ dart compile js ./web/native_executor.dart -o ./web/native_executor.js -m
 # dev.web.liza.ru (так dev-домен раздавал prod-авторизацию до 2026-08-03).
 APP_ENV="${APP_ENV:-prod}"
 
-flutter build web --release --dart-define=APP_ENV="$APP_ENV" $MONITORING_ARGS
+# Идентификатор деплоя: одна переменная уходит и в бандл (константа
+# WEB_DEPLOY_ID), и в version.json (поле deploy_id). Открытая вкладка
+# сравнивает их и предлагает перезагрузиться (WebUpdateChecker, заявка №42).
+# Время в id — чтобы различались и пересборки одного коммита с правками.
+WEB_DEPLOY_ID="$(git rev-parse --short HEAD 2>/dev/null || echo nogit)-$(date +%s)"
+
+flutter build web --release --dart-define=APP_ENV="$APP_ENV" \
+  --dart-define=WEB_DEPLOY_ID="$WEB_DEPLOY_ID" $MONITORING_ARGS
+python3 - "$WEB_DEPLOY_ID" <<'PY'
+import json, sys
+path = "build/web/version.json"
+with open(path, encoding="utf-8") as f:
+    data = json.load(f)
+data["deploy_id"] = sys.argv[1]
+with open(path, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False)
+PY
 python3 ./scripts/remove_legacy_branding.py
 
 # Cache-busting главного бандла.

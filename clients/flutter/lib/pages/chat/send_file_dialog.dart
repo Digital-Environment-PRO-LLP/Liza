@@ -14,6 +14,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:liza/config/app_config.dart';
 import 'package:liza/l10n/l10n.dart';
+import 'package:liza/utils/album_send_series.dart';
+import 'package:liza/utils/animated_gif.dart';
 import 'package:liza/utils/clipboard_paste.dart';
 import 'package:liza/utils/compress_image.dart';
 import 'package:liza/utils/heic_converter.dart';
@@ -401,6 +403,9 @@ class SendFileDialogState extends State<SendFileDialog> {
     // Плашка подготовки для вложений без пузыря-пре-эмита (фото/документы/
     // смешанные альбомы). Для видео её роль забрал пузырь.
     _PreparationBanner? banner;
+    // Провалы серии — для итогового сообщения.
+    final prepareFailures = <Object>[];
+    final uploadFailures = <Object>[];
 
     try {
       // LABA-2242: удалённому боту (аккаунт деактивирован) файлы тоже не шлём —
@@ -509,6 +514,10 @@ class SendFileDialogState extends State<SendFileDialog> {
         );
       }
 
+      // Серия владеет своими txid до конца: повторять их вправе только она
+      // (иначе авто-досыл и ↻ шли параллельно её собственным повторам).
+      UploadProgressTracker.instance.claimForSeries(txids);
+
       final clientConfig = await client.getConfig();
       final maxUploadSize = clientConfig.mUploadSize ?? 100 * 1000 * 1000;
 
@@ -531,10 +540,13 @@ class SendFileDialogState extends State<SendFileDialog> {
         );
       }
 
-      // Индекс через счётчик цикла, а не `files.indexOf(xfile)`: последний —
-      // линейный поиск по идентичности, хрупкий при одинаковых XFile.fromData
-      // (несколько растров из буфера) и O(N²). Индекс несёт порядок альбома.
-      for (var index = 0; index < files.length; index++) {
+      // Отправка — через `AlbumSendSeries`: провал одного файла больше НЕ
+      // рвёт весь набор (инцидент 2026-09-25: `rethrow` на 6-м из 23 видео
+      // снял пузыри 17 остальных молча), обрыв сети ставит серию на паузу, а
+      // transient-провал заливки повторяется. Индекс — счётчик серии, а не
+      // `files.indexOf(xfile)`: последний хрупок при одинаковых
+      // XFile.fromData и O(N²). Индекс несёт порядок альбома.
+      Future<_PreparedAttachment> prepare(int index) async {
         final xfile = files[index];
         final txid = txids[index];
         MatrixFile file;
@@ -542,6 +554,7 @@ class SendFileDialogState extends State<SendFileDialog> {
         final length = await xfile.length();
         final mimeType = xfile.mimeType ?? lookupMimeType(xfile.path);
         final isVideo = mimeType != null && mimeType.startsWith('video');
+        final isGif = !isVideo && isGifXFile(xfile);
         if (files.length > 1) {
           banner?.update(
             l10n.sendingAttachmentCountOfCount(index + 1, files.length),
@@ -620,11 +633,20 @@ class SendFileDialogState extends State<SendFileDialog> {
           if (length > maxUploadSize) {
             throw FileTooBigMatrixException(length, maxUploadSize);
           }
-          file = MatrixFile(
-            bytes: await xfile.readAsBytes(),
-            name: xfile.name,
-            mimeType: mimeType,
-          ).detectFileType;
+          final bytes = await xfile.readAsBytes();
+          if (isGif) {
+            // Оригинал байт-в-байт + своё превью первого кадра (см.
+            // animated_gif.dart, заявка №43).
+            final gif = await prepareGifForSending(bytes, name: xfile.name);
+            file = gif.file;
+            thumbnail = gif.thumbnail;
+          } else {
+            file = MatrixFile(
+              bytes: bytes,
+              name: xfile.name,
+              mimeType: mimeType,
+            ).detectFileType;
+          }
         }
 
         if (file.bytes.length > maxUploadSize) {
@@ -673,17 +695,25 @@ class SendFileDialogState extends State<SendFileDialog> {
           );
         }
 
-        final extraContentOrNull = buildGalleryExtra(
-          galleryId: galleryId,
-          index: index,
-          total: files.length,
-          caption: caption,
+        return _PreparedAttachment(
+          file: file,
+          thumbnail: thumbnail,
+          isGif: isGif,
+          extraContent: buildGalleryExtra(
+            galleryId: galleryId,
+            index: index,
+            total: files.length,
+            caption: caption,
+          ),
         );
+      }
 
+      Future<void> upload(int index, _PreparedAttachment p, int attempt) async {
+        final txid = txids[index];
         UploadProgressTracker.instance.reportPhase(txid, UploadPhase.uploading);
         final uploadProgress = _UploadProgressReporter.start(
           txid: txid,
-          totalBytes: file.bytes.length,
+          totalBytes: p.file.bytes.length,
         );
         // Привязываем реальный прогресс (UploadProgressHttpClient) к этому
         // txid: отдача идёт последовательно по файлам, активный — один.
@@ -692,32 +722,33 @@ class SendFileDialogState extends State<SendFileDialog> {
         // Передача владения ВПЛОТНУЮ к вызову: `sendFileEvent` первой же
         // строкой делает `sendingFilePlaceholders[txid] = file` и эмитит ТОТ
         // ЖЕ placeholder (Timeline заменит наш на месте), дальше сам выставит
-        // EventStatus.error при сбое — байты у него есть, повтор/авто-досыл
-        // законны. Снимать txid из `notHandedToSdk` РАНЬШЕ нельзя: брось
-        // что-нибудь между снятием и вызовом — и пузырь остался бы ничьим
-        // (внешний finally его уже не снимет, а SDK им ещё не владеет).
-        Future<void> sendOnce() {
+        // EventStatus.error при сбое — байты у него есть, повтор законен.
+        // Снимать txid из `notHandedToSdk` РАНЬШЕ нельзя: брось что-нибудь
+        // между снятием и вызовом — и пузырь остался бы ничьим.
+        Future<String?> sendOnce() {
           notHandedToSdk.remove(txid);
           return room.sendFileEvent(
-            file,
+            p.file,
             txid: txid,
-            thumbnail: thumbnail,
-            shrinkImageMaxDimension: shrinkImageMaxDimension,
-            extraContent: extraContentOrNull,
+            thumbnail: p.thumbnail,
+            shrinkImageMaxDimension: shrinkImageMaxDimensionFor(
+              isGif: p.isGif,
+              batch: shrinkImageMaxDimension,
+            ),
+            extraContent: p.extraContent,
             threadRootEventId: widget.threadRootEventId,
             threadLastEventId: widget.threadLastEventId,
           );
         }
 
         try {
-          // Заливка — единый атомарный POST: докачки в Matrix Media API
-          // нет. Авто-ретрай намеренно не делаем — при обрыве событие
-          // переходит в error-статус, и пользователь повторяет отправку
-          // тапом по значку повтора на bubble (events/video_player.dart).
-          // Отдельная ветка — rate-limit сервера: ждём серверный
-          // retryAfterMs и пробуем ещё раз сами.
+          // Одна попытка = один `sendFileEvent` = свежее 30-секундное окно
+          // повторов SDK. Повторы поверх (обрыв на мобильной сети посреди
+          // долгой заливки) делает `AlbumSendSeries`. Отдельная ветка —
+          // rate-limit сервера: ждём серверный retryAfterMs и пробуем ещё раз.
+          String? eventId;
           try {
-            await sendOnce();
+            eventId = await sendOnce();
           } on MatrixException catch (e) {
             final retryAfterMs = e.retryAfterMs;
             if (e.error != MatrixError.M_LIMIT_EXCEEDED ||
@@ -733,40 +764,107 @@ class SendFileDialogState extends State<SendFileDialog> {
             );
             await Future.delayed(retryAfter);
             uploadProgress.reset();
-            await sendOnce();
+            eventId = await sendOnce();
           }
-        } catch (e) {
-          // Пользователь отменил загрузку крестиком на бабле — гасим тихо:
-          // ни ошибки, ни ретрая. Отдачу уже оборвал UploadProgressHttpClient,
-          // само событие из ленты убрал `cancelSend`; если retry-цикл SDK
-          // успел переотрисовать его error-статусом — снимаем повторно.
-          // continue, чтобы остальные файлы галереи догрузились.
-          if (UploadProgressTracker.instance.isCancelled(txid)) {
+          if (eventId == null) {
+            // Файл залит, событие не ушло, а SDK уже выбросил байты — вернём
+            // их, иначе ↻ этого сообщения удалил бы его (LABA-2239).
+            room.sendingFilePlaceholders[txid] = p.file;
+            final thumbnail = p.thumbnail;
+            if (thumbnail != null) {
+              room.sendingFileThumbnails[txid] = thumbnail;
+            }
+            throw const SendEventDroppedException();
+          }
+        } finally {
+          uploadProgress.complete();
+        }
+      }
+
+      final result = await AlbumSendSeries<_PreparedAttachment>(
+        count: files.length,
+        prepare: prepare,
+        upload: upload,
+        sizeOf: (p) => p.file.bytes.length,
+        isCancelled: (i) => UploadProgressTracker.instance.isCancelled(txids[i]),
+        waitForReconnect: () => _waitForReconnect(client),
+        onSent: (i) => UploadProgressTracker.instance.unregister(txids[i]),
+        onPrepareFailed: (i, e) {
+          prepareFailures.add(e);
+          UploadProgressTracker.instance.unregister(txids[i]);
+          // Пузырь снимает внешний finally (txid остался в notHandedToSdk):
+          // `cancelSend`, НЕ error — у события нет байтов (LABA-2239).
+        },
+        onUploadFailed: (i, e, kind) {
+          // Причина и класс — для тултипа и ↻ на пузыре/плитке и для
+          // авто-досыла при возврате связи (transient досылается, terminal —
+          // нет). Событие уже в EventStatus.error, байты у SDK.
+          UploadProgressTracker.instance
+            ..reportError(txids[i], _uploadErrorReason(e, l10n))
+            ..reportErrorKind(txids[i], kind);
+          uploadFailures.add(e);
+        },
+        onWaiting: (indices) {
+          for (final i in indices) {
+            UploadProgressTracker.instance.reportPhase(
+              txids[i],
+              UploadPhase.waitingNetwork,
+            );
+          }
+          banner?.update(l10n.uploadWaitingForNetwork);
+        },
+        onCancelled: (i) async {
+          // Пользователь отменил загрузку крестиком — гасим тихо: ни ошибки,
+          // ни ретрая. Отдачу уже оборвал UploadProgressHttpClient, событие из
+          // ленты убрал `cancelSend`; если retry-цикл SDK успел
+          // переотрисовать его error-статусом — снимаем повторно.
+          final txid = txids[i];
+          if (!notHandedToSdk.contains(txid)) {
             final pending = await widget.room.getEventById(txid);
-            // Бабл (_UploadOverlay) уже мог удалить это событие своим
-            // fire-and-forget cancelSend → повторный вызов бросит. Гасим, чтобы
-            // отмена осталась тихой и не прервала догрузку остальных файлов.
             try {
               await pending?.cancelSend();
             } catch (_) {}
-            continue;
           }
-          // Терминальная (не отмена) ошибка отправки этого файла — сохраняем
-          // человекочитаемую причину по txid, чтобы значок ошибки на бабле и
-          // overlay видео показали её тултипом (событие уйдёт в
-          // EventStatus.error уже после unregister в finally).
-          UploadProgressTracker.instance
-            ..reportError(txid, _uploadErrorReason(e, l10n))
-            // Класс ошибки — для авто-ретрая при возврате связи: transient
-            // досылается, terminal (403/413/диск) — нет.
-            ..reportErrorKind(txid, classifyUploadError(e));
-          rethrow;
-        } finally {
-          uploadProgress.complete();
-          UploadProgressTracker.instance.unregister(txid);
-        }
-      }
+        },
+      ).run();
       scaffoldMessenger.clearSnackBars();
+      if (result.notSent > 0) {
+        final firstError = uploadFailures.isNotEmpty
+            ? uploadFailures.first
+            : prepareFailures.isNotEmpty
+            ? prepareFailures.first
+            : null;
+        final String message;
+        if (result.total == 1 && firstError != null) {
+          // Одиночный файл — как раньше: ↻ есть на самом пузыре.
+          message = _isTransientUploadError(firstError)
+              ? l10n.uploadFailedTryFromMessage
+              : firstError.toLocalizedString(widget.outerContext);
+        } else {
+          // Набор: одно итоговое сообщение с числом, а не отсылка к
+          // «значку повтора на сообщении», которого у плитки альбома не было.
+          final reason =
+              firstError != null && !_isTransientUploadError(firstError)
+              ? '\n${_uploadErrorReason(firstError, l10n)}'
+              : '';
+          message =
+              '${l10n.albumNotSentCount(result.notSent, result.total)}'
+              '${result.retryable > 0 ? ' ${l10n.albumNotSentRetryHint}' : ''}'
+              '$reason';
+        }
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            backgroundColor: theme.colorScheme.errorContainer,
+            closeIconColor: theme.colorScheme.onErrorContainer,
+            content: Text(
+              message,
+              style: TextStyle(color: theme.colorScheme.onErrorContainer),
+            ),
+            duration: const Duration(seconds: 10),
+            showCloseIcon: true,
+          ),
+        );
+      }
     } catch (e) {
       scaffoldMessenger.clearSnackBars();
       scaffoldMessenger.showSnackBar(
@@ -795,12 +893,20 @@ class SendFileDialogState extends State<SendFileDialog> {
       // Плашка подготовки (если была) снимается в любом исходе. В ветке
       // ошибки её уже убрал clearSnackBars — dismiss идемпотентен.
       banner?.dismiss();
-      // Пузыри файлов, до которых подготовка не дошла (исключение до цикла
-      // или на любом из файлов), — наши, снимаем.
+      // Пузыри файлов, до которых подготовка не дошла (исключение до
+      // серии, провал подготовки файла, серия сдалась до начала файла), —
+      // наши, снимаем. Отправленные и упавшие на заливке — у SDK.
       for (final txid in notHandedToSdk) {
         UploadProgressTracker.instance.unregister(txid);
         await withdrawPendingAttachment(room, txid);
       }
+      // Серия кончилась: прогресс упавших снимаем, и только ПОСЛЕ этого
+      // отдаём их txid остальным механизмам повтора (↻, авто-досыл) — релиз
+      // будит пузыри, и они рисуют ↻ вместо «Ожидание сети».
+      for (final txid in txids) {
+        UploadProgressTracker.instance.unregister(txid);
+      }
+      UploadProgressTracker.instance.releaseFromSeries(txids);
     }
   }
 
@@ -1349,6 +1455,46 @@ class _PreparationBanner {
 /// не импортируем — ради совместимости с Web-сборкой.
 bool _isTransientUploadError(Object e) =>
     classifyUploadError(e) == UploadErrorKind.transient;
+
+/// Подготовленный к заливке файл серии: байты, постер и `content`-добавки.
+class _PreparedAttachment {
+  final MatrixFile file;
+  final MatrixImageFile? thumbnail;
+  final bool isGif;
+  final Map<String, dynamic>? extraContent;
+
+  const _PreparedAttachment({
+    required this.file,
+    required this.thumbnail,
+    required this.isGif,
+    required this.extraContent,
+  });
+}
+
+/// Дождаться, когда связь с сервером снова есть: ближайший успешный цикл
+/// sync. `false` — ждать нечего (вышли из аккаунта). Таймаута нет намеренно:
+/// серия на паузе держит только пузыри «Ожидание сети» (их можно отменить
+/// крестиком), а на свёрнутом iOS время всё равно стоит.
+Future<bool> _waitForReconnect(Client client) async {
+  if (!client.isLogged()) return false;
+  final result = Completer<bool>();
+  final syncSub = client.onSyncStatus.stream.listen((update) {
+    if (update.status == SyncStatus.finished && !result.isCompleted) {
+      result.complete(true);
+    }
+  });
+  final loginSub = client.onLoginStateChanged.stream.listen((state) {
+    if (state != LoginState.loggedIn && !result.isCompleted) {
+      result.complete(false);
+    }
+  });
+  try {
+    return await result.future;
+  } finally {
+    await syncSub.cancel();
+    await loginSub.cancel();
+  }
+}
 
 /// Человекочитаемая причина терминальной ошибки отправки для тултипа на бабле.
 /// Использует сохранённый [l10n] (не BuildContext после await — тот мог

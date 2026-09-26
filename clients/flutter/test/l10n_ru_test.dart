@@ -49,6 +49,8 @@ void main() {
         'title',
         'alwaysUse24HourFormat',
         'demoAuthChannelEmail',
+        // «GIF» — название формата, в русском интерфейсе пишется так же.
+        'gifBadge',
       };
       final offenders = <String>[];
 

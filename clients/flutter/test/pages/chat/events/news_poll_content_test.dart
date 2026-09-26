@@ -286,19 +286,136 @@ void main() {
     },
   );
 
-  testWidgets('закрытый опрос: «Опрос закрыт», варианты неактивны', (
+  double rowOpacity(WidgetTester tester, String id) => tester
+      .widget<Opacity>(
+        find.descendant(
+          of: find.byKey(ValueKey('news-poll-answer-$id')),
+          matching: find.byType(Opacity),
+        ),
+      )
+      .opacity;
+
+  bool rowChecked(String id) => find
+      .descendant(
+        of: find.byKey(ValueKey('news-poll-answer-$id')),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is Icon &&
+              (w.icon == Icons.radio_button_checked ||
+                  w.icon == Icons.check_box),
+        ),
+      )
+      .evaluate()
+      .isNotEmpty;
+
+  void seedOwnVote(List<String> answers) {
+    NewsPollService.of(client).stateOf('p1').value = NewsPollVoteState(
+      answers: answers,
+      status: NewsPollVoteStatus.voted,
+    );
+  }
+
+  // Разбор 2026-09-25: у закрытого опроса варианты выглядели активными, а тап
+  // молча игнорировался — владелец решил, что выбор «не выбирается».
+  // AC:RL-liza-news-poll-card/18
+  for (final multiple in [false, true]) {
+    testWidgets('закрытый опрос (multiple=$multiple): все варианты приглушены, '
+        'плашка «Опрос закрыт»', (tester) async {
+      await initClient(tester);
+      await pumpCard(tester, content: _card(multiple: multiple, closed: true));
+      for (final id in ['a1', 'a2', 'a3']) {
+        expect(rowOpacity(tester, id), lessThan(0.5), reason: id);
+      }
+      expect(find.byKey(const ValueKey('news-poll-status')), findsOneWidget);
+      expect(find.text('Опрос закрыт'), findsOneWidget);
+      await drain(tester);
+    });
+
+    testWidgets('открытый опрос (multiple=$multiple): варианты не приглушены', (
+      tester,
+    ) async {
+      await initClient(tester);
+      await pumpCard(tester, content: _card(multiple: multiple));
+      for (final id in ['a1', 'a2', 'a3']) {
+        expect(rowOpacity(tester, id), 1.0, reason: id);
+      }
+      expect(find.text('Опрос закрыт'), findsNothing);
+      await drain(tester);
+    });
+
+    // AC:RL-liza-news-poll-card/19
+    testWidgets('тап по варианту закрытого опроса (multiple=$multiple): '
+        'SnackBar «Опрос закрыт — голосовать уже нельзя», голос не уходит', (
+      tester,
+    ) async {
+      await initClient(tester);
+      await pumpCard(tester, content: _card(multiple: multiple, closed: true));
+      FakeMatrixApi.calledEndpoints.clear();
+      for (final id in ['a1', 'a3']) {
+        await tester.tap(find.byKey(ValueKey('news-poll-answer-$id')));
+        await tester.pump();
+        expect(
+          find.text('Опрос закрыт — голосовать уже нельзя'),
+          findsOneWidget,
+          reason: id,
+        );
+        expect(rowChecked(id), isFalse);
+      }
+      await tester.runAsync(
+        () => Future.delayed(const Duration(milliseconds: 30)),
+      );
+      expect(toDeviceCalls(newsPollVoteType), isEmpty);
+      expect(find.text('Проголосовать'), findsNothing);
+      expect(roomSendCalled(), isFalse);
+      await drain(tester);
+    });
+  }
+
+  // AC:RL-liza-news-poll-card/20
+  testWidgets('свой выбор виден после закрытия, «Отменить голос» скрыт', (
     tester,
   ) async {
     await initClient(tester);
+    seedOwnVote(['a2']);
     await pumpCard(tester, content: _card(closed: true));
-    FakeMatrixApi.calledEndpoints.clear();
+    expect(rowChecked('a2'), isTrue);
+    expect(rowChecked('a1'), isFalse);
+    expect(find.text('Отменить голос'), findsNothing);
     expect(find.text('Опрос закрыт'), findsOneWidget);
+    await drain(tester);
+  });
+
+  // AC:RL-liza-news-poll-card/21
+  testWidgets('открытый опрос: тап голосует, «Отменить голос» отзывает — как '
+      'раньше, без SnackBar', (tester) async {
+    await initClient(tester);
+    await pumpCard(tester);
+    FakeMatrixApi.calledEndpoints.clear();
     await tester.tap(find.byKey(const ValueKey('news-poll-answer-a1')));
     await tester.pump();
+    expect(rowChecked('a1'), isTrue);
+    expect(find.byType(SnackBar), findsNothing);
+    await drain(tester);
+  });
+
+  // AC:RL-liza-news-poll-card/21
+  testWidgets('открытый опрос: «Отменить голос» отзывает голос', (
+    tester,
+  ) async {
+    await initClient(tester);
+    seedOwnVote(['a2']);
+    await pumpCard(tester);
+    FakeMatrixApi.calledEndpoints.clear();
+    await tester.tap(find.text('Отменить голос'));
+    await tester.pump();
     await tester.runAsync(
-      () => Future.delayed(const Duration(milliseconds: 30)),
+      () => Future.delayed(const Duration(milliseconds: 50)),
     );
-    expect(toDeviceCalls(newsPollVoteType), isEmpty);
+    final vote =
+        (toDeviceCalls(newsPollVoteType).single['messages']
+                as Map)[_bot]['BOTDEV']
+            as Map;
+    expect(vote['answers'], isEmpty);
     await drain(tester);
   });
 
@@ -313,6 +430,7 @@ void main() {
     await drain(tester);
   });
 
+  // AC:RL-liza-news-poll-card/22
   testWidgets('экран результатов: кто и за что; отказ бота — понятный текст', (
     tester,
   ) async {
@@ -365,6 +483,29 @@ void main() {
     expect(find.text('@anna:liza.cyber-agro.ru'), findsOneWidget);
     expect(find.text('Иван'), findsOneWidget);
     expect(find.text('Голосов: 0'), findsOneWidget);
+    // AC:RL-liza-news-poll-card/22 — старый бот audience не шлёт: строки нет.
+    expect(find.byKey(const ValueKey('news-poll-audience')), findsNothing);
+
+    await pumpPage(
+      () async => const NewsPollResults(
+        true,
+        1,
+        [
+          NewsPollOption('a1', 'Отлично', ['@ivan:user.liza.ru']),
+        ],
+        audience: ['macos'],
+      ),
+    );
+    expect(find.text('Опрос для: Mac'), findsOneWidget);
+    expect(parseResults({'total_voters': 0, 'options': []}).audience, isNull);
+    expect(
+      parseResults({
+        'total_voters': 0,
+        'options': [],
+        'audience': ['ios', 'macos'],
+      }).audience,
+      ['ios', 'macos'],
+    );
 
     await pumpPage(() async => throw const NewsPollForbidden());
     expect(

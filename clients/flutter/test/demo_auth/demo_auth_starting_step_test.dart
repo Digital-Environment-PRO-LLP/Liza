@@ -122,7 +122,7 @@ void main() {
     test('wireName совпадает с тем, что ждёт auth-proxy', () {
       expect(
         DemoAuthChannel.values.map((c) => c.wireName).toSet(),
-        {'phone', 'email'},
+        {'phone', 'email', 'password'},
       );
     });
   });

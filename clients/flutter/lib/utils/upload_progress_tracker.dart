@@ -24,7 +24,11 @@ import 'package:liza/utils/upload_error_classifier.dart';
 /// Этап `preparing` — окно между тапом «Отправить» и началом транскода
 /// (чтение файла, HEIC, извлечение постера). Раньше это окно было немым:
 /// пузыря ещё не существовало, а снекбар физически не успевал отрисоваться.
-enum UploadPhase { preparing, compressing, uploading }
+///
+/// Этап `waitingNetwork` — серия отправки альбома стоит на паузе до возврата
+/// связи (`AlbumSendSeries`): файл либо ещё не начат, либо упал на обрыве и
+/// будет дослан самой серией. Это НЕ ошибка — повтор руками не нужен.
+enum UploadPhase { preparing, compressing, uploading, waitingNetwork }
 
 class UploadProgressTracker {
   UploadProgressTracker._();
@@ -49,6 +53,11 @@ class UploadProgressTracker {
   // `_errorReasons`: НЕ чистится в `unregister` (читается ПОСЛЕ ухода события
   // в `EventStatus.error`), снимается на следующей попытке (`register`).
   final Map<String, UploadErrorKind> _errorKinds = {};
+  // txid'ы, которыми владеет идущая серия отправки (`AlbumSendSeries`): от
+  // пре-эмита до конца ВСЕЙ серии. Пока txid здесь, повторять его вправе только
+  // сама серия — авто-досыл при возврате связи и ручной ↻ молчат. Иначе на
+  // одном txid сходились три механизма повтора и шли параллельные заливки.
+  final Set<String> _ownedBySeries = {};
   String? _activeTxid;
 
   /// Создать notifier для указанного `txid` и положить его в реестр.
@@ -136,6 +145,27 @@ class UploadProgressTracker {
   /// следующий сбой был сетевым (transient). После сброса kind=null → авто-
   /// ретрай снова доверяет дефолту (null=transient).
   void clearErrorKind(String txid) => _errorKinds.remove(txid);
+
+  /// Серия отправки забирает txid'ы во владение (см. [_ownedBySeries]).
+  void claimForSeries(Iterable<String> txids) {
+    _ownedBySeries.addAll(txids);
+    seriesChanges.value++;
+  }
+
+  /// Серия закончилась — повтор этих txid снова доступен всем механизмам.
+  /// Сигнал [seriesChanges] будит оверлеи: упавшие члены сразу рисуют ↻.
+  void releaseFromSeries(Iterable<String> txids) {
+    _ownedBySeries.removeAll(txids);
+    seriesChanges.value++;
+  }
+
+  /// Тикает на каждом захвате/релизе серии. Оверлеи пузырей и плиток
+  /// пересчитывают по нему «↻ или прогресс»: статус события при релизе не
+  /// меняется, и без сигнала ↻ появился бы лишь при случайной перерисовке.
+  final ValueNotifier<int> seriesChanges = ValueNotifier<int>(0);
+
+  /// Владеет ли этим id идущая серия отправки.
+  bool isOwnedBySeries(String id) => _ownedBySeries.contains(id);
 
   /// Запросить отмену загрузки по `txid`. Флаг читает
   /// [UploadProgressHttpClient]: на ближайшем чанке тела отдача обрывается

@@ -60,6 +60,12 @@ class _DemoSmsStepState extends State<DemoSmsStep> {
   /// контроллера (неверный код на 0:30) отбрасывала отсчёт к 1:00.
   void _syncCountdown() {
     final controller = widget.controller;
+    // Повтора у входа по паролю нет — и таймеру отсчитывать нечего.
+    if (controller.passwordLogin) {
+      _timer?.cancel();
+      _secondsLeft = 0;
+      return;
+    }
     if (controller.resendEpoch == _seenEpoch) return;
     _seenEpoch = controller.resendEpoch;
     final fromServer = controller.resendAvailableIn;
@@ -134,10 +140,49 @@ class _DemoSmsStepState extends State<DemoSmsStep> {
     );
   }
 
+  /// Номер App Store review: вместо ячеек кода — поле пароля. Таймера,
+  /// «Отправить ещё раз» и «Другого способа» нет — кода не было вовсе;
+  /// выход в поддержку остаётся.
+  Widget _buildPasswordStep(L10n l10n, DemoAuthFlowController controller) {
+    return DemoAuthScaffold(
+      title: l10n.demoAuthPasswordTitle,
+      subtitle: l10n.demoAuthPasswordHint(controller.maskedPhone),
+      icon: const Icon(Icons.lock_outline, size: 56),
+      onBack: controller.back,
+      error: controller.error,
+      errorCode: controller.errorCode,
+      ticket: controller.ticket,
+      step: 'sms',
+      showBottomSupport: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DemoPasswordInput(
+            // Как у ячеек кода: отказ сервера пересоздаёт поле пустым.
+            key: ValueKey(controller.codeRejections),
+            autofocus:
+                controller.codeRejections == 0 ||
+                controller.focusCodeAfterReject,
+            isLoading: controller.isLoading,
+            onSubmit: controller.submitSmsCode,
+          ),
+          const SizedBox(height: 8),
+          OtpActionsRow(
+            step: 'sms',
+            ticket: controller.ticket,
+            errorCode: controller.errorCode,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
     final controller = widget.controller;
+
+    if (controller.passwordLogin) return _buildPasswordStep(l10n, controller);
 
     return DemoAuthScaffold(
       title: controller.smsCodeSentByEmail
@@ -214,6 +259,105 @@ class _DemoSmsStepState extends State<DemoSmsStep> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Поле пароля входа App Store review и кнопка отправки.
+///
+/// Пароль набирают вручную из заметок App Review, поэтому любые символы (не
+/// только цифры), без автокоррекции и подсказок — они «исправили» бы
+/// случайную строку. Переключатель видимости — чтобы проверить набранное.
+class DemoPasswordInput extends StatefulWidget {
+  const DemoPasswordInput({
+    super.key,
+    required this.onSubmit,
+    this.isLoading = false,
+    this.autofocus = true,
+  });
+
+  final ValueChanged<String> onSubmit;
+  final bool isLoading;
+  final bool autofocus;
+
+  @override
+  State<DemoPasswordInput> createState() => _DemoPasswordInputState();
+}
+
+class _DemoPasswordInputState extends State<DemoPasswordInput> {
+  final _controller = TextEditingController();
+  bool _obscure = true;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  bool get _canSubmit => !widget.isLoading && _controller.text.isNotEmpty;
+
+  void _submit() {
+    if (!_canSubmit) return;
+    widget.onSubmit(_controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AutofillGroup(
+          child: TextField(
+            controller: _controller,
+            autofocus: widget.autofocus,
+            enabled: !widget.isLoading,
+            obscureText: _obscure,
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.visiblePassword,
+            textInputAction: TextInputAction.done,
+            autofillHints: const [AutofillHints.password],
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => _submit(),
+            decoration: InputDecoration(
+              labelText: l10n.demoAuthPasswordLabel,
+              prefixIcon: const Icon(Icons.lock_outline),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              suffixIcon: IconButton(
+                tooltip: _obscure
+                    ? l10n.showPassword
+                    : l10n.demoAuthHidePassword,
+                icon: Icon(
+                  _obscure
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+                onPressed: () => setState(() => _obscure = !_obscure),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          onPressed: _canSubmit ? _submit : null,
+          child: widget.isLoading
+              ? const SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text(l10n.demoAuthContinue),
+        ),
+      ],
     );
   }
 }

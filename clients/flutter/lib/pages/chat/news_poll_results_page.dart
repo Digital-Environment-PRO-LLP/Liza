@@ -137,6 +137,15 @@ class _NewsPollResultsPageState extends State<NewsPollResultsPage> {
             style: theme.textTheme.bodySmall,
           ),
         ),
+        if (newsAudienceLabel(results.audience) case final audience?)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              l10n.newsPollAudience(audience),
+              key: const ValueKey('news-poll-audience'),
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
         if (results.totalVoters == 0)
           Padding(
             padding: const EdgeInsets.all(24),

@@ -8,6 +8,8 @@
 //
 // ledger:RL-video-playback-monitoring-signal
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:liza/pages/image_viewer/video_player.dart';
@@ -286,4 +288,60 @@ void main() {
     });
   });
 
+
+  // AC:RL-video-playback-monitoring-signal/11 — `[video-swap]` несёт ТРИГГЕР свапа.
+  // #2063 (2026-09-24): константный `reason=swap-to-local` не говорил, какой
+  // детектор сорвал живой, но медленный стрим — корень не разбирался.
+  group('AC-11: [video-swap] несёт триггер свапа', () {
+    test('AC-11: ∀ точек входа в _swapToLocal передают триггер, в title — он, '
+        'а не константа', () {
+      final src = File(
+        'lib/pages/image_viewer/video_player.dart',
+      ).readAsStringSync();
+      // Только места ВЫЗОВА (объявление метода несёт `required String trigger`).
+      final calls = RegExp(
+        r'(?:await |unawaited\()_swapToLocal\(([^)]*)\)',
+      ).allMatches(src).toList();
+      // watchdog + _handlePlaybackError — обе известные точки входа.
+      expect(calls.length, greaterThanOrEqualTo(2));
+      for (final c in calls) {
+        expect(
+          c.group(1),
+          contains('trigger:'),
+          reason: 'вызов без триггера вернёт безликий [video-swap]: ${c.group(0)}',
+        );
+      }
+      expect(src, isNot(contains("reason: 'swap-to-local'")));
+      expect(src, contains('reason: trigger'));
+    });
+
+    test('AC-11 ∀: с самым длинным триггером голова+контекст e2ee/mime/size '
+        'укладываются в бюджет title', () {
+      const triggers = [
+        'watchdog-no-progress',
+        'stalled-reconnect',
+        'unable-to-play',
+        'open-failed',
+        'libmpv-fatal',
+        'http-5xx',
+      ];
+      for (final t in triggers) {
+        final title = Monitoring.buildAlertTitle(
+          prefix: Monitoring.videoSwapPrefix,
+          reason: t,
+          host: 'synapse.liza.laba.prodamus.tech',
+          context: const {
+            'e2ee': 'false',
+            'mime': 'video/mp4',
+            'size': '50-150MB',
+            'platform': 'ios',
+            'mmr': 'true',
+          },
+        );
+        expect(title, startsWith('[video-swap] reason=$t host=synapse.liza'));
+        expect(title, contains('size=50-150MB'), reason: t);
+        expect(title.length, lessThanOrEqualTo(Monitoring.maxAlertTitleLength));
+      }
+    });
+  });
 }

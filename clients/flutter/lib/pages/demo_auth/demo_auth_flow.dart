@@ -31,7 +31,12 @@ enum DemoAuthStep { starting, sms, emailCode, selectServer }
 /// (мессенджер, звонок) добавляется сюда одним значением.
 enum DemoAuthChannel {
   phone,
-  email;
+  email,
+
+  /// Вход App Store review: вместо кода — пароль. В меню «Другой способ» не
+  /// предлагается (см. [DemoAuthFlowController.availableChannels]): его
+  /// выбирает только сервер по номеру.
+  password;
 
   /// Значение, которое понимает auth-proxy.
   ///
@@ -41,6 +46,7 @@ enum DemoAuthChannel {
   String get wireName => switch (this) {
     DemoAuthChannel.phone => 'phone',
     DemoAuthChannel.email => 'email',
+    DemoAuthChannel.password => 'password',
   };
 }
 
@@ -135,6 +141,11 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
   /// у номера есть аккаунт с настоящей почтой). Влияет на текст экрана.
   bool smsCodeSentByEmail = false;
 
+  /// Сервер ответил каналом `password` (номер App Store review): шаг
+  /// рисует поле пароля вместо ячеек кода, без таймера повтора и без
+  /// «Другого способа» — повторять и переключать здесь нечего.
+  bool passwordLogin = false;
+
   /// Доставка не состоялась из-за лимита частоты (а не сбоя): текст должен
   /// сказать «подождите», а не «сервис не смог отправить».
   bool deliveryRateLimited = false;
@@ -181,11 +192,15 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
   /// ушёл код. Без этого кнопка появлялась лишь на ВТОРОМ экране, а на
   /// первом — где человек как раз и застревает, не получив письмо, — её
   /// не было вовсе.
-  bool get canSwitchChannel => hasAlternativeChannel || smsCodeSentByEmail;
+  bool get canSwitchChannel =>
+      !passwordLogin && (hasAlternativeChannel || smsCodeSentByEmail);
 
   /// Канал, которым сейчас доставляется код первого шага.
-  DemoAuthChannel get currentChannel =>
-      smsCodeSentByEmail ? DemoAuthChannel.email : DemoAuthChannel.phone;
+  DemoAuthChannel get currentChannel => passwordLogin
+      ? DemoAuthChannel.password
+      : smsCodeSentByEmail
+      ? DemoAuthChannel.email
+      : DemoAuthChannel.phone;
 
   /// Способы, которые можно предложить в меню «Другой способ».
   ///
@@ -233,6 +248,7 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
         maskedPhone = result.maskedDestination;
         deliveryFailed = result.deliveryFailed;
         smsCodeSentByEmail = result.isEmailChannel;
+        passwordLogin = result.isPasswordChannel;
         deliveryRateLimited = result.isRateLimited;
         deliveryDetail = result.deliveryDetail;
         deliveryDetailCode = result.deliveryDetailCode;
@@ -270,6 +286,7 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
         _ticket = result.ticket;
         maskedPhone = result.maskedDestination;
         smsCodeSentByEmail = result.isEmailChannel;
+        passwordLogin = result.isPasswordChannel;
         deliveryFailed = result.deliveryFailed;
         deliveryRateLimited = result.isRateLimited;
         deliveryDetail = result.deliveryDetail;
@@ -512,8 +529,11 @@ class DemoAuthFlowController extends State<DemoAuthFlow> {
     _fail(const DemoAuthException('internal_error'), request: request);
   }
 
-  String _messageFor(String code) =>
-      demoAuthErrorMessage(code, L10n.of(context));
+  String _messageFor(String code) => demoAuthErrorMessage(
+    code,
+    L10n.of(context),
+    passwordChannel: passwordLogin,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -553,8 +573,18 @@ String? demoAuthDetailMessage(String code, L10n l10n) => switch (code) {
   _ => null,
 };
 
-String demoAuthErrorMessage(String code, L10n l10n) => switch (code) {
+/// Текст ошибки входа на языке интерфейса.
+///
+/// [passwordChannel] — вход App Store review: сервер отклоняет неверный
+/// пароль тем же `invalid_code`, что и OTP, но «Неверный код» на экране
+/// пароля сбивает с толку.
+String demoAuthErrorMessage(
+  String code,
+  L10n l10n, {
+  bool passwordChannel = false,
+}) => switch (code) {
   'invalid_phone' => l10n.demoAuthInvalidPhone,
+  'invalid_code' when passwordChannel => l10n.demoAuthWrongPassword,
   'invalid_code' => l10n.demoAuthInvalidCode,
   'otp_expired' => l10n.demoAuthCodeExpired,
   // Оба кода означают одно для человека: код не дошёл не по его вине.

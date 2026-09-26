@@ -340,19 +340,55 @@ class Message extends StatelessWidget {
     // иначе Ctrl+C по выделенному сообщению кладёт в буфер «Привет14:32». Тот же
     // инвариант уже держит живой слой поповера (`SelectableTextOverlay`).
     // `SelectionContainer.disabled` layout-прозрачен — вёрстка не меняется.
-    Widget messageFooter({required bool overlay}) =>
-        SelectionContainer.disabled(
-          child: MessageTime(
-            time: messageTime,
-            color: textColor.withAlpha(160),
-            overlay: overlay,
-            showStatus: ownMessage,
-            isError: event.status == EventStatus.error,
-            isSendingFile: event.fileSendingStatus != null,
-            isSending: event.status.isSending,
-            isRead: isRead,
-          ),
+    //
+    // Свой АЛЬБОМ: статус — сводный по всем членам, а не по якорю i=0
+    // (`GallerySendSummary`), иначе «✓✓» при идущей/упавшей отправке
+    // остальных. Пересчёт и на конец серии отправки (`seriesChanges`): статус
+    // событий в этот момент не меняется, лента сама не перерисуется.
+    final albumId = ownMessage ? event.galleryId : null;
+    Widget footerTime({required bool overlay, GallerySendSummary? album}) =>
+        MessageTime(
+          time: messageTime,
+          color: textColor.withAlpha(160),
+          overlay: overlay,
+          showStatus: ownMessage,
+          isError: album != null
+              ? album.state == GallerySendState.error
+              : event.status == EventStatus.error,
+          isSendingFile: album == null && event.fileSendingStatus != null,
+          isSending: album != null
+              ? album.state == GallerySendState.sending
+              : event.status.isSending,
+          isRead: isRead,
         );
+    Widget messageFooter({required bool overlay}) => SelectionContainer.disabled(
+      child: albumId == null
+          ? footerTime(overlay: overlay)
+          : ValueListenableBuilder<int>(
+              valueListenable: UploadProgressTracker.instance.seriesChanges,
+              builder: (context, _, _) {
+                final album = GallerySendSummary.of(timeline, albumId);
+                final time = footerTime(overlay: overlay, album: album);
+                if (album.state != GallerySendState.error) return time;
+                final label = L10n.of(
+                  context,
+                ).albumNotSentCount(album.failed.length, album.total);
+                return Semantics(
+                  button: true,
+                  label: label,
+                  child: Tooltip(
+                    message: label,
+                    child: GestureDetector(
+                      key: const ValueKey('album-unsent-status'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => showAlbumUnsentMenu(context, album),
+                      child: time,
+                    ),
+                  ),
+                );
+              },
+            ),
+    );
 
     // ТЕКСТ размещает время+статус (и метку «изменено») ЕДИНЫМ футером на уровне
     // пузыря (`textCornerFooterWidget`, блок рендера ниже), а НЕ внутри

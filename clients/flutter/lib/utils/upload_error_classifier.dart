@@ -34,6 +34,19 @@ class EmptyMediaBytesException implements Exception {
       'EmptyMediaBytesException(declaredSize=$declaredSize, read 0 bytes)';
 }
 
+/// Заливка прошла, но само событие не ушло: `Room.sendEvent` (matrix 4.1.0)
+/// при таймауте сети и при большинстве `MatrixException` НЕ бросает, а
+/// возвращает `null`, переводит событие в `error` и попутно чистит
+/// `sendingFilePlaceholders` — `sendFileEvent` возвращает `null` «успешно».
+/// Раньше такой файл считался отправленным, хотя в ленте висел неотправленным
+/// и без байтов для повтора (LABA-2239). Причину SDK не отдаёт — считаем
+/// transient: повтор тем же txid идемпотентен (`PUT /send/{txnId}`).
+class SendEventDroppedException implements Exception {
+  const SendEventDroppedException();
+  @override
+  String toString() => 'SendEventDroppedException(sendEvent вернул null)';
+}
+
 /// Терминальные upstream-статусы upload, на которых повтор бессмысленен:
 /// `403` (квота/доступ) и `413` (файл слишком большой). НЕ включает `429`
 /// (`M_LIMIT_EXCEEDED` — rate-limit, ждём `retry_after_ms` и повторяем сами) и
@@ -79,6 +92,7 @@ MatrixException? parseUploadError(int statusCode, Uint8List body) {
 ///   возврат связи места на диске не добавит.
 UploadErrorKind classifyUploadError(Object e) {
   if (e is EmptyMediaBytesException) return UploadErrorKind.terminal;
+  if (e is SendEventDroppedException) return UploadErrorKind.transient;
   if (e is FileTooBigMatrixException) return UploadErrorKind.terminal;
   if (e is MatrixException) {
     if (e.error == MatrixError.M_LIMIT_EXCEEDED) {
